@@ -1,5 +1,10 @@
 image: maven
 
+lib-compile:
+  stage: build
+  script:
+    - cd paleo-lib && mvn compile
+
 lib-test:
   stage: test
   script:
