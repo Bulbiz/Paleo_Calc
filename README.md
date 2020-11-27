@@ -19,5 +19,5 @@ For cleaning, run `make clean`.
 
 ## Run
 
-For launch the calculator, run `make run` or `java -jar paleo-calculator.jar`.
+For launching the calculator, run `make run` or `java -jar paleo-calculator.jar`.
 
