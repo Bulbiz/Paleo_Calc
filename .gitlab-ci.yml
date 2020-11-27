@@ -1,4 +1,4 @@
-image: maven
+image: emilerolley/maven
 
 lib-compile:
   stage: build
