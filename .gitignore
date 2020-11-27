@@ -1,5 +1,3 @@
-./**/target/
-./paleo-lib/src/main/java/paleo/lib/parser/Lexer.java*
-./paleo-lib/.classpath
-./paleo-lib/.project
-./paleo-lib/.settings/
+target/
+paleo-lib/src/main/java/paleo/lib/parser/Lexer.java*
+paleo-lib/.*
