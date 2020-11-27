@@ -1,21 +1,26 @@
 image: maven
 
+lib-test:
+  stage: test
+  script:
+    - cd paleo-lib && mvn compile test
+
 lib-package:
-  stage: build
+  stage: deploy
   script:
     - cd paleo-lib && mvn package install
 
 calc-compile:
   stage: build
   script:
-    - cd paleo-lib && mvn compile
+    - cd paleo-calc && mvn compile
 
 calc-test:
   stage: test
   script:
-    - cd paleo-lib && mvn compile test
+    - cd paleo-calc && mvn compile test
 
 calc-assembly:
-  stage: test
+  stage: deploy
   script:
-    - cd paleo-lib && mvn compile assembly:single
+    - cd paleo-calc && mvn compile assembly:single
