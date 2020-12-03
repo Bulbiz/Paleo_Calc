@@ -19,7 +19,7 @@ calc-compile:
   stage: build
   script:
     - cd paleo-lib && mvn compile
-    - cd paleo-calc && mvn compile
+    - cd ../paleo-calc && mvn compile
 
 calc-test:
   stage: test
