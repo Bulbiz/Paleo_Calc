@@ -18,8 +18,8 @@ lib-package:
 calc-compile:
   stage: build
   script:
-    - cd paleo-lib && mvn compile
-    - cd ../paleo-calc && mvn compile
+    - make lib
+    - cd paleo-calc && mvn compile
 
 calc-test:
   stage: test
