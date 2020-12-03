@@ -8,8 +8,8 @@ import java.util.Queue;
 import paleo.lib.token.Yytoken;
 
 /**
- * Provides an interface in order to tranform a string expression into a queue
- * of tokens. A {@link Lexer} instance is used for tokenizing the string.
+ * Module allowing to tranform a string expression into a queue of tokens.
+ * A {@link Lexer} instance is used for tokenizing the string.
  *
  * @note A {@link Queue} is used to store tokens, because, to evaluate the
  * expression only one run of the tokens set is necessary.

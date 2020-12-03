@@ -17,7 +17,7 @@ import paleo.lib.token.Yytoken;
 /**
  * Unit test for {@link Parser}.
  */
-public class ParserTest  {
+public class ParserTest {
 
     /**
      * Compares two {@link Queue} of {@link Yytoken}.
