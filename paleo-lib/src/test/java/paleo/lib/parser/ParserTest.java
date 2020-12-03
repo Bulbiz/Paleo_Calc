@@ -153,4 +153,16 @@ public class ParserTest  {
 
         assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
     }
+
+    @Test
+    public void negativeInteger() {
+        final Queue<Yytoken> actualTokens = new Parser("3.4 * -5").parse();
+        final Queue<Yytoken> expectedTokens =
+            createTokenQueue(
+                    new DoubleOperandToken(3.4),
+                    OperationToken.MULT,
+                    new IntegerOperandToken(-5));
+
+        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+    }
 }
