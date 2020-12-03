@@ -28,7 +28,7 @@ public final class Interpreter {
 	 * Evaluates the {@link Queue} of {@link Yytoken} using two {@link Stack}.
 	 *
 	 * @note Used algorithm can be found at
-	 * https://algorithms.tutorialhorizon.com/evaluation-of-infix-expressions/
+	 * https:/}/algorithms.tutorialhorizon.com/evaluation-of-infix-expressions/
 	 *
 	 * @return the last {@link OperandToken} of the operandStack.
 	 * @throws IllegalArgumentException if the expression is not valid.
@@ -38,6 +38,7 @@ public final class Interpreter {
 
 		while (!tokens.isEmpty()) {
 			token = tokens.poll();
+
 			if (token.isAnOperandToken()) {
 				operandStack.push((OperandToken) token);
 			}
@@ -53,22 +54,20 @@ public final class Interpreter {
 					}
 					operationStack.pop();
 				}
-				if (operationStack.isEmpty()) {
+				else if (operationStack.isEmpty()) {
 					operationStack.push(operationToken);
 				}
+				else if (operationToken.getPriority() < operationStack.peek().getPriority()) {
+						operationStack.push(operationToken);
+				}
 				else {
-					if (operationToken.getPriority() >= operationStack.peek().getPriority()) {
-						operationStack.push(operationToken);
+					while (
+						!operationStack.isEmpty()
+						&& operationToken.getPriority() >= operationStack.peek().getPriority()
+					) {
+						evaluateOperation();
 					}
-					else {
-						while (
-							!operationStack.isEmpty()
-							&& operationToken.getPriority() < operationStack.peek().getPriority()
-						) {
-							evaluateOperation();
-						}
-						operationStack.push(operationToken);
-					}
+					operationStack.push(operationToken);
 				}
 			}
 		}
@@ -85,7 +84,7 @@ public final class Interpreter {
 
 	//TODO: should be refactor with a dictionnary.
 	private void evaluateOperation() throws IllegalArgumentException {
-		if (2 < operandStack.size()) {
+		if (2 > operandStack.size()) {
 			throw new IllegalArgumentException("Not enough operands");
 		}
 

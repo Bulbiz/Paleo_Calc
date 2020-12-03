@@ -52,4 +52,12 @@ public class InterpreterTest {
         );
     }
 
+    @Test
+    public void parenIntegerExpression() {
+        assertEquals(
+            new IntegerOperandToken(16),
+            new Interpreter(new Parser("2 * (3 + 5)").parse()).evaluate()
+        );
+    }
+
 }
