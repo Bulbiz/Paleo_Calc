@@ -1,6 +1,6 @@
 .PHONY: all clean test
 
-JFLEX_OUTPUT = paleo-lib/src/main/java/paleo/lib/parser/Lexer.java
+JFLEX_OUTPUT = paleo-lib/src/main/java/paleo/lib/parser/JFLexer.java
 JAR_NAME = paleo-calculator
 
 all: lib calc
