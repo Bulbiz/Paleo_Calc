@@ -180,4 +180,33 @@ public class ParserTest {
 
         assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
     }
+
+    @Test
+    public void expressionWithMultipleParenDepth() {
+        final Queue<Yytoken> actualTokens =
+            new Parser("(2 - 3 * 4 + (2 + 4 - 6 * 5)) + 1").parse();
+        final Queue<Yytoken> expectedTokens =
+            createTokenQueue(
+                    OperationToken.LPAREN,
+                    new IntegerOperandToken(2),
+                    OperationToken.SUB,
+                    new IntegerOperandToken(3),
+                    OperationToken.MULT,
+                    new IntegerOperandToken(4),
+                    OperationToken.SUM,
+                    OperationToken.LPAREN,
+                    new IntegerOperandToken(2),
+                    OperationToken.SUM,
+                    new IntegerOperandToken(4),
+                    OperationToken.SUB,
+                    new IntegerOperandToken(6),
+                    OperationToken.MULT,
+                    new IntegerOperandToken(5),
+                    OperationToken.RPAREN,
+                    OperationToken.RPAREN,
+                    OperationToken.SUM,
+                    new IntegerOperandToken(1));
+
+        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+    }
 }
