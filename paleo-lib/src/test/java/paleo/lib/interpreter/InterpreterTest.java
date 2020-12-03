@@ -68,4 +68,12 @@ public class InterpreterTest {
         );
     }
 
+    @Test
+    public void testOperationPriority() {
+        assertEquals(
+            new IntegerOperandToken(-24),
+            new Interpreter(new Parser("2 + 4 - 6 * 5").parse()).evaluate()
+        );
+    }
+
 }
