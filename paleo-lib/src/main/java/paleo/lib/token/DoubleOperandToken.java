@@ -3,7 +3,7 @@ package paleo.lib.token;
 /**
  * DoubleOperandToken
  */
-public class DoubleOperandToken implements OperandToken {
+public final class DoubleOperandToken implements OperandToken {
 
     private double value;
 
@@ -11,6 +11,14 @@ public class DoubleOperandToken implements OperandToken {
     @Override
     public boolean isAnOperandToken() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (
+            obj instanceof DoubleOperandToken
+            && this.value == ((DoubleOperandToken) obj).getValue()
+        );
     }
 
     public DoubleOperandToken(final double value) {

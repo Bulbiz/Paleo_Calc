@@ -9,6 +9,7 @@ import java.util.Queue;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import paleo.lib.token.DoubleOperandToken;
 import paleo.lib.token.IntegerOperandToken;
 import paleo.lib.token.OperationToken;
 import paleo.lib.token.Yytoken;
@@ -81,6 +82,46 @@ public class ParserTest  {
                     new IntegerOperandToken(3),
                     OperationToken.SUM,
                     new IntegerOperandToken(5));
+
+        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+    }
+
+    @Test
+    public void simpleMultExpression() {
+        final Queue<Yytoken> actualTokens = new Parser("3 * 5").parse();
+        final Queue<Yytoken> expectedTokens =
+            createTokenQueue(
+                    new IntegerOperandToken(3),
+                    OperationToken.MULT,
+                    new IntegerOperandToken(5));
+
+        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+    }
+
+    @Test
+    public void simpleParenExpression() {
+        final Queue<Yytoken> actualTokens = new Parser("(3 * 5)").parse();
+        final Queue<Yytoken> expectedTokens =
+            createTokenQueue(
+                    OperationToken.LPAREN,
+                    new IntegerOperandToken(3),
+                    OperationToken.MULT,
+                    new IntegerOperandToken(5),
+                    OperationToken.RPAREN);
+
+        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+    }
+
+    @Test
+    public void simpleDoubleExpression() {
+        final Queue<Yytoken> actualTokens = new Parser("(3.4 * 5.6)").parse();
+        final Queue<Yytoken> expectedTokens =
+            createTokenQueue(
+                    OperationToken.LPAREN,
+                    new DoubleOperandToken(3.4),
+                    OperationToken.MULT,
+                    new DoubleOperandToken(5.6),
+                    OperationToken.RPAREN);
 
         assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
     }

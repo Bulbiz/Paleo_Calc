@@ -3,7 +3,7 @@ package paleo.lib.token;
 /**
  * IntegerOperandToken
  */
-public class IntegerOperandToken implements OperandToken {
+public final class IntegerOperandToken implements OperandToken {
 
     private int value;
 
