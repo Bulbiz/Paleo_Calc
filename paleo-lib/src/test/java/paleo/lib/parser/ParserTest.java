@@ -143,7 +143,7 @@ public class ParserTest  {
     }
 
     @Test
-    public void negativeDouble() {
+    public void expressionWithANegativeDouble() {
         final Queue<Yytoken> actualTokens = new Parser("3.4 * -5.6").parse();
         final Queue<Yytoken> expectedTokens =
             createTokenQueue(
@@ -155,13 +155,28 @@ public class ParserTest  {
     }
 
     @Test
-    public void negativeInteger() {
+    public void expressionWithANegativeInteger() {
         final Queue<Yytoken> actualTokens = new Parser("3.4 * -5").parse();
         final Queue<Yytoken> expectedTokens =
             createTokenQueue(
                     new DoubleOperandToken(3.4),
                     OperationToken.MULT,
                     new IntegerOperandToken(-5));
+
+        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+    }
+
+    @Test
+    public void notFormattedExpression() {
+        final Queue<Yytoken> actualTokens = new Parser("/3.4* -5 ))").parse();
+        final Queue<Yytoken> expectedTokens =
+            createTokenQueue(
+                    OperationToken.DIV,
+                    new DoubleOperandToken(3.4),
+                    OperationToken.MULT,
+                    new IntegerOperandToken(-5),
+                    OperationToken.RPAREN,
+                    OperationToken.RPAREN);
 
         assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
     }
