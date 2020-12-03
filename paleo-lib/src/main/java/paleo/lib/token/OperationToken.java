@@ -1,8 +1,8 @@
 package paleo.lib.token;
 
 public enum OperationToken implements Yytoken {
-    RPAREN          ("RPAREN_TOKEN", 3),
-    LPAREN          ("LPAREN_TOKEN", 3),
+    RPAREN          ("RPAREN_TOKEN", -1),
+    LPAREN          ("LPAREN_TOKEN", -1),
     MULT            ("MULT_TOKEN", 2),
     DIV             ("DIV_TOKEN", 2),
     SUB             ("SUB_TOKEN", 1),

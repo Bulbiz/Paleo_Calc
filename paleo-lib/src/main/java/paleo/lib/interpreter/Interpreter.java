@@ -54,16 +54,10 @@ public final class Interpreter {
 					}
 					operationStack.pop();
 				}
-				else if (operationStack.isEmpty()) {
-					operationStack.push(operationToken);
-				}
-				else if (operationToken.getPriority() >= operationStack.peek().getPriority()) {
-						operationStack.push(operationToken);
-				}
 				else {
 					while (
 						!operationStack.isEmpty()
-						&& operationToken.getPriority() >= operationStack.peek().getPriority()
+						&& operationToken.getPriority() <= operationStack.peek().getPriority()
 					) {
 						evaluateOperation();
 					}

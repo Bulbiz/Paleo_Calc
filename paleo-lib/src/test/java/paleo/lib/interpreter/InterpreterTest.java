@@ -2,6 +2,7 @@ package paleo.lib.interpreter;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import paleo.lib.parser.Parser;
@@ -73,6 +74,15 @@ public class InterpreterTest {
         assertEquals(
             new IntegerOperandToken(-24),
             new Interpreter(new Parser("2 + 4 - 6 * 5").parse()).evaluate()
+        );
+    }
+
+    @Test
+    public void multipleParenIntegerExpressionWithOperationPriority() {
+        assertEquals(
+            new IntegerOperandToken(-33),
+            new Interpreter(new Parser("(2 - 3 * 4 + (2 + 4 - 6 * 5)) + 1").parse())
+                                                                           .evaluate()
         );
     }
 
