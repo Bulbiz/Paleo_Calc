@@ -125,4 +125,20 @@ public class ParserTest  {
 
         assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
     }
+
+    @Test
+    public void intAndDoubleExpression() {
+        final Queue<Yytoken> actualTokens = new Parser("(3.4 * 5.6) / 3").parse();
+        final Queue<Yytoken> expectedTokens =
+            createTokenQueue(
+                    OperationToken.LPAREN,
+                    new DoubleOperandToken(3.4),
+                    OperationToken.MULT,
+                    new DoubleOperandToken(5.6),
+                    OperationToken.RPAREN,
+                    OperationToken.DIV,
+                    new IntegerOperandToken(3));
+
+        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+    }
 }
