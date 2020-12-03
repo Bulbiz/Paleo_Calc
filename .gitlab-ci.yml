@@ -24,9 +24,11 @@ calc-compile:
 calc-test:
   stage: test
   script:
+    - make lib
     - cd paleo-calc && mvn compile test
 
 calc-assembly:
   stage: deploy
   script:
+    - make lib
     - cd paleo-calc && mvn compile assembly:single
