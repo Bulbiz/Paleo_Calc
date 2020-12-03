@@ -22,6 +22,7 @@ run:
 
 clean:
 	if [ -f $(JAR_NAME).jar ]; then rm $(JAR_NAME).jar; fi;
+	if [ -f $(JFLEX_OUTPUT) ]; then rm $(JFLEX_OUTPUT)*; fi;
 	cd paleo-lib && mvn clean
 	cd paleo-calc && mvn clean
 
