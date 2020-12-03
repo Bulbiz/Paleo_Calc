@@ -3,3 +3,4 @@ paleo-lib/src/main/java/paleo/lib/parser/Lexer.java*
 paleo-lib/.*
 paleo-calc/.*
 *.jar
+*~
