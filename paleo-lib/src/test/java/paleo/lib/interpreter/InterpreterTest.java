@@ -53,10 +53,18 @@ public class InterpreterTest {
     }
 
     @Test
-    public void parenIntegerExpression() {
+    public void simpleParenIntegerExpression() {
         assertEquals(
             new IntegerOperandToken(16),
             new Interpreter(new Parser("2 * (3 + 5)").parse()).evaluate()
+        );
+    }
+
+    @Test
+    public void multipleParenIntegerExpression() {
+        assertEquals(
+            new IntegerOperandToken(35),
+            new Interpreter(new Parser("7 * ((8 + 3) / 2)").parse()).evaluate()
         );
     }
 
