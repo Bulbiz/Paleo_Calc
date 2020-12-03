@@ -18,7 +18,7 @@ import paleo.lib.token.*;
 white	= [ \t\f]+
 digit 	= [0-9]
 integer = {digit}+
-real 	= {integer}("."{integer})
+real 	= [-]?{integer}("."{integer})
 
 %%
 
