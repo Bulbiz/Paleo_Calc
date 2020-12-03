@@ -13,10 +13,18 @@ import paleo.lib.token.IntegerOperandToken;
 public class InterpreterTest {
 
     @Test
-    public void withOnlyOneOperand() {
+    public void withOnlyOneIntegerOperand() {
         assertEquals(
             new IntegerOperandToken(3),
             new Interpreter(new Parser("3").parse()).evaluate()
+        );
+    }
+
+    @Test
+    public void simpleIntegerSum() {
+        assertEquals(
+            new IntegerOperandToken(8),
+            new Interpreter(new Parser("3 + 5").parse()).evaluate()
         );
     }
 

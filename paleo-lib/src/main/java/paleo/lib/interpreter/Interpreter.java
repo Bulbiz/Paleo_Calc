@@ -3,6 +3,7 @@ package paleo.lib.interpreter;
 import java.util.Queue;
 import java.util.Stack;
 
+import paleo.lib.token.IntegerOperandToken;
 import paleo.lib.token.OperandToken;
 import paleo.lib.token.OperationToken;
 import paleo.lib.token.Yytoken;
@@ -24,7 +25,10 @@ public final class Interpreter {
 	}
 
 	/**
-	 * Evaluates the {@link Queue} of {@link Yytoken}.
+	 * Evaluates the {@link Queue} of {@link Yytoken} using two {@link Stack}.
+	 *
+	 * @note Used algorithm can be found at
+	 * https://algorithms.tutorialhorizon.com/evaluation-of-infix-expressions/
 	 *
 	 * @return the last {@link OperandToken} of the operandStack.
 	 * @throws IllegalArgumentException if the expression is not valid.
@@ -38,15 +42,87 @@ public final class Interpreter {
 				operandStack.push((OperandToken) token);
 			}
 			else {
-				operationStack.push((OperationToken) token);
+				OperationToken operationToken = (OperationToken) token;
+
+				if (OperationToken.LPAREN == operationToken) {
+					operationStack.push(operationToken);
+				}
+				else if (OperationToken.RPAREN == operationToken) {
+					while (OperationToken.LPAREN != operationStack.peek()) {
+						evaluateOperation();
+					}
+					operationStack.pop();
+				}
+				if (operationStack.isEmpty()) {
+					operationStack.push(operationToken);
+				}
+				else {
+					if (operationToken.getPriority() >= operationStack.peek().getPriority()) {
+						operationStack.push(operationToken);
+					}
+					else {
+						while (
+							!operationStack.isEmpty()
+							&& operationToken.getPriority() < operationStack.peek().getPriority()
+						) {
+							evaluateOperation();
+						}
+						operationStack.push(operationToken);
+					}
+				}
 			}
+		}
+
+		while (!operationStack.isEmpty()) {
+			evaluateOperation();
 		}
 
 		if (operandStack.isEmpty()) {
 			throw new IllegalArgumentException("Empty stack");
 		}
-
 		return operandStack.peek();
 	}
 
+	//TODO: should be refactor with a dictionnary.
+	private void evaluateOperation() throws IllegalArgumentException {
+		if (2 < operandStack.size()) {
+			throw new IllegalArgumentException("Not enough operands");
+		}
+
+		if (operationStack.isEmpty()) {
+			throw new IllegalArgumentException("Not enough operations");
+		}
+
+		//TODO: should manage DoubleOperandToken.
+		IntegerOperandToken op2 = (IntegerOperandToken) operandStack.pop();
+		IntegerOperandToken op1 = (IntegerOperandToken) operandStack.pop();
+
+		switch (operationStack.pop()) {
+			case SUM:
+				operandStack.push(
+					new IntegerOperandToken(op1.getValue() + op2.getValue())
+				);
+				break;
+			case SUB:
+				operandStack.push(
+					new IntegerOperandToken(op1.getValue() - op2.getValue())
+				);
+				break;
+			case MULT:
+				operandStack.push(
+					new IntegerOperandToken(op1.getValue() * op2.getValue())
+				);
+				break;
+			case DIV:
+				if (0 == op2.getValue()) {
+					throw new IllegalArgumentException("Attempt to divide by zero");
+				}
+				operandStack.push(
+					new IntegerOperandToken(op1.getValue() / op2.getValue())
+				);
+				break;
+
+			default: break;
+		}
+	}
 }
