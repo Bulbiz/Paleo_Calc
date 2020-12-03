@@ -1,7 +1,7 @@
 package paleo.lib.token;
 
 /**
- * DoubleOperandToken
+ * DoubleOperandToken a representation for real numbers.
  */
 public final class DoubleOperandToken implements OperandToken {
 

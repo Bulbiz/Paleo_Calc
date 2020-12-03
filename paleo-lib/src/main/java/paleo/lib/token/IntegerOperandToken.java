@@ -1,7 +1,7 @@
 package paleo.lib.token;
 
 /**
- * IntegerOperandToken
+ * IntegerOperandToken a representation for integer numbers.
  */
 public final class IntegerOperandToken implements OperandToken {
 
