@@ -1,3 +1,8 @@
+/**
+ * Lexer implementation for the paleo-lib.
+ * (Generated from ./paleo-lib/src/main/jflex/jflexer.jflex)
+ */
+
 package paleo.lib.parser;
 
 import java.util.ArrayList;
@@ -7,7 +12,7 @@ import paleo.lib.token.*;
 
 %public
 %final
-%class Lexer
+%class JFLexer
 %unicode
 
 white	= [ \t\f]+
@@ -20,14 +25,10 @@ real 	= {integer}("."{integer})
 {white}		{ }
 
 {real} 		{
-	OperandToken tok = OperandToken.REAL_VALUE;
-	tok.setValue(yytext());
-	return(tok);
+	return(new DoubleOperandToken(Double.parseDouble(yytext())));
 }
 {integer} 	{
-	OperandToken tok = OperandToken.INTEGER_VALUE;
-	tok.setValue(yytext());
-	return(tok);
+	return(new IntegerOperandToken(Integer.parseInt(yytext())));
 }
 "+" 		{ return(OperationToken.SUM); }
 "-" 		{ return(OperationToken.SUB); }

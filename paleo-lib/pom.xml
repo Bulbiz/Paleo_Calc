@@ -60,7 +60,7 @@
           <configuration>
             <outputDirectory>src/main/java/</outputDirectory>
             <lexDefinitions>
-              <lexDefinition>src/main/jflex/lexer.jflex</lexDefinition>
+              <lexDefinition>src/main/jflex/jflexer.jflex</lexDefinition>
             </lexDefinitions>
           </configuration>
         </execution>
