@@ -1,4 +1,4 @@
-.PHONY: all clean
+.PHONY: all clean test
 
 JFLEX_OUTPUT = paleo-lib/src/main/java/paleo/lib/parser/Lexer.java
 JAR_NAME = paleo-calculator
@@ -13,6 +13,9 @@ calc:
 	cd paleo-calc && mvn compile test assembly:single
 	cp paleo-calc/target/calc-0.1-jar-with-dependencies.jar \
 	   $(JAR_NAME).jar
+
+test:
+	cd paleo-lib && mvn test
 
 run:
 	java -jar $(JAR_NAME).jar
