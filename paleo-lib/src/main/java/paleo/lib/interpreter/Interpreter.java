@@ -17,6 +17,11 @@ public final class Interpreter {
 	private Stack<OperandToken> operandStack;
 	private Stack<OperationToken> operationStack;
 
+	/**
+	 * Interpreter constructor.
+	 *
+	 * @param tokens Is the token representation of an infix expression.
+	 */
 	public Interpreter(Queue<Yytoken> tokens) {
 		this.tokens = tokens;
 		this.operandStack = new Stack<>();
@@ -34,6 +39,7 @@ public final class Interpreter {
 	 */
 	public OperandToken evaluate() throws IllegalArgumentException {
 		Yytoken token;
+		OperationToken operationToken;
 
 		while (!tokens.isEmpty()) {
 			token = tokens.poll();
@@ -42,7 +48,7 @@ public final class Interpreter {
 				operandStack.push((OperandToken) token);
 			}
 			else {
-				OperationToken operationToken = (OperationToken) token;
+				operationToken = (OperationToken) token;
 
 				if (OperationToken.LPAREN == operationToken) {
 					operationStack.push(operationToken);
@@ -56,8 +62,8 @@ public final class Interpreter {
 				else {
 					while (
 						!operationStack.isEmpty()
-						&& operationToken.getPriority() <= operationStack.peek().getPriority()
-					) {
+						&& operationToken.getPriority() <= operationStack.peek().getPriority())
+					{
 						evaluateOperation();
 					}
 					operationStack.push(operationToken);
@@ -72,10 +78,14 @@ public final class Interpreter {
 		if (operandStack.isEmpty()) {
 			throw new IllegalArgumentException("Empty stack");
 		}
+
 		return operandStack.peek();
 	}
 
 	private void evaluateOperation() throws IllegalArgumentException {
+		OperandToken op1;
+		OperandToken op2;
+
 		if (2 > operandStack.size()) {
 			throw new IllegalArgumentException("Not enough operands");
 		}
@@ -84,13 +94,12 @@ public final class Interpreter {
 			throw new IllegalArgumentException("Not enough operations");
 		}
 
-		OperandToken op2 = operandStack.pop();
-		OperandToken op1 = operandStack.pop();
+		op2 = operandStack.pop();
+		op1 = operandStack.pop();
 
 		operandStack.push(
 			OperationDictionary.getOperationEvaluator(
-				operationStack.pop(),
-				op1.getClass(),
+				operationStack.pop(), op1.getClass(),
 				op2.getClass()
 			).evaluateOperation(op1, op2)
 		);

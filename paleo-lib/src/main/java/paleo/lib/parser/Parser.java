@@ -11,7 +11,7 @@ import paleo.lib.token.Yytoken;
  * Module allowing to tranform a string expression into a queue of tokens.
  * A {@link Lexer} instance is used for tokenizing the string.
  *
- * @note A {@link Queue} is used to store tokens, because, to evaluate the
+ * @note A {@link Queue} is used to store tokens, because, in order to evaluate the
  * expression only one run of the tokens set is necessary.
  *
  * @see Lexer
