@@ -87,12 +87,19 @@ public class InterpreterTest {
         );
     }
 
-    @Ignore
     @Test
     public void simpleDoubleSum() {
         assertEquals(
             new DoubleOperandToken(8.8),
             new Interpreter(new Parser("3.4 + 5.4").parse()).evaluate()
+        );
+    }
+
+    @Test
+    public void simpleParenDoubleExpression() {
+        assertEquals(
+            new DoubleOperandToken(17.6),
+            new Interpreter(new Parser("2.0 * (3.4 + 5.4)").parse()).evaluate()
         );
     }
 }
