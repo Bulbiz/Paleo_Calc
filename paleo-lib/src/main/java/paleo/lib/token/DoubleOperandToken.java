@@ -63,6 +63,112 @@ public final class DoubleOperandToken implements OperandToken {
                 );
 			}
         );
+
+        /**
+         * Double and Integer.
+         */
+        OperationDictionary.addEntry(
+            OperationToken.SUM,
+            IntegerOperandToken.class,
+            DoubleOperandToken.class,
+			(op1, op2) -> {
+				return (
+                    new DoubleOperandToken(
+                        ((IntegerOperandToken)op1).getValue() + ((DoubleOperandToken)op2).getValue()
+                    )
+                );
+			}
+        );
+        OperationDictionary.addEntry(
+            OperationToken.SUM,
+            DoubleOperandToken.class,
+            IntegerOperandToken.class,
+			(op1, op2) -> {
+				return (
+                    new DoubleOperandToken(
+                        ((DoubleOperandToken)op1).getValue() + ((IntegerOperandToken)op2).getValue()
+                    )
+                );
+			}
+        );
+        OperationDictionary.addEntry(
+            OperationToken.SUB,
+            IntegerOperandToken.class,
+            DoubleOperandToken.class,
+			(op1, op2) -> {
+				return (
+                    new DoubleOperandToken(
+                        ((IntegerOperandToken)op1).getValue() - ((DoubleOperandToken)op2).getValue()
+                    )
+                );
+			}
+        );
+        OperationDictionary.addEntry(
+            OperationToken.SUB,
+            DoubleOperandToken.class,
+            IntegerOperandToken.class,
+			(op1, op2) -> {
+				return (
+                    new DoubleOperandToken(
+                        ((DoubleOperandToken)op1).getValue() - ((IntegerOperandToken)op2).getValue()
+                    )
+                );
+			}
+        );
+        OperationDictionary.addEntry(
+            OperationToken.MULT,
+            IntegerOperandToken.class,
+            DoubleOperandToken.class,
+			(op1, op2) -> {
+				return (
+                    new DoubleOperandToken(
+                        ((IntegerOperandToken)op1).getValue() * ((DoubleOperandToken)op2).getValue()
+                    )
+                );
+			}
+        );
+        OperationDictionary.addEntry(
+            OperationToken.MULT,
+            DoubleOperandToken.class,
+            IntegerOperandToken.class,
+			(op1, op2) -> {
+				return (
+                    new DoubleOperandToken(
+                        ((DoubleOperandToken)op1).getValue() * ((IntegerOperandToken)op2).getValue()
+                    )
+                );
+			}
+        );
+        OperationDictionary.addEntry(
+            OperationToken.DIV,
+            IntegerOperandToken.class,
+            DoubleOperandToken.class,
+			(op1, op2) -> {
+                if (0 == ((DoubleOperandToken)op2).getValue()) {
+                    throw new IllegalArgumentException("Try to divide by zero");
+                }
+				return (
+                    new DoubleOperandToken(
+                        ((IntegerOperandToken)op1).getValue() / ((DoubleOperandToken)op2).getValue()
+                    )
+                );
+			}
+        );
+        OperationDictionary.addEntry(
+            OperationToken.DIV,
+            DoubleOperandToken.class,
+            IntegerOperandToken.class,
+			(op1, op2) -> {
+                if (0 == ((IntegerOperandToken)op2).getValue()) {
+                    throw new IllegalArgumentException("Try to divide by zero");
+                }
+				return (
+                    new DoubleOperandToken(
+                        ((DoubleOperandToken)op1).getValue() * ((IntegerOperandToken)op2).getValue()
+                    )
+                );
+			}
+        );
     }
 
     private double value;

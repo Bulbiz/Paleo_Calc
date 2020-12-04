@@ -1,6 +1,7 @@
 package paleo.lib.interpreter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -101,5 +102,31 @@ public class InterpreterTest {
             new DoubleOperandToken(17.6),
             new Interpreter(new Parser("2.0 * (3.4 + 5.4)").parse()).evaluate()
         );
+    }
+
+    @Test
+    public void integerTimesDouble() {
+        assertEquals(
+            new DoubleOperandToken(9.0),
+            new Interpreter(new Parser("2 * 4.5").parse()).evaluate()
+        );
+    }
+
+    @Test
+    public void multipleParenIntegerDoubleExpression() {
+        assertEquals(
+            new DoubleOperandToken(5.0),
+            new Interpreter(new Parser("(2 - 4.5) * (4 - 6)").parse()).evaluate()
+        );
+    }
+
+    @Test
+    public void divideByZeroShouldThrowAnException() {
+        try {
+            new Interpreter(new Parser("3 / 0").parse()).evaluate();
+            assertTrue(false);
+        } catch(IllegalArgumentException e) {
+            assertTrue(true);
+        }
     }
 }

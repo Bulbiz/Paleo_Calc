@@ -1,10 +1,8 @@
 package paleo.lib.interpreter;
 
-import java.util.HashMap;
 import java.util.Queue;
 import java.util.Stack;
 
-import paleo.lib.token.IntegerOperandToken;
 import paleo.lib.token.OperandToken;
 import paleo.lib.token.OperationToken;
 import paleo.lib.token.Yytoken;
