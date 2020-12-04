@@ -4,3 +4,4 @@ paleo-lib/.*
 paleo-calc/.*
 *.jar
 *~
+*.html
