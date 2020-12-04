@@ -6,6 +6,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import paleo.lib.parser.Parser;
+import paleo.lib.token.DoubleOperandToken;
 import paleo.lib.token.IntegerOperandToken;
 
 /**
@@ -86,4 +87,12 @@ public class InterpreterTest {
         );
     }
 
+    @Ignore
+    @Test
+    public void simpleDoubleSum() {
+        assertEquals(
+            new DoubleOperandToken(8.8),
+            new Interpreter(new Parser("3.4 + 5.4").parse()).evaluate()
+        );
+    }
 }

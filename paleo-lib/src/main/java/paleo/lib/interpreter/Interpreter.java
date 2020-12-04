@@ -1,5 +1,6 @@
 package paleo.lib.interpreter;
 
+import java.util.HashMap;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -76,7 +77,6 @@ public final class Interpreter {
 		return operandStack.peek();
 	}
 
-	//TODO: should be refactor with a dictionnary.
 	private void evaluateOperation() throws IllegalArgumentException {
 		if (2 > operandStack.size()) {
 			throw new IllegalArgumentException("Not enough operands");
@@ -86,36 +86,15 @@ public final class Interpreter {
 			throw new IllegalArgumentException("Not enough operations");
 		}
 
-		//TODO: should manage DoubleOperandToken.
-		IntegerOperandToken op2 = (IntegerOperandToken) operandStack.pop();
-		IntegerOperandToken op1 = (IntegerOperandToken) operandStack.pop();
+		OperandToken op2 = operandStack.pop();
+		OperandToken op1 = operandStack.pop();
 
-		switch (operationStack.pop()) {
-			case SUM:
-				operandStack.push(
-					new IntegerOperandToken(op1.getValue() + op2.getValue())
-				);
-				break;
-			case SUB:
-				operandStack.push(
-					new IntegerOperandToken(op1.getValue() - op2.getValue())
-				);
-				break;
-			case MULT:
-				operandStack.push(
-					new IntegerOperandToken(op1.getValue() * op2.getValue())
-				);
-				break;
-			case DIV:
-				if (0 == op2.getValue()) {
-					throw new IllegalArgumentException("Attempt to divide by zero");
-				}
-				operandStack.push(
-					new IntegerOperandToken(op1.getValue() / op2.getValue())
-				);
-				break;
-
-			default: break;
-		}
+		operandStack.push(
+			OperationDictionary.getOperationEvaluator(
+				operationStack.pop(),
+				op1.getClass(),
+				op2.getClass()
+			).evaluateOperation(op1, op2)
+		);
 	}
 }
