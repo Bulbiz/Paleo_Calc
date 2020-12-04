@@ -9,6 +9,9 @@ import paleo.lib.token.OperationToken;
  * Static module providing a dictionary for getting an {@link OperationEvaluator}
  * implementation corresponding to the given {@link OperationToken}
  * and {@link OperandToken}.
+ *
+ * @note Any new types will have to add in the dictionary the different
+ * implementations corresponding to the operations wanted to be supported.
  */
 public final class OperationDictionary {
 
