@@ -29,8 +29,8 @@ public final class OperationDictionary {
 	 * in operationMap.
 	 *
 	 * @param operation is the {@link OperationToken} implemented by the opEvaluator.
-	 * @param op1 is the {@link Class} of the first operand.
-	 * @param op2 is the {@link Class} of the second operand.
+	 * @param op1 is the {@link Class} of the left operand.
+	 * @param op2 is the {@link Class} of the right operand.
 	 * @param opEvaluator is the implementation of the operation.
 	 */
 	public static void addEntry(
@@ -54,8 +54,8 @@ public final class OperationDictionary {
 	 * operation and operands types.
 	 *
 	 * @param operation is the wanted {@link OperationToken}.
-	 * @param op1 is the {@link Class} of the first operand.
-	 * @param op2 is the {@link Class} of the second operand.
+	 * @param op1 is the {@link Class} of the left operand.
+	 * @param op2 is the {@link Class} of the right operand.
 	 * @return the corresponding implementation of the operation if its
 	 * provided, otherwise, throw an {@link IllegalArgumentException}.
 	 */

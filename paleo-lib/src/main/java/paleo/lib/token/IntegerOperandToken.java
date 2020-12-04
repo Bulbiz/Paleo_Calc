@@ -1,10 +1,9 @@
 package paleo.lib.token;
 
 import paleo.lib.interpreter.OperationDictionary;
-import paleo.lib.interpreter.OperationEvaluator;
 
 /**
- * IntegerOperandToken a model for integer numbers.
+ * Models an integer number.
  */
 public final class IntegerOperandToken implements OperandToken {
 
@@ -68,6 +67,11 @@ public final class IntegerOperandToken implements OperandToken {
 
     private int value;
 
+    /**
+     * {@link IntegerOperandToken} constructor.
+     *
+     * @param value is the corresponding integer value.
+     */
     public IntegerOperandToken(final int value) {
         this.value = value;
     }
@@ -92,17 +96,16 @@ public final class IntegerOperandToken implements OperandToken {
     }
 
     /**
-     * @return the value
+     * @return the value.
      */
     public int getValue() {
         return value;
     }
 
     /**
-     * @param value the value to set
+     * @param value the value to set.
      */
     public void setValue(int value) {
         this.value = value;
     }
-
 }

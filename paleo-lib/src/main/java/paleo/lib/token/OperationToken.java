@@ -1,5 +1,8 @@
 package paleo.lib.token;
 
+/**
+ * Models an expression operation.
+ */
 public enum OperationToken implements Yytoken {
     RPAREN          ("RPAREN_TOKEN", -1),
     LPAREN          ("LPAREN_TOKEN", -1),
@@ -8,8 +11,8 @@ public enum OperationToken implements Yytoken {
     SUB             ("SUB_TOKEN", 1),
     SUM             ("SUM_TOKEN", 1);
 
-    private final String name;
-    private final int priority;
+    private final String name;  ///< Only used for debug.
+    private final int priority; ///< Is the operation priority for evaluation.
 
     private OperationToken(final String name, final int priority) {
         this.name = name;
@@ -33,5 +36,4 @@ public enum OperationToken implements Yytoken {
     public int getPriority() {
         return this.priority;
     }
-
 }

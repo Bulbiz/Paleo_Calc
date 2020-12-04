@@ -3,7 +3,7 @@ package paleo.lib.token;
 import paleo.lib.interpreter.OperationDictionary;
 
 /**
- * DoubleOperandToken a representation for real numbers.
+ * Models a real number operand.
  */
 public final class DoubleOperandToken implements OperandToken {
 
@@ -171,8 +171,13 @@ public final class DoubleOperandToken implements OperandToken {
         );
     }
 
-    private double value;
+    private double value; ///< Is the real value.
 
+    /**
+     * {@link DoubleOperandToken} constructor.
+     *
+     * @param value is the operand corresponding real value.
+     */
     public DoubleOperandToken(final double value) {
         this.value = value;
     }
@@ -197,17 +202,16 @@ public final class DoubleOperandToken implements OperandToken {
     }
 
     /**
-     * @return the value
+     * @return the value.
      */
     public double getValue() {
         return value;
     }
 
     /**
-     * @param value the value to set
+     * @param value the value to set.
      */
-    public void setValue(double value) {
+    public void setValue(final double value) {
         this.value = value;
     }
-
 }
