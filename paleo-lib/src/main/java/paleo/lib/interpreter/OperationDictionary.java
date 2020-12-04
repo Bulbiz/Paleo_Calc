@@ -6,7 +6,7 @@ import paleo.lib.token.OperandToken;
 import paleo.lib.token.OperationToken;
 
 /**
- * Static module providing a dictionary for getting a {@link OperationEvaluator}
+ * Static module providing a dictionary for getting an {@link OperationEvaluator}
  * implementation corresponding to the given {@link OperationToken}
  * and {@link OperandToken}.
  */
@@ -21,14 +21,21 @@ public final class OperationDictionary {
 										 OperationEvaluator>>>
 							operationMap = new HashMap<>();
 
+	/**
+	 * Adds an {@link OperationEvaluator} to the corresponding {@link HashMap}
+	 * in operationMap.
+	 *
+	 * @param operation is the {@link OperationToken} implemented by the opEvaluator.
+	 * @param op1 is the {@link Class} of the first operand.
+	 * @param op2 is the {@link Class} of the second operand.
+	 * @param opEvaluator is the implementation of the operation.
+	 */
 	public static void addEntry(
 			OperationToken operation,
 			Class<? extends OperandToken> op1,
 			Class<? extends OperandToken> op2,
 			OperationEvaluator opEvaluator)
 	{
-		//TODO: need to verify existence before adding.
-
 		if (null == operationMap.get(operation)) {
 			operationMap.put(operation, new HashMap<>());
 		}
@@ -39,6 +46,16 @@ public final class OperationDictionary {
 		operationMap.get(operation).get(op1).put(op2, opEvaluator);
 	}
 
+	/**
+	 * Get the implementation of {@link OperationEvaluator} corresponding to the given
+	 * operation and operands types.
+	 *
+	 * @param operation is the wanted {@link OperationToken}.
+	 * @param op1 is the {@link Class} of the first operand.
+	 * @param op2 is the {@link Class} of the second operand.
+	 * @return the corresponding implementation of the operation if its
+	 * provided, otherwise, throw an {@link IllegalArgumentException}.
+	 */
 	public static OperationEvaluator getOperationEvaluator(
 			OperationToken operation,
 			Class<? extends OperandToken> op1,
@@ -65,5 +82,4 @@ public final class OperationDictionary {
 
 		return operationMap.get(operation).get(op1).get(op2);
 	}
-
 }
