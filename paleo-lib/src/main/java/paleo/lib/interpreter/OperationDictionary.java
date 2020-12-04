@@ -62,11 +62,16 @@ public final class OperationDictionary {
 			Class<? extends OperandToken> op2)
 	{
 		if (!operationMap.containsKey(operation)) {
-			throw new IllegalArgumentException(operation.toString() + " unsupported operation");
+			throw new IllegalArgumentException(
+					operation.toString() + " unsupported operation"
+			);
 		}
 		if (!operationMap.get(operation).containsKey(op1)) {
 			throw new IllegalArgumentException(
-					operation.toString() + " unsupported operation for the operand '" + op1.toString() + "'"
+					operation.toString()
+					+ " unsupported operation for the operand '"
+					+ op1.toString()
+					+ "'"
 			);
 		}
 		if (!operationMap.get(operation).get(op1).containsKey(op2)) {
@@ -79,7 +84,6 @@ public final class OperationDictionary {
 					+ "'"
 			);
 		}
-
 		return operationMap.get(operation).get(op1).get(op2);
 	}
 }
