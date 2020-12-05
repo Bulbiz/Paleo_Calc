@@ -24,8 +24,12 @@ public final class Calculator {
 		Optional<Queue<Yytoken>> tokenExpression = new Parser (inputExpression).parse();
 
 		if (tokenExpression.isPresent()){
-			Interpreter interpreteur = new Interpreter(tokenExpression.get());
-			System.out.println(interpreteur.evaluate());
+			try{
+				Interpreter interpreteur = new Interpreter(tokenExpression.get());
+				System.out.println(interpreteur.evaluate());
+			}catch (Exception e){
+				System.out.println(e.getMessage());
+			}
 		}
 	}
 
