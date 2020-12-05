@@ -3,6 +3,7 @@ package paleo.calc;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Queue;
+import java.util.Optional;
 
 import paleo.lib.interpreter.Interpreter;
 import paleo.lib.parser.Parser;
@@ -31,10 +32,13 @@ public final class Calculator {
 
 
 	public void evaluate (){
-		String inputExpression = sc.next();
-		Queue<Yytoken> tokenExpression = new Parser (inputExpression).parse();
-		Interpreter interpreteur = new Interpreter(tokenExpression);
-		System.out.println(interpreteur.evaluate());
+		String inputExpression = sc.nextLine();
+		Optional<Queue<Yytoken>> tokenExpression = new Parser (inputExpression).parse();
+
+		if (tokenExpression.isPresent()){
+			Interpreter interpreteur = new Interpreter(tokenExpression.get());
+			System.out.println(interpreteur.evaluate());
+		}
 	}
 
 	public static void main (String[] args) {
