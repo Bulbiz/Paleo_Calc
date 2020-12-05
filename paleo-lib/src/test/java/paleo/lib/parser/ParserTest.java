@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Optional;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -63,12 +64,12 @@ public class ParserTest {
 
     @Test
     public void shouldReturnEmptyListWithEmptyString() {
-        assertEquals(0, new Parser("").parse().size());
+        assertEquals(0, new Parser("").parse().get().size());
     }
 
     @Test
     public void simpleIntegerToken() {
-        final Queue<Yytoken> actualTokens = new Parser("3").parse();
+        final Queue<Yytoken> actualTokens = new Parser("3").parse().get();
         final Queue<Yytoken> expectedTokens = createTokenQueue(new IntegerOperandToken(3));
 
         assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
@@ -76,7 +77,7 @@ public class ParserTest {
 
     @Test
     public void simpleSumExpression() {
-        final Queue<Yytoken> actualTokens = new Parser("3 + 5").parse();
+        final Queue<Yytoken> actualTokens = new Parser("3 + 5").parse().get();
         final Queue<Yytoken> expectedTokens =
             createTokenQueue(
                     new IntegerOperandToken(3),
@@ -88,7 +89,7 @@ public class ParserTest {
 
     @Test
     public void simpleMultExpression() {
-        final Queue<Yytoken> actualTokens = new Parser("3 * 5").parse();
+        final Queue<Yytoken> actualTokens = new Parser("3 * 5").parse().get();
         final Queue<Yytoken> expectedTokens =
             createTokenQueue(
                     new IntegerOperandToken(3),
@@ -100,7 +101,7 @@ public class ParserTest {
 
     @Test
     public void simpleParenExpression() {
-        final Queue<Yytoken> actualTokens = new Parser("(3 * 5)").parse();
+        final Queue<Yytoken> actualTokens = new Parser("(3 * 5)").parse().get();
         final Queue<Yytoken> expectedTokens =
             createTokenQueue(
                     OperationToken.LPAREN,
@@ -114,7 +115,7 @@ public class ParserTest {
 
     @Test
     public void simpleDoubleExpression() {
-        final Queue<Yytoken> actualTokens = new Parser("(3.4 * 5.6)").parse();
+        final Queue<Yytoken> actualTokens = new Parser("(3.4 * 5.6)").parse().get();
         final Queue<Yytoken> expectedTokens =
             createTokenQueue(
                     OperationToken.LPAREN,
@@ -128,7 +129,7 @@ public class ParserTest {
 
     @Test
     public void intAndDoubleExpression() {
-        final Queue<Yytoken> actualTokens = new Parser("(3.4 * 5.6) / 3").parse();
+        final Queue<Yytoken> actualTokens = new Parser("(3.4 * 5.6) / 3").parse().get();
         final Queue<Yytoken> expectedTokens =
             createTokenQueue(
                     OperationToken.LPAREN,
@@ -144,7 +145,7 @@ public class ParserTest {
 
     @Test
     public void expressionWithANegativeDouble() {
-        final Queue<Yytoken> actualTokens = new Parser("3.4 * -5.6").parse();
+        final Queue<Yytoken> actualTokens = new Parser("3.4 * -5.6").parse().get();
         final Queue<Yytoken> expectedTokens =
             createTokenQueue(
                     new DoubleOperandToken(3.4),
@@ -156,7 +157,7 @@ public class ParserTest {
 
     @Test
     public void expressionWithANegativeInteger() {
-        final Queue<Yytoken> actualTokens = new Parser("3.4 * -5").parse();
+        final Queue<Yytoken> actualTokens = new Parser("3.4 * -5").parse().get();
         final Queue<Yytoken> expectedTokens =
             createTokenQueue(
                     new DoubleOperandToken(3.4),
@@ -168,7 +169,7 @@ public class ParserTest {
 
     @Test
     public void notFormattedExpression() {
-        final Queue<Yytoken> actualTokens = new Parser("/3.4* -5 ))").parse();
+        final Queue<Yytoken> actualTokens = new Parser("/3.4* -5 ))").parse().get();
         final Queue<Yytoken> expectedTokens =
             createTokenQueue(
                     OperationToken.DIV,
@@ -184,7 +185,7 @@ public class ParserTest {
     @Test
     public void expressionWithMultipleParenDepth() {
         final Queue<Yytoken> actualTokens =
-            new Parser("(2 - 3 * 4 + (2 + 4 - 6 * 5)) + 1").parse();
+            new Parser("(2 - 3 * 4 + (2 + 4 - 6 * 5)) + 1").parse().get();
         final Queue<Yytoken> expectedTokens =
             createTokenQueue(
                     OperationToken.LPAREN,
