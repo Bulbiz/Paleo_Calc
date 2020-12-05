@@ -17,21 +17,9 @@ import paleo.lib.token.OperandToken;
 * Calculator
 */
 public final class Calculator {
-	private final Scanner sc;
-	private static Calculator singleton;
+	private static final Scanner sc = new Scanner (System.in);
 
-	private Calculator () {
-		this.sc = new Scanner (System.in);
-	}
-
-	public static Calculator instance (){
-		if (singleton == null)
-			singleton = new Calculator ();
-		return singleton;
-	}
-
-
-	public void evaluate (){
+	public static void evaluate (){
 		String inputExpression = sc.nextLine();
 		Optional<Queue<Yytoken>> tokenExpression = new Parser (inputExpression).parse();
 
@@ -43,7 +31,7 @@ public final class Calculator {
 
 	public static void main (String[] args) {
 		while (true){
-			instance().evaluate();
+			Calculator.evaluate();
 		}
 	}
 
