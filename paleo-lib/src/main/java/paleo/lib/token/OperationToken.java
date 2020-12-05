@@ -19,7 +19,9 @@ public enum OperationToken implements Yytoken {
         return "[" + this.name + "]";
     }
 
-    public boolean isOpereationToken() {
-        return true;
+    //TODO: Should have a better way.
+    @Override
+    public boolean isAnOperandToken() {
+        return false;
     }
 }
