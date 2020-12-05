@@ -92,7 +92,7 @@ public final class IntegerOperandToken implements OperandToken {
 
     @Override
     public String toString() {
-        return "{value: " + value + "}";
+        return String.valueOf(value);
     }
 
     /**
