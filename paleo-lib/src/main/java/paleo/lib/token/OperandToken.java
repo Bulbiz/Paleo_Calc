@@ -1,4 +1,6 @@
 package paleo.lib.token;
 
-public interface OperandToken extends Yytoken {
-}
+/**
+ * Models a generic operand type.
+ */
+public interface OperandToken extends Yytoken {}
