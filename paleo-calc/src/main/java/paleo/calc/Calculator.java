@@ -1,7 +1,13 @@
 package paleo.calc;
 
 import java.util.HashMap;
+import java.util.Scanner;
+import java.util.Queue;
 
+import paleo.lib.interpreter.Interpreter;
+import paleo.lib.parser.Parser;
+
+import paleo.lib.token.Yytoken;
 import paleo.lib.token.DoubleOperandToken;
 import paleo.lib.token.IntegerOperandToken;
 import paleo.lib.token.OperandToken;
@@ -9,17 +15,32 @@ import paleo.lib.token.OperandToken;
 /**
 * Calculator
 */
-public class Calculator {
+public final class Calculator {
+	private final Scanner sc;
+	private static Calculator singleton;
+
+	private Calculator () {
+		this.sc = new Scanner (System.in);
+	}
+
+	public static Calculator instance (){
+		if (singleton == null)
+			singleton = new Calculator ();
+		return singleton;
+	}
+
+
+	public void evaluate (){
+		String inputExpression = sc.next();
+		Queue<Yytoken> tokenExpression = new Parser (inputExpression).parse();
+		Interpreter interpreteur = new Interpreter(tokenExpression);
+		System.out.println(interpreteur.evaluate());
+	}
 
 	public static void main (String[] args) {
-		HashMap<Class<? extends OperandToken>, String> map = new HashMap<>();
-
-		map.put(IntegerOperandToken.class, "IntegerOperandToken");
-		map.put(DoubleOperandToken.class, "DoubleOperandToken");
-		OperandToken op1 = new IntegerOperandToken(4);
-		OperandToken op2 = new DoubleOperandToken(4);
-
-		System.out.println("op1 = " + map.get(op1.getClass()));
-		System.out.println("op2 = " + map.get(op2.getClass()));
+		while (true){
+			instance().evaluate();
+		}
 	}
+
 }
