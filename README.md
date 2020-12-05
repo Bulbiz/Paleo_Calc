@@ -11,19 +11,19 @@ You need to have :
 
 ## Build
 
-To compile the project, just run 
+To compile the project, just run
 
 ```zsh
 $ make
 ```
 
-In order to generate documentation, run 
+In order to generate documentation, run
 
 ```zsh
-$ make generate-doc
+$ make doc
 ```
 
-For cleaning, run 
+For cleaning, run
 
 ```zsh
 $ make clean
@@ -31,15 +31,14 @@ $ make clean
 
 ## Run
 
-For launching the calculator, run 
+For launching the calculator, run
 
 ```zsh
 $ make run
-``` 
+```
 
-or 
+or
 
 ```zsh
 $ java -jar paleo-calculator.jar
 ```
-
