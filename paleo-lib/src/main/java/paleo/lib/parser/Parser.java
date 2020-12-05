@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Optional;
 
 import paleo.lib.token.Yytoken;
 
@@ -34,7 +35,7 @@ public final class Parser {
      *
      * @return A queue of tokens or null if an {@link IOException} is catched.
      */
-    public Queue<Yytoken> parse() {
+    public Optional<Queue<Yytoken>> parse() {
         JFLexer lexer = new JFLexer(new StringReader(this.expr));
         Queue<Yytoken> tokens = new LinkedList<>();
         Yytoken token;
@@ -44,9 +45,11 @@ public final class Parser {
 			    tokens.add(token);
 			}
 		} catch (IOException e) {
-            return null;
+            return Optional.empty();
+		} catch (Error e) {
+            return Optional.empty();
 		}
 
-        return tokens;
+        return Optional.of(tokens);
     }
 }
