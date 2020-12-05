@@ -44,11 +44,11 @@ public final class Parser {
 			while (null != (token = lexer.yylex())) {
 			    tokens.add(token);
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
             return Optional.empty();
-		} catch (Error e) {
+        } catch (Error e) {
             return Optional.empty();
-		}
+        }
 
         return Optional.of(tokens);
     }
