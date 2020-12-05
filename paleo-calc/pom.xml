@@ -6,7 +6,7 @@
 
 <groupId>paleo.calc</groupId>
 <artifactId>calc</artifactId>
-<version>0.1</version>
+<version>1.2</version>
 
 <name>paleo-calc</name>
 <url>https://gaufre.informatique.univ-paris-diderot.fr/pholasa/paleo/</url>
@@ -28,7 +28,7 @@
   <dependency>
     <groupId>paleo.lib</groupId>
     <artifactId>lib</artifactId>
-    <version>0.1</version>
+    <version>1.2</version>
     <scope>compile</scope>
   </dependency>
 </dependencies>
