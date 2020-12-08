@@ -49,7 +49,14 @@ public final class HistoricManager {
 		for (Yytoken yytoken : tokens) {
 			if (yytoken instanceof HistoricToken) {
 				HistoricToken hToken = (HistoricToken) yytoken;
-				Optional<OperandToken> opOperand = this.get(hToken.getArg());
+				Optional<OperandToken> opOperand;
+
+				if (0 == hToken.getArg()) {
+					opOperand = this.getLast();
+				}
+				else {
+					opOperand = this.get(hToken.getArg());
+				}
 
 				if (opOperand.isEmpty()) {
 					return Optional.empty();

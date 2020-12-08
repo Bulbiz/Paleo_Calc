@@ -94,6 +94,19 @@ public class HistoricManagerTest {
 	}
 
 	@Test
+	public void histCmdShouldReturnLastHistoricValue() {
+		HistoricManager historic = new HistoricManager();
+
+		historic.add(new IntegerOperandToken(2));
+		historic.add(new DoubleOperandToken(3.3));
+
+		assertEquals(
+			new Parser("3.3").parse(),
+			historic.substitute(new Parser("hist(0)").parse().get())
+		);
+	}
+
+	@Test
 	public void invalidHistCmdShouldReturnEmpty() {
 		assertTrue(
 			new HistoricManager().substitute(new Parser("hist(1)").parse().get()).isEmpty()
