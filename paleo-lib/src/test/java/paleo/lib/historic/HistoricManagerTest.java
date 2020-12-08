@@ -79,4 +79,24 @@ public class HistoricManagerTest {
 			historic.substitute(new Parser("hist(1) + 3").parse().get())
 		);
 	}
+
+	@Test
+	public void multipleSubstitutions() {
+		HistoricManager historic = new HistoricManager();
+
+		historic.add(new IntegerOperandToken(2));
+		historic.add(new DoubleOperandToken(3.3));
+
+		assertEquals(
+			new Parser("2 + 3 * (3.3 + 5)").parse(),
+			historic.substitute(new Parser("hist(1) + 3 * (hist(2) + 5)").parse().get())
+		);
+	}
+
+	@Test
+	public void invalidHistCmdShouldReturnEmpty() {
+		assertTrue(
+			new HistoricManager().substitute(new Parser("hist(1)").parse().get()).isEmpty()
+		);
+	}
 }
