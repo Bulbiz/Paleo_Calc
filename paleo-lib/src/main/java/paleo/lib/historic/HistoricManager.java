@@ -11,9 +11,22 @@ import paleo.lib.token.Yytoken;
 /**
  * Module providing historic features.
  *
- * @note Needed to be static in order to be access from
- * {@link paleo.lib.interpreter.OperationEvaluator} implementations used for
- * multitype feature.
+ * There is a multiple way to design and to implement historic management :
+ *
+ *   * The first idea was to have the {@link HistoricManager} with
+ *   getters/setters in order to be called from {@link OperationEvaluator}
+ *   implemenation and to consider {@link HistoricToken} like an {@link
+ *   OperationToken}.
+ *   But, with this method we could provide only one historic.
+ *
+ *   * For getting multiple historics {@link HistoricManager} needs to be
+ *   instanciates.  A possibility is to give to the {@link Interpreter} the
+ *   current {@link HistoricManager} instance and modifies {@link
+ *   OperationEvaluator} for getting this instance as argument.
+ *   But, this method require to changes our previous implemenation.
+ *
+ *   * (Actual implemenation) We finally choosed to used an independant module
+ *   plugable between the {@link Parser} and the {@link Interpreter}.
  */
 public final class HistoricManager {
 
