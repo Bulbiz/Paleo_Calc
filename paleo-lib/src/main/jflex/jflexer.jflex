@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import paleo.lib.token.*;
 import paleo.lib.historic.HistoricToken;
+import paleo.lib.historic.exception.InvalidHistoricTokenException;
 
 %%
 
@@ -16,6 +17,11 @@ import paleo.lib.historic.HistoricToken;
 %final
 %class JFLexer
 %unicode
+
+%{
+	private boolean histFlag = false;
+	private HistoricToken currentToken = null;
+%}
 
 white	= [ \t\f]+
 digit 	= [0-9]
@@ -27,7 +33,7 @@ real 	= [-]?{integer}("."{integer})
 %%
 
 <YYINITIAL> {
-	"hist" 		{ yybegin(HIST);	}
+	"hist" 		{ this.histFlag = false; this.currentToken = null; yybegin(HIST); }
 
 	{white}		{ }
 	{real} 		{ return(new DoubleOperandToken(Double.parseDouble(yytext()))); }
@@ -42,7 +48,25 @@ real 	= [-]?{integer}("."{integer})
 }
 
 <HIST> {
-	"(" 		{ }
-	{integer} 	{ return(new HistoricToken(Integer.parseInt(yytext()))); }
-	")" 		{ yybegin(YYINITIAL); }
+	"("
+	{
+		if (false != this.histFlag)
+			throw new InvalidHistoricTokenException();
+		this.histFlag = true;
+	}
+
+	{integer}
+	{
+		if (true != this.histFlag)
+			throw new InvalidHistoricTokenException();
+		this.currentToken = new HistoricToken(Integer.parseInt(yytext()));
+	}
+
+	")"
+	{
+		if (null == this.currentToken)
+			throw new InvalidHistoricTokenException();
+		yybegin(YYINITIAL);
+		return this.currentToken;
+	}
 }

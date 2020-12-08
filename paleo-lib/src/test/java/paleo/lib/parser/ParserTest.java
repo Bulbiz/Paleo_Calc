@@ -241,4 +241,9 @@ public class ParserTest {
 
         assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
     }
+
+    @Test
+    public void expressionWithUnValidHistCmdShouldReturnEmpty() {
+        assertTrue(new Parser("hist() + hist(1)(hist(3)))").parse().isEmpty());
+    }
 }
