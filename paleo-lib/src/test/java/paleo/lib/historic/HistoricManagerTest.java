@@ -30,6 +30,16 @@ public class HistoricManagerTest {
 	}
 
 	@Test
+	public void tryToAccessToAnOutOfBoundIndex() {
+		final IntegerOperandToken op = new IntegerOperandToken(3);
+		HistoricManager historic = new HistoricManager();
+
+		historic.add(op);
+
+		assertTrue(new HistoricManager().get(2).isEmpty());
+	}
+
+	@Test
 	public void getTheLastHistoricValue() {
 		final IntegerOperandToken lastOp = new IntegerOperandToken(3);
 		HistoricManager historic = new HistoricManager();
