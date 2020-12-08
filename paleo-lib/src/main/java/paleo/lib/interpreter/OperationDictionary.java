@@ -35,18 +35,17 @@ public final class OperationDictionary {
 	 */
 	public static void addEntry(
 			OperationToken operation,
-			Class<? extends OperandToken> op1,
-			Class<? extends OperandToken> op2,
-			OperationEvaluator opEvaluator)
+			OperationEvaluator opEvaluator,
+			Class<? extends OperandToken> ... signature)
 	{
 		if (null == operationMap.get(operation)) {
 			operationMap.put(operation, new HashMap<>());
 		}
-		if (null == operationMap.get(operation).get(op1)) {
-			operationMap.get(operation).put(op1, new HashMap<>());
+		if (null == operationMap.get(operation).get(signature[0])) {
+			operationMap.get(operation).put(signature[0], new HashMap<>());
 		}
 
-		operationMap.get(operation).get(op1).put(op2, opEvaluator);
+		operationMap.get(operation).get(signature[0]).put(signature[1], opEvaluator);
 	}
 
 	/**

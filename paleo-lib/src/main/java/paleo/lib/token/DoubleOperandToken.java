@@ -14,45 +14,43 @@ public final class DoubleOperandToken implements OperandToken {
     {
         OperationDictionary.addEntry(
             OperationToken.SUM,
-            DoubleOperandToken.class,
-            DoubleOperandToken.class,
-			(op1, op2) -> {
+            (op1, op2) -> {
 				return (
                     new DoubleOperandToken(
                         ((DoubleOperandToken)op1).getValue() + ((DoubleOperandToken)op2).getValue()
                     )
                 );
-			}
+			},
+            DoubleOperandToken.class,
+            DoubleOperandToken.class
         );
         OperationDictionary.addEntry(
             OperationToken.SUB,
-            DoubleOperandToken.class,
-            DoubleOperandToken.class,
-			(op1, op2) -> {
+            (op1, op2) -> {
 				return (
                     new DoubleOperandToken(
                         ((DoubleOperandToken)op1).getValue() - ((DoubleOperandToken)op2).getValue()
                     )
                 );
-			}
+			},
+            DoubleOperandToken.class,
+            DoubleOperandToken.class
         );
         OperationDictionary.addEntry(
             OperationToken.MULT,
-            DoubleOperandToken.class,
-            DoubleOperandToken.class,
-			(op1, op2) -> {
+            (op1, op2) -> {
 				return (
                     new DoubleOperandToken(
                         ((DoubleOperandToken)op1).getValue() * ((DoubleOperandToken)op2).getValue()
                     )
                 );
-			}
+			},
+            DoubleOperandToken.class,
+            DoubleOperandToken.class
         );
         OperationDictionary.addEntry(
             OperationToken.DIV,
-            DoubleOperandToken.class,
-            DoubleOperandToken.class,
-			(op1, op2) -> {
+            (op1, op2) -> {
                 if (0 == ((DoubleOperandToken)op2).getValue()) {
                     throw new IllegalArgumentException("Try to divide by zero");
                 }
@@ -61,7 +59,9 @@ public final class DoubleOperandToken implements OperandToken {
                         ((DoubleOperandToken)op1).getValue() / ((DoubleOperandToken)op2).getValue()
                     )
                 );
-			}
+			},
+            DoubleOperandToken.class,
+            DoubleOperandToken.class
         );
 
         /**
@@ -69,81 +69,79 @@ public final class DoubleOperandToken implements OperandToken {
          */
         OperationDictionary.addEntry(
             OperationToken.SUM,
-            IntegerOperandToken.class,
-            DoubleOperandToken.class,
-			(op1, op2) -> {
+            (op1, op2) -> {
 				return (
                     new DoubleOperandToken(
                         ((IntegerOperandToken)op1).getValue() + ((DoubleOperandToken)op2).getValue()
                     )
                 );
-			}
+			},
+            IntegerOperandToken.class,
+            DoubleOperandToken.class
         );
         OperationDictionary.addEntry(
             OperationToken.SUM,
-            DoubleOperandToken.class,
-            IntegerOperandToken.class,
-			(op1, op2) -> {
+            (op1, op2) -> {
 				return (
                     new DoubleOperandToken(
                         ((DoubleOperandToken)op1).getValue() + ((IntegerOperandToken)op2).getValue()
                     )
                 );
-			}
+			},
+            DoubleOperandToken.class,
+            IntegerOperandToken.class
         );
         OperationDictionary.addEntry(
             OperationToken.SUB,
-            IntegerOperandToken.class,
-            DoubleOperandToken.class,
-			(op1, op2) -> {
+            (op1, op2) -> {
 				return (
                     new DoubleOperandToken(
                         ((IntegerOperandToken)op1).getValue() - ((DoubleOperandToken)op2).getValue()
                     )
                 );
-			}
+			},
+            IntegerOperandToken.class,
+            DoubleOperandToken.class
         );
         OperationDictionary.addEntry(
             OperationToken.SUB,
-            DoubleOperandToken.class,
-            IntegerOperandToken.class,
-			(op1, op2) -> {
+            (op1, op2) -> {
 				return (
                     new DoubleOperandToken(
                         ((DoubleOperandToken)op1).getValue() - ((IntegerOperandToken)op2).getValue()
                     )
                 );
-			}
+			},
+            DoubleOperandToken.class,
+            IntegerOperandToken.class
         );
         OperationDictionary.addEntry(
             OperationToken.MULT,
-            IntegerOperandToken.class,
-            DoubleOperandToken.class,
-			(op1, op2) -> {
+            (op1, op2) -> {
 				return (
                     new DoubleOperandToken(
                         ((IntegerOperandToken)op1).getValue() * ((DoubleOperandToken)op2).getValue()
                     )
                 );
-			}
+			},
+            IntegerOperandToken.class,
+            DoubleOperandToken.class
         );
         OperationDictionary.addEntry(
             OperationToken.MULT,
-            DoubleOperandToken.class,
-            IntegerOperandToken.class,
-			(op1, op2) -> {
+            (op1, op2) -> {
 				return (
                     new DoubleOperandToken(
                         ((DoubleOperandToken)op1).getValue() * ((IntegerOperandToken)op2).getValue()
                     )
                 );
-			}
+			},
+            DoubleOperandToken.class,
+            IntegerOperandToken.class
         );
         OperationDictionary.addEntry(
             OperationToken.DIV,
-            IntegerOperandToken.class,
-            DoubleOperandToken.class,
-			(op1, op2) -> {
+            (op1, op2) -> {
                 if (0 == ((DoubleOperandToken)op2).getValue()) {
                     throw new IllegalArgumentException("Try to divide by zero");
                 }
@@ -152,13 +150,13 @@ public final class DoubleOperandToken implements OperandToken {
                         ((IntegerOperandToken)op1).getValue() / ((DoubleOperandToken)op2).getValue()
                     )
                 );
-			}
+			},
+            IntegerOperandToken.class,
+            DoubleOperandToken.class
         );
         OperationDictionary.addEntry(
             OperationToken.DIV,
-            DoubleOperandToken.class,
-            IntegerOperandToken.class,
-			(op1, op2) -> {
+            (op1, op2) -> {
                 if (0 == ((IntegerOperandToken)op2).getValue()) {
                     throw new IllegalArgumentException("Try to divide by zero");
                 }
@@ -167,7 +165,9 @@ public final class DoubleOperandToken implements OperandToken {
                         ((DoubleOperandToken)op1).getValue() * ((IntegerOperandToken)op2).getValue()
                     )
                 );
-			}
+			},
+            DoubleOperandToken.class,
+            IntegerOperandToken.class
         );
     }
 

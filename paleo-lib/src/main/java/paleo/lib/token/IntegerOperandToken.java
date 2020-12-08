@@ -14,45 +14,43 @@ public final class IntegerOperandToken implements OperandToken {
     {
         OperationDictionary.addEntry(
             OperationToken.SUM,
-            IntegerOperandToken.class,
-            IntegerOperandToken.class,
-			(op1, op2) -> {
+            (op1, op2) -> {
 				return (
                     new IntegerOperandToken(
                         ((IntegerOperandToken)op1).getValue() + ((IntegerOperandToken)op2).getValue()
                     )
                 );
-			}
+			},
+            IntegerOperandToken.class,
+            IntegerOperandToken.class
         );
         OperationDictionary.addEntry(
             OperationToken.SUB,
-            IntegerOperandToken.class,
-            IntegerOperandToken.class,
-			(op1, op2) -> {
+            (op1, op2) -> {
 				return (
                     new IntegerOperandToken(
                         ((IntegerOperandToken)op1).getValue() - ((IntegerOperandToken)op2).getValue()
                     )
                 );
-			}
+			},
+            IntegerOperandToken.class,
+            IntegerOperandToken.class
         );
         OperationDictionary.addEntry(
             OperationToken.MULT,
-            IntegerOperandToken.class,
-            IntegerOperandToken.class,
-			(op1, op2) -> {
+            (op1, op2) -> {
 				return (
                     new IntegerOperandToken(
                         ((IntegerOperandToken)op1).getValue() * ((IntegerOperandToken)op2).getValue()
                     )
                 );
-			}
+			},
+            IntegerOperandToken.class,
+            IntegerOperandToken.class
         );
         OperationDictionary.addEntry(
             OperationToken.DIV,
-            IntegerOperandToken.class,
-            IntegerOperandToken.class,
-			(op1, op2) -> {
+            (op1, op2) -> {
                 if (0 == ((IntegerOperandToken)op2).getValue()) {
                     throw new IllegalArgumentException("Try to divide by zero");
                 }
@@ -61,7 +59,9 @@ public final class IntegerOperandToken implements OperandToken {
                         ((IntegerOperandToken)op1).getValue() / ((IntegerOperandToken)op2).getValue()
                     )
                 );
-			}
+			},
+            IntegerOperandToken.class,
+            IntegerOperandToken.class
         );
     }
 
