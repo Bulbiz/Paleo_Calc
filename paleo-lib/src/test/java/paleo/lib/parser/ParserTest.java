@@ -243,7 +243,17 @@ public class ParserTest {
     }
 
     @Test
-    public void expressionWithUnValidHistCmdShouldReturnEmpty() {
+    public void histCmdWihoutArgShouldReturnEmpty() {
         assertTrue(new Parser("hist() + hist(1)(hist(3)))").parse().isEmpty());
+    }
+
+    @Test
+    public void histCmdWhithMissingParenShouldReturnEmpty() {
+        assertTrue(new Parser("hist1) + hist(1)(hist(3)))").parse().isEmpty());
+    }
+
+    @Test
+    public void histCmdWhithNotValidArgShouldReturnEmpty() {
+        assertTrue(new Parser("hist1) + hist(1(hist(3)))").parse().isEmpty());
     }
 }
