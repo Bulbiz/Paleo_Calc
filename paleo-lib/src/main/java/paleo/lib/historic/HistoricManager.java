@@ -1,9 +1,12 @@
 package paleo.lib.historic;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Optional;
+import java.util.Queue;
 
 import paleo.lib.token.OperandToken;
+import paleo.lib.token.Yytoken;
 
 /**
  * Module providing historic features.
@@ -30,6 +33,34 @@ public final class HistoricManager {
 	 */
 	public void add(final OperandToken operandToken) {
 		this.historicArray.add(operandToken);
+	}
+
+	/**
+	 * Replaces {@link HistoricToken} by the corresponding historic {@link OperandToken}.
+	 *
+	 * @param tokens a {@link Queue} of {@link Yytoken}.
+	 * @return the new {@link Queue} with all occurrences of {@linkHistoricToken}
+	 * replaced by the corresponding {@link Yytoken} or empty if an invalid
+	 * {@link HistoricToken} is found.
+	 */
+	public Optional<Queue<Yytoken>> substitute(final Queue<Yytoken> tokens) {
+		Queue<Yytoken> substitutedTokens = new LinkedList<>();
+
+		for (Yytoken yytoken : tokens) {
+			if (yytoken instanceof HistoricToken) {
+				HistoricToken hToken = (HistoricToken) yytoken;
+				Optional<OperandToken> opOperand = this.get(hToken.getArg());
+
+				if (opOperand.isEmpty()) {
+					return Optional.empty();
+				}
+				substitutedTokens.add(opOperand.get());
+			}
+			else {
+				substitutedTokens.add(yytoken);
+			}
+		}
+		return Optional.of(substitutedTokens);
 	}
 
 	/**

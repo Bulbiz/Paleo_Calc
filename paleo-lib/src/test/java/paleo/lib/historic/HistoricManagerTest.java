@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import paleo.lib.parser.Parser;
 import paleo.lib.token.DoubleOperandToken;
 import paleo.lib.token.IntegerOperandToken;
 
@@ -65,5 +66,17 @@ public class HistoricManagerTest {
 
 		assertTrue(historic.get(3).isPresent());
 		assertEquals(thirdOp, historic.get(3).get());
+	}
+
+	@Test
+	public void simpleSubstitution() {
+		HistoricManager historic = new HistoricManager();
+
+		historic.add(new IntegerOperandToken(2));
+
+		assertEquals(
+			new Parser("2 + 3").parse(),
+			historic.substitute(new Parser("hist(1) + 3").parse().get())
+		);
 	}
 }
