@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import paleo.lib.historic.HistoricToken;
 import paleo.lib.token.DoubleOperandToken;
 import paleo.lib.token.IntegerOperandToken;
 import paleo.lib.token.OperationToken;
@@ -207,6 +208,19 @@ public class ParserTest {
                     OperationToken.RPAREN,
                     OperationToken.SUM,
                     new IntegerOperandToken(1));
+
+        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+    }
+
+    @Test
+    public void expressionWithSimpleHistCall() {
+        final Queue<Yytoken> actualTokens =
+            new Parser("hist(1) + 3").parse().get();
+        final Queue<Yytoken> expectedTokens =
+            createTokenQueue(
+                new HistoricToken(1),
+                OperationToken.SUM,
+                new IntegerOperandToken(3));
 
         assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
     }

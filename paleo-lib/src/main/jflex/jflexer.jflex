@@ -6,7 +6,9 @@
 package paleo.lib.parser;
 
 import java.util.ArrayList;
+
 import paleo.lib.token.*;
+import paleo.lib.historic.HistoricToken;
 
 %%
 
@@ -20,19 +22,27 @@ digit 	= [0-9]
 integer = [-]?{digit}+
 real 	= [-]?{integer}("."{integer})
 
+%state HIST
+
 %%
 
-{white}		{ }
+<YYINITIAL> {
+	"hist" 		{ yybegin(HIST);	}
 
-{real} 		{
-	return(new DoubleOperandToken(Double.parseDouble(yytext())));
+	{white}		{ }
+	{real} 		{ return(new DoubleOperandToken(Double.parseDouble(yytext()))); }
+	{integer} 	{ return(new IntegerOperandToken(Integer.parseInt(yytext()))); }
+
+	"+" 		{ return(OperationToken.SUM); }
+	"-" 		{ return(OperationToken.SUB); }
+	"*" 		{ return(OperationToken.MULT); }
+	"/" 		{ return(OperationToken.DIV); }
+	"(" 		{ return(OperationToken.LPAREN); }
+	")" 		{ return(OperationToken.RPAREN); }
 }
-{integer} 	{
-	return(new IntegerOperandToken(Integer.parseInt(yytext())));
+
+<HIST> {
+	"(" 		{ }
+	{integer} 	{ return(new HistoricToken(Integer.parseInt(yytext()))); }
+	")" 		{ yybegin(YYINITIAL); }
 }
-"+" 		{ return(OperationToken.SUM); }
-"-" 		{ return(OperationToken.SUB); }
-"*" 		{ return(OperationToken.MULT); }
-"/" 		{ return(OperationToken.DIV); }
-"(" 		{ return(OperationToken.LPAREN); }
-")" 		{ return(OperationToken.RPAREN); }
