@@ -39,9 +39,18 @@ public final class HistoricManager {
 	 * @return the stored operand packed in an {@link Optional} instance.
 	 */
 	public Optional<OperandToken> get(final int index) {
-		if (0 > index || this.historicArray.size() <= index) {
+		if (0 >= index || this.historicArray.size() < index) {
 			return Optional.empty();
 		}
-		return Optional.of(this.historicArray.get(index));
+		return Optional.of(this.historicArray.get(index-1));
+	}
+
+	/**
+	 * Gets the last stored {@link OperandToken}.
+	 *
+	 * @return the last stored operand packed in an {@link Optional} instance.
+	 */
+	public Optional<OperandToken> getLast() {
+		return get(this.historicArray.size());
 	}
 }
