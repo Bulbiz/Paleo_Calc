@@ -17,7 +17,7 @@ import paleo.lib.token.Yytoken;
  *   getters/setters in order to be called from {@link OperationEvaluator}
  *   implemenation and to consider {@link HistoricToken} like an {@link
  *   OperationToken}.
- *   But, with this method we could provide only one historic.
+ *   But, with this method we could provide only one historic queue.
  *
  *   * For getting multiple historics {@link HistoricManager} needs to be
  *   instanciates.  A possibility is to give to the {@link Interpreter} the
