@@ -1,8 +1,8 @@
 package paleo.lib.historic;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
-import paleo.lib.historic.exception.HistoricDisabledException;
 import paleo.lib.token.OperandToken;
 
 /**
@@ -27,7 +27,6 @@ public final class HistoricManager {
  	 * Appends a new {@link OperandToken} to the historic.
 	 *
 	 * @param operandToken is the operand to append.
-	 * @throws HistoricDisabled if historic is not enabled.
 	 */
 	public void add(final OperandToken operandToken) {
 		this.historicArray.add(operandToken);
@@ -37,11 +36,12 @@ public final class HistoricManager {
 	 * Gets the corresponding {@link OperandToken} at the index pos.
 	 *
 	 * @param index the corresponding index of the operand in the historicArray.
-	 * @return the stored operand.
-	 * @throws HistoricDisabledException if historic is not enabled.
+	 * @return the stored operand packed in an {@link Optional} instance.
 	 */
-	public OperandToken get(final int index) {
-		//TODO: managed invalid index.
-		return this.historicArray.get(index);
+	public Optional<OperandToken> get(final int index) {
+		if (0 > index || this.historicArray.size() <= index) {
+			return Optional.empty();
+		}
+		return Optional.of(this.historicArray.get(index));
 	}
 }

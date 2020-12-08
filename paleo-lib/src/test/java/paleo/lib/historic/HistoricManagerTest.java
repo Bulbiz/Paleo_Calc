@@ -3,13 +3,8 @@ package paleo.lib.historic;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.Optional;
-
-import paleo.lib.parser.Parser;
-import paleo.lib.token.DoubleOperandToken;
 import paleo.lib.token.IntegerOperandToken;
 
 /**
@@ -23,15 +18,13 @@ public class HistoricManagerTest {
 		HistoricManager historic = new HistoricManager();
 
 		historic.add(op);
-		assertEquals(op, historic.get(0));
+
+		assertTrue(historic.get(0).isPresent());
+		assertEquals(op, historic.get(0).get());
 	}
 
 	@Test
-	public void addIntegerOperandToken() {
-		final IntegerOperandToken op = new IntegerOperandToken(3);
-		HistoricManager historic = new HistoricManager();
-
-		historic.add(op);
-		assertEquals(op, historic.get(0));
+	public void tryToAccessToAnInexistingHistoricValue() {
+		assertTrue(new HistoricManager().get(0).isEmpty());
 	}
 }
