@@ -224,4 +224,21 @@ public class ParserTest {
 
         assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
     }
+
+    @Test
+    public void expressionWithMultipleHistCall() {
+        final Queue<Yytoken> actualTokens =
+            new Parser("hist(1) + hist(1)(hist(3)))").parse().get();
+        final Queue<Yytoken> expectedTokens =
+            createTokenQueue(
+                new HistoricToken(1),
+                OperationToken.SUM,
+                new HistoricToken(1),
+                OperationToken.LPAREN,
+                new HistoricToken(3),
+                OperationToken.RPAREN,
+                OperationToken.RPAREN);
+
+        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+    }
 }
