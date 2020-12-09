@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Queue;
-
+import java.util.stream.Stream;
+import paleo.lib.interpreter.Interpreter;
+import paleo.lib.interpreter.OperationEvaluator;
+import paleo.lib.parser.Parser;
 import paleo.lib.token.OperandToken;
+import paleo.lib.token.OperationToken;
 import paleo.lib.token.Yytoken;
 
 /**
@@ -30,7 +34,7 @@ import paleo.lib.token.Yytoken;
  */
 public final class HistoricManager {
 
-	private ArrayList<OperandToken> historicArray; ///< Stores historic operands.
+	private final ArrayList<OperandToken> historicArray; ///< Stores historic operands.
 
 	/**
 	 * {@link HistoricManager} constructor.
@@ -40,7 +44,7 @@ public final class HistoricManager {
 	}
 
 	/**
- 	 * Appends a new {@link OperandToken} to the historic.
+	 * Appends a new {@link OperandToken} to the historic.
 	 *
 	 * @param operandToken is the operand to append.
 	 */
@@ -57,17 +61,16 @@ public final class HistoricManager {
 	 * {@link HistoricToken} is found.
 	 */
 	public Optional<Queue<Yytoken>> substitute(final Queue<Yytoken> tokens) {
-		Queue<Yytoken> substitutedTokens = new LinkedList<>();
+		final Queue<Yytoken> substitutedTokens = new LinkedList<>();
 
-		for (Yytoken yytoken : tokens) {
+		for (final Yytoken yytoken : tokens) {
 			if (yytoken instanceof HistoricToken) {
-				HistoricToken hToken = (HistoricToken) yytoken;
+				final HistoricToken hToken = (HistoricToken) yytoken;
 				Optional<OperandToken> opOperand;
 
 				if (0 == hToken.getArg()) {
 					opOperand = this.getLast();
-				}
-				else {
+				} else {
 					opOperand = this.get(hToken.getArg());
 				}
 
@@ -75,8 +78,7 @@ public final class HistoricManager {
 					return Optional.empty();
 				}
 				substitutedTokens.add(opOperand.get());
-			}
-			else {
+			} else {
 				substitutedTokens.add(yytoken);
 			}
 		}
@@ -93,7 +95,7 @@ public final class HistoricManager {
 		if (0 >= index || this.historicArray.size() < index) {
 			return Optional.empty();
 		}
-		return Optional.of(this.historicArray.get(index-1));
+		return Optional.of(this.historicArray.get(index - 1));
 	}
 
 	/**
@@ -103,5 +105,60 @@ public final class HistoricManager {
 	 */
 	public Optional<OperandToken> getLast() {
 		return get(this.historicArray.size());
+	}
+
+	/**
+	 * Prints historic.
+	 *
+	 * TODO: Could be prettier.
+	 */
+	public void printHistoric() {
+		final int max_vlen;
+		final int max_klen;
+		final String delimLine;
+
+		if (this.historicArray.isEmpty()) {
+			System.out.println("Empty historic...");
+		} else {
+			max_vlen = getMaxStringValueLength();
+			max_klen = String.valueOf(this.historicArray.size()).length();
+			delimLine = this.getNTimesChar(max_klen + max_vlen + 5, '-');
+
+			System.out.println("+" + delimLine + "+");
+			printEntry(max_klen, max_vlen, 0);
+			System.out.println("+" + delimLine + "+");
+			for (int i = historicArray.size(); i > 0; --i) {
+				printEntry(max_klen, max_vlen, i);
+			}
+			System.out.println("+" + delimLine + "+");
+		}
+	}
+
+	private int getMaxStringValueLength() {
+		return this.historicArray.stream()
+			.map(op -> op.toString())
+			.max((s1, s2) -> s1.length() - s2.length())
+			.get()
+			.length();
+	}
+
+	private String getNTimesChar(final int n, final char c) {
+		String res = "";
+
+		for (int i = 0; i < n; ++i) res += c;
+
+		return res;
+	}
+
+	private void printEntry(final int max_klen, final int max_vlen, final int i) {
+		String currentLine = "";
+		String currValue = 0 < i ? get(i).get().toString() : getLast().get().toString();
+
+		currentLine = "| ";
+		currentLine +=
+			String.valueOf(i) + getNTimesChar(max_klen - String.valueOf(i).length(), ' ');
+		currentLine +=
+			" : " + currValue + getNTimesChar(max_vlen - currValue.length(), ' ') + " |";
+		System.out.println(currentLine);
 	}
 }

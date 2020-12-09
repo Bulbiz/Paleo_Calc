@@ -3,7 +3,6 @@ package paleo.calc;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Scanner;
-
 import paleo.calc.utils.Color;
 import paleo.lib.historic.HistoricManager;
 import paleo.lib.interpreter.Interpreter;
@@ -30,10 +29,14 @@ public final class Calculator {
 			printPrompt();
 			line = readLine();
 
-			optionalOp = evaluate(line, historicManager);
-			if (optionalOp.isPresent()) {
-				historicManager.add(optionalOp.get());
-				printRes(optionalOp.get().toString(), historicCpt++);
+			if (line.trim().equalsIgnoreCase("ls")) {
+				historicManager.printHistoric();
+			} else {
+				optionalOp = evaluate(line, historicManager);
+				if (optionalOp.isPresent()) {
+					historicManager.add(optionalOp.get());
+					printRes(optionalOp.get().toString(), historicCpt++);
+				}
 			}
 		}
 	}
@@ -48,28 +51,28 @@ public final class Calculator {
 		Color.printlnWith("___  __ \\  __ `/_  /_  _ \\  __ \\", Color.CYAN);
 		Color.printlnWith("__  /_/ / /_/ /_  / /  __/ /_/ /", Color.LIGHT_CYAN);
 		Color.printlnWith("_  .___/\\__,_/ /_/  \\___/\\____/", Color.GREEN);
-		Color.printlnWith(
-			"/_/ " + Color.LIGHT_GREEN + "                      v1.2\n" + Color.NORMAL,
-			Color.LIGHT_GREEN
-		);
+		Color.printlnWith("/_/                       v1.2\n", Color.LIGHT_GREEN);
 	}
 
 	private static void printPrompt() {
 		Color.printWith("> ", Color.LIGHT_BLUE);
 	}
 
-	private static Optional<OperandToken> evaluate(final String expr, final HistoricManager historicManager) {
+	private static Optional<OperandToken> evaluate(
+		final String expr,
+		final HistoricManager historicManager
+	) {
 		Interpreter interpreter;
 		Optional<Queue<Yytoken>> tokenExpression = new Parser(expr).parse();
 
 		if (tokenExpression.isPresent()) {
 			try {
-				interpreter = new Interpreter(
-					historicManager.substitute(tokenExpression.get()).get()
-				);
+				interpreter =
+					new Interpreter(
+						historicManager.substitute(tokenExpression.get()).get()
+					);
 				return Optional.of(interpreter.evaluate());
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				Color.printlnWith("[ERR] : " + e.getMessage(), Color.LIGHT_RED);
 			}
 		}
