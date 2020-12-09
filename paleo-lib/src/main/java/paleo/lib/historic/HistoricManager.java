@@ -122,15 +122,15 @@ public final class HistoricManager {
 		} else {
 			max_vlen = getMaxStringValueLength();
 			max_klen = String.valueOf(this.historicArray.size()).length();
-			delimLine = this.getNTimesChar(max_klen + max_vlen + 5, '-');
+			delimLine = "+" + this.getNTimesChar(max_klen + max_vlen + 5, '-') + "+";
 
-			System.out.println("+" + delimLine + "+");
+			System.out.println(delimLine);
 			printEntry(max_klen, max_vlen, 0);
-			System.out.println("+" + delimLine + "+");
+			System.out.println(delimLine);
 			for (int i = historicArray.size(); i > 0; --i) {
 				printEntry(max_klen, max_vlen, i);
 			}
-			System.out.println("+" + delimLine + "+");
+			System.out.println(delimLine);
 		}
 	}
 
