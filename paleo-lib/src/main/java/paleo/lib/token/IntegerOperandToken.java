@@ -1,7 +1,7 @@
 package paleo.lib.token;
 
 import paleo.lib.interpreter.OperationDictionary;
-
+import java.util.List;
 /**
  * Models an integer number.
  */
@@ -21,8 +21,7 @@ public final class IntegerOperandToken implements OperandToken {
                     )
                 );
 			},
-            IntegerOperandToken.class,
-            IntegerOperandToken.class
+            List.of(IntegerOperandToken.key,IntegerOperandToken.key)
         );
         OperationDictionary.addEntry(
             OperationToken.SUB,
@@ -33,8 +32,7 @@ public final class IntegerOperandToken implements OperandToken {
                     )
                 );
 			},
-            IntegerOperandToken.class,
-            IntegerOperandToken.class
+            List.of(IntegerOperandToken.key,IntegerOperandToken.key)
         );
         OperationDictionary.addEntry(
             OperationToken.MULT,
@@ -45,8 +43,7 @@ public final class IntegerOperandToken implements OperandToken {
                     )
                 );
 			},
-            IntegerOperandToken.class,
-            IntegerOperandToken.class
+            List.of(IntegerOperandToken.key,IntegerOperandToken.key)
         );
         OperationDictionary.addEntry(
             OperationToken.DIV,
@@ -60,13 +57,12 @@ public final class IntegerOperandToken implements OperandToken {
                     )
                 );
 			},
-            IntegerOperandToken.class,
-            IntegerOperandToken.class
+            List.of(IntegerOperandToken.key,IntegerOperandToken.key)
         );
     }
 
     private int value;
-
+    public static final String key = "Integer";
     /**
      * {@link IntegerOperandToken} constructor.
      *
@@ -107,5 +103,9 @@ public final class IntegerOperandToken implements OperandToken {
      */
     public void setValue(int value) {
         this.value = value;
+    }
+
+    public String getKey (){
+        return key;
     }
 }

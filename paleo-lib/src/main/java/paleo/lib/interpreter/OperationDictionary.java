@@ -1,6 +1,9 @@
 package paleo.lib.interpreter;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import paleo.lib.token.OperandToken;
 import paleo.lib.token.OperationToken;
@@ -18,8 +21,14 @@ public final class OperationDictionary {
 	/**
 	 * Stores all {@link OperationEvaluator}.
 	 */
-	private static HashMap<OperationToken,OperationDictionnaryEntry>
-							operationMap = new HashMap<>();
+	private static HashMap<String,OperationEvaluator> operationMap = new HashMap<String,OperationEvaluator>();
+
+
+	private static String generateKeyFrom (OperationToken operation ,List<String> signature){
+		Stream <String> stream = signature.stream();
+		String key = operation.getKey() + stream.collect(Collectors.joining("|"));
+		return key;
+	}
 
 	/**
 	 * Adds an {@link OperationEvaluator} to the corresponding {@link HashMap}
@@ -33,23 +42,12 @@ public final class OperationDictionary {
 	public static void addEntry(
 			OperationToken operation,
 			OperationEvaluator opEvaluator,
-			Class<? extends OperandToken> ... signature)
+			List<String> signature)
 	{
-		if (!operationMap.containsKey(operation)) {
-			operationMap.put(operation, new OperationDictionnaryEntry ());
+		String key = generateKeyFrom(operation,signature);
+		if (!operationMap.containsKey(key)) {
+			operationMap.put(key,opEvaluator);
 		}
-
-		/* A CONTINUER + FAIRE LE EVALUATOR FINDER */
-		OperationDictionnaryEntry operatorFinder = operationMap.get(operation);
-
-		for(int i=0 ;  i< signature.length; i++){
-			if (!operatorFinder.containsKey(signature[i])) {
-				operatorFinder.put(signature[i]);
-			}
-			operatorFinder = operatorFinder.next(signature[i]);
-		}
-
-		operatorFinder.setEvaluator(opEvaluator);
 	}
 
 	/**
@@ -64,10 +62,16 @@ public final class OperationDictionary {
 	 */
 	public static OperationEvaluator getOperationEvaluator(
 			OperationToken operation,
-			Class<? extends OperandToken> op1,
-			Class<? extends OperandToken> op2)
+			List<String> signature)
 	{
-		if (!operationMap.containsKey(operation)) {
+		String key = generateKeyFrom(operation,signature);
+		if (!operationMap.containsKey(key))
+			throw new IllegalArgumentException( operation.toString() + " unsupported operation" );
+		else
+			return operationMap.get(key);
+	}
+}
+/*if (!operationMap.containsKey(operation)) {
 			throw new IllegalArgumentException(
 					operation.toString() + " unsupported operation"
 			);
@@ -90,6 +94,4 @@ public final class OperationDictionary {
 					+ "'"
 			);
 		}
-		return operationMap.get(operation).next(op1).next(op2).getEvaluator().get();
-	}
-}
+		return operationMap.get(operation).next(op1).next(op2).getEvaluator().get();*/

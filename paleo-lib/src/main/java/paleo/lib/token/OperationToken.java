@@ -36,4 +36,8 @@ public enum OperationToken implements Yytoken {
     public int getPriority() {
         return this.priority;
     }
+
+    public String getKey (){
+        return this.toString();
+    }
 }

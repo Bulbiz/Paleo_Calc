@@ -1,7 +1,7 @@
 package paleo.lib.token;
 
 import paleo.lib.interpreter.OperationDictionary;
-
+import java.util.List;
 /**
  * Models a real number operand.
  */
@@ -21,8 +21,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            DoubleOperandToken.class,
-            DoubleOperandToken.class
+            List.of(DoubleOperandToken.key,DoubleOperandToken.key)
         );
         OperationDictionary.addEntry(
             OperationToken.SUB,
@@ -33,8 +32,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            DoubleOperandToken.class,
-            DoubleOperandToken.class
+            List.of(DoubleOperandToken.key,DoubleOperandToken.key)
         );
         OperationDictionary.addEntry(
             OperationToken.MULT,
@@ -45,8 +43,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            DoubleOperandToken.class,
-            DoubleOperandToken.class
+            List.of(DoubleOperandToken.key,DoubleOperandToken.key)
         );
         OperationDictionary.addEntry(
             OperationToken.DIV,
@@ -60,8 +57,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            DoubleOperandToken.class,
-            DoubleOperandToken.class
+            List.of(DoubleOperandToken.key,DoubleOperandToken.key)
         );
 
         /**
@@ -76,8 +72,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            IntegerOperandToken.class,
-            DoubleOperandToken.class
+            List.of(IntegerOperandToken.key,DoubleOperandToken.key)
         );
         OperationDictionary.addEntry(
             OperationToken.SUM,
@@ -88,8 +83,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            DoubleOperandToken.class,
-            IntegerOperandToken.class
+            List.of(DoubleOperandToken.key,IntegerOperandToken.key)
         );
         OperationDictionary.addEntry(
             OperationToken.SUB,
@@ -100,8 +94,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            IntegerOperandToken.class,
-            DoubleOperandToken.class
+            List.of(IntegerOperandToken.key,DoubleOperandToken.key)
         );
         OperationDictionary.addEntry(
             OperationToken.SUB,
@@ -112,8 +105,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            DoubleOperandToken.class,
-            IntegerOperandToken.class
+            List.of(DoubleOperandToken.key,IntegerOperandToken.key)
         );
         OperationDictionary.addEntry(
             OperationToken.MULT,
@@ -124,8 +116,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            IntegerOperandToken.class,
-            DoubleOperandToken.class
+            List.of(IntegerOperandToken.key,DoubleOperandToken.key)
         );
         OperationDictionary.addEntry(
             OperationToken.MULT,
@@ -136,8 +127,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            DoubleOperandToken.class,
-            IntegerOperandToken.class
+            List.of(DoubleOperandToken.key,IntegerOperandToken.key)
         );
         OperationDictionary.addEntry(
             OperationToken.DIV,
@@ -151,8 +141,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            IntegerOperandToken.class,
-            DoubleOperandToken.class
+            List.of(IntegerOperandToken.key,DoubleOperandToken.key)
         );
         OperationDictionary.addEntry(
             OperationToken.DIV,
@@ -166,13 +155,12 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            DoubleOperandToken.class,
-            IntegerOperandToken.class
+            List.of(DoubleOperandToken.key,IntegerOperandToken.key)
         );
     }
 
     private double value; ///< Is the real value.
-
+    public static final String key = "Double";
     /**
      * {@link DoubleOperandToken} constructor.
      *
@@ -213,5 +201,9 @@ public final class DoubleOperandToken implements OperandToken {
      */
     public void setValue(final double value) {
         this.value = value;
+    }
+
+    public String getKey (){
+        return key;
     }
 }

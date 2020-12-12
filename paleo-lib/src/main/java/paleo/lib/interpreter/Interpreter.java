@@ -2,6 +2,7 @@ package paleo.lib.interpreter;
 
 import java.util.Queue;
 import java.util.Stack;
+import java.util.List;
 
 import paleo.lib.token.OperandToken;
 import paleo.lib.token.OperationToken;
@@ -99,8 +100,7 @@ public final class Interpreter {
 
 		operandStack.push(
 			OperationDictionary.getOperationEvaluator(
-				operationStack.pop(), op1.getClass(),
-				op2.getClass()
+				operationStack.pop(), List.of(op1.getKey(),op2.getKey())
 			).evaluateOperation(op1, op2)
 		);
 	}
