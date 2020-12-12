@@ -71,27 +71,3 @@ public final class OperationDictionary {
 			return operationMap.get(key);
 	}
 }
-/*if (!operationMap.containsKey(operation)) {
-			throw new IllegalArgumentException(
-					operation.toString() + " unsupported operation"
-			);
-		}
-		if (!operationMap.get(operation).containsKey(op1)) {
-			throw new IllegalArgumentException(
-					operation.toString()
-					+ " unsupported operation for the operand '"
-					+ op1.toString()
-					+ "'"
-			);
-		}
-		if (!operationMap.get(operation).next(op1).containsKey(op2)) {
-			throw new IllegalArgumentException(
-					operation.toString() + " "
-					+ "unsupported operation for the operand '"
-					+ op1.toString()
-					+ "' and '"
-					+ op2.toString()
-					+ "'"
-			);
-		}
-		return operationMap.get(operation).next(op1).next(op2).getEvaluator().get();*/
