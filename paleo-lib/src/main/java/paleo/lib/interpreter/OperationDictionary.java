@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.Deque;
 
 import paleo.lib.token.OperandToken;
 import paleo.lib.token.OperationToken;
@@ -21,10 +22,13 @@ public final class OperationDictionary {
 	/**
 	 * Stores all {@link OperationEvaluator}.
 	 */
-	private static HashMap<String,OperationEvaluator> operationMap = new HashMap<String,OperationEvaluator>();
+	private static HashMap<String,OperationEvaluator> operationMap = 
+					new HashMap<String,OperationEvaluator>();
 
 
-	private static String generateKeyFrom (OperationToken operation ,List<String> signature){
+	private static String generateKeyFrom (
+					OperationToken operation,
+					List<String> signature){
 		Stream <String> stream = signature.stream();
 		String key = operation.getKey() + stream.collect(Collectors.joining("|"));
 		return key;
@@ -40,9 +44,9 @@ public final class OperationDictionary {
 	 * @param opEvaluator is the implementation of the operation.
 	 */
 	public static void addEntry(
-			OperationToken operation,
-			OperationEvaluator opEvaluator,
-			List<String> signature)
+					OperationToken operation, 
+					OperationEvaluator opEvaluator, 
+					List<String> signature)
 	{
 		String key = generateKeyFrom(operation,signature);
 		if (!operationMap.containsKey(key)) {
@@ -61,10 +65,11 @@ public final class OperationDictionary {
 	 * provided, otherwise, throw an {@link IllegalArgumentException}.
 	 */
 	public static OperationEvaluator getOperationEvaluator(
-			OperationToken operation,
-			List<String> signature)
+					OperationToken operation, 
+					Deque<OperandToken> signature)
 	{
-		String key = generateKeyFrom(operation,signature);
+		List<String> signatureKey = signature.stream().map(o -> o.getKey()).collect(Collectors.toList());
+		String key = generateKeyFrom(operation, signatureKey);
 		if (!operationMap.containsKey(key))
 			throw new IllegalArgumentException( operation.toString() + " unsupported operation" );
 		else

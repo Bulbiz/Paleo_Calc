@@ -1,5 +1,6 @@
 package paleo.lib.interpreter;
 
+import java.util.Deque;
 import paleo.lib.token.OperandToken;
 
 /**
@@ -16,5 +17,5 @@ public interface OperationEvaluator {
 	 * @param op2 is the right operand.
 	 * @return the resulting operand.
 	 */
-	 public OperandToken evaluateOperation(OperandToken op1, OperandToken op2);
+	 public OperandToken evaluateOperation(Deque<OperandToken> operands);
 }

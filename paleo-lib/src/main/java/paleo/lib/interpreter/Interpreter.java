@@ -2,7 +2,8 @@ package paleo.lib.interpreter;
 
 import java.util.Queue;
 import java.util.Stack;
-import java.util.List;
+import java.util.Deque;
+import java.util.ArrayDeque;
 
 import paleo.lib.token.OperandToken;
 import paleo.lib.token.OperationToken;
@@ -53,13 +54,16 @@ public final class Interpreter {
 				switch (operationToken){
 					case LPAREN : operationStack.push(operationToken); break;
 					case RPAREN : 
-						while (OperationToken.LPAREN != operationStack.peek()) 
+						while (OperationToken.LPAREN != operationStack.peek()){
 							evaluateOperation();
+						}
 						operationStack.pop();
 						break;
 					default :
-						while (!operationStack.isEmpty() && operationToken.getPriority() <= operationStack.peek().getPriority())
+						while (!operationStack.isEmpty() 
+							&& operationToken.getPriority() <= operationStack.peek().getPriority()){
 							evaluateOperation();
+						}
 						operationStack.push(operationToken);
 						break;
 				}
@@ -78,24 +82,19 @@ public final class Interpreter {
 	}
 
 	private void evaluateOperation() throws IllegalArgumentException {
-		OperandToken op1;
-		OperandToken op2;
-
-		if (2 > operandStack.size()) {
-			throw new IllegalArgumentException("Not enough operands");
-		}
-
-		if (operationStack.isEmpty()) {
+		if (operationStack.isEmpty()) 
 			throw new IllegalArgumentException("Not enough operations");
-		}
+			
+		OperationToken operation = operationStack.pop();
 
-		op2 = operandStack.pop();
-		op1 = operandStack.pop();
+		if (operation.getArity() > operandStack.size()) 
+			throw new IllegalArgumentException("Not enough operands");
 
-		operandStack.push(
-			OperationDictionary.getOperationEvaluator(
-				operationStack.pop(), List.of(op1.getKey(),op2.getKey())
-			).evaluateOperation(op1, op2)
-		);
+		Deque <OperandToken> argument = new ArrayDeque <OperandToken> ();
+		for (int i=0; i < operation.getArity(); i ++)
+			argument.push(operandStack.pop());
+
+		operandStack.push(OperationDictionary.getOperationEvaluator(
+			operation, argument).evaluateOperation(argument));
 	}
 }

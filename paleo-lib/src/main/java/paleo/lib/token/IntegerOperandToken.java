@@ -14,10 +14,10 @@ public final class IntegerOperandToken implements OperandToken {
     {
         OperationDictionary.addEntry(
             OperationToken.SUM,
-            (op1, op2) -> {
+            (operands) -> {
 				return (
                     new IntegerOperandToken(
-                        ((IntegerOperandToken)op1).getValue() + ((IntegerOperandToken)op2).getValue()
+                        ((IntegerOperandToken)operands.pop()).getValue() + ((IntegerOperandToken)operands.pop()).getValue()
                     )
                 );
 			},
@@ -25,10 +25,10 @@ public final class IntegerOperandToken implements OperandToken {
         );
         OperationDictionary.addEntry(
             OperationToken.SUB,
-            (op1, op2) -> {
+            (operands) -> {
 				return (
                     new IntegerOperandToken(
-                        ((IntegerOperandToken)op1).getValue() - ((IntegerOperandToken)op2).getValue()
+                        ((IntegerOperandToken)operands.pop()).getValue() - ((IntegerOperandToken)operands.pop()).getValue()
                     )
                 );
 			},
@@ -36,10 +36,10 @@ public final class IntegerOperandToken implements OperandToken {
         );
         OperationDictionary.addEntry(
             OperationToken.MULT,
-            (op1, op2) -> {
+            (operands) -> {
 				return (
                     new IntegerOperandToken(
-                        ((IntegerOperandToken)op1).getValue() * ((IntegerOperandToken)op2).getValue()
+                        ((IntegerOperandToken)operands.pop()).getValue() * ((IntegerOperandToken)operands.pop()).getValue()
                     )
                 );
 			},
@@ -47,7 +47,9 @@ public final class IntegerOperandToken implements OperandToken {
         );
         OperationDictionary.addEntry(
             OperationToken.DIV,
-            (op1, op2) -> {
+            (operands) -> {
+                OperandToken op1 = operands.pop();
+                OperandToken op2 = operands.pop();
                 if (0 == ((IntegerOperandToken)op2).getValue()) {
                     throw new IllegalArgumentException("Try to divide by zero");
                 }
