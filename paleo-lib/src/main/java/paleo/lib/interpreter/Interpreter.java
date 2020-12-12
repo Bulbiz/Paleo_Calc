@@ -50,24 +50,18 @@ public final class Interpreter {
 			}
 			else {
 				operationToken = (OperationToken) token;
-
-				if (OperationToken.LPAREN == operationToken) {
-					operationStack.push(operationToken);
-				}
-				else if (OperationToken.RPAREN == operationToken) {
-					while (OperationToken.LPAREN != operationStack.peek()) {
-						evaluateOperation();
-					}
-					operationStack.pop();
-				}
-				else {
-					while (
-						!operationStack.isEmpty()
-						&& operationToken.getPriority() <= operationStack.peek().getPriority())
-					{
-						evaluateOperation();
-					}
-					operationStack.push(operationToken);
+				switch (operationToken){
+					case LPAREN : operationStack.push(operationToken); break;
+					case RPAREN : 
+						while (OperationToken.LPAREN != operationStack.peek()) 
+							evaluateOperation();
+						operationStack.pop();
+						break;
+					default :
+						while (!operationStack.isEmpty() && operationToken.getPriority() <= operationStack.peek().getPriority())
+							evaluateOperation();
+						operationStack.push(operationToken);
+						break;
 				}
 			}
 		}
