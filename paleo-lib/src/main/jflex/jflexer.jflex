@@ -6,7 +6,10 @@
 package paleo.lib.parser;
 
 import java.util.ArrayList;
+
 import paleo.lib.token.*;
+import paleo.lib.historic.HistoricToken;
+import paleo.lib.historic.exception.InvalidHistoricTokenException;
 
 %%
 
@@ -15,24 +18,55 @@ import paleo.lib.token.*;
 %class JFLexer
 %unicode
 
+%{
+	private boolean histFlag = false;
+	private HistoricToken currentToken = null;
+%}
+
 white	= [ \t\f]+
 digit 	= [0-9]
 integer = [-]?{digit}+
 real 	= [-]?{integer}("."{integer})
 
+%state HIST
+
 %%
 
-{white}		{ }
+<YYINITIAL> {
+	"hist" 		{ this.histFlag = false; this.currentToken = null; yybegin(HIST); }
 
-{real} 		{
-	return(new DoubleOperandToken(Double.parseDouble(yytext())));
+	{white}		{ }
+	{real} 		{ return(new DoubleOperandToken(Double.parseDouble(yytext()))); }
+	{integer} 	{ return(new IntegerOperandToken(Integer.parseInt(yytext()))); }
+
+	"+" 		{ return(OperationToken.SUM); }
+	"-" 		{ return(OperationToken.SUB); }
+	"*" 		{ return(OperationToken.MULT); }
+	"/" 		{ return(OperationToken.DIV); }
+	"(" 		{ return(OperationToken.LPAREN); }
+	")" 		{ return(OperationToken.RPAREN); }
 }
-{integer} 	{
-	return(new IntegerOperandToken(Integer.parseInt(yytext())));
+
+<HIST> {
+	"("
+	{
+		if (false != this.histFlag)
+			throw new InvalidHistoricTokenException();
+		this.histFlag = true;
+	}
+
+	{integer}
+	{
+		if (true != this.histFlag)
+			throw new InvalidHistoricTokenException();
+		this.currentToken = new HistoricToken(Integer.parseInt(yytext()));
+	}
+
+	")"
+	{
+		if (null == this.currentToken)
+			throw new InvalidHistoricTokenException();
+		yybegin(YYINITIAL);
+		return this.currentToken;
+	}
 }
-"+" 		{ return(OperationToken.SUM); }
-"-" 		{ return(OperationToken.SUB); }
-"*" 		{ return(OperationToken.MULT); }
-"/" 		{ return(OperationToken.DIV); }
-"(" 		{ return(OperationToken.LPAREN); }
-")" 		{ return(OperationToken.RPAREN); }
