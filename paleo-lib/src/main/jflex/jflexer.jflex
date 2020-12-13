@@ -30,6 +30,10 @@ real 	= [-]?{integer}("."{integer})
 {integer} 	{
 	return(new IntegerOperandToken(Integer.parseInt(yytext())));
 }
+
+"true"		{return new BooleanOperandToken(true);}
+"false"		{return new BooleanOperandToken(false);}
+
 "+" 		{ return(OperationToken.SUM); }
 "-" 		{ return(OperationToken.SUB); }
 "*" 		{ return(OperationToken.MULT); }
