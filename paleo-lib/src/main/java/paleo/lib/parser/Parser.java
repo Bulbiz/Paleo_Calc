@@ -44,6 +44,7 @@ public final class Parser {
 			while (null != (token = lexer.yylex())) {
 			    tokens.add(token);
 			}
+        //TODO: Must find a way to get error messages.
 		} catch (Exception e) {
             return Optional.empty();
         } catch (Error e) {

@@ -33,8 +33,8 @@ public final class Interpreter {
 	/**
 	 * Evaluates the {@link Queue} of {@link Yytoken} using two {@link Stack}.
 	 *
-	 * @note Used algorithm can be found at
-	 * https:/}/algorithms.tutorialhorizon.com/evaluation-of-infix-expressions/
+	 * @note used algorithm can be found at
+	 * https://algorithms.tutorialhorizon.com/evaluation-of-infix-expressions/
 	 *
 	 * @return the last {@link OperandToken} of the operandStack.
 	 * @throws IllegalArgumentException if the expression is not valid.

@@ -6,7 +6,10 @@
 package paleo.lib.parser;
 
 import java.util.ArrayList;
+
 import paleo.lib.token.*;
+import paleo.lib.historic.HistoricToken;
+import paleo.lib.historic.exception.InvalidHistoricTokenException;
 
 %%
 
@@ -15,38 +18,60 @@ import paleo.lib.token.*;
 %class JFLexer
 %unicode
 
+%{
+	private boolean histFlag = false;
+	private HistoricToken currentToken = null;
+%}
+
 white	= [ \t\f]+
 digit 	= [0-9]
 integer = [-]?{digit}+
 real 	= [-]?{integer}("."{integer})
 
+%state HIST
+
 %%
 
-{white}		{ }
+<YYINITIAL> {
+	"hist" 		{ this.histFlag = false; this.currentToken = null; yybegin(HIST); }
 
-{real} 		{
-	return(new DoubleOperandToken(Double.parseDouble(yytext())));
-}
-{integer} 	{
-	return(new IntegerOperandToken(Integer.parseInt(yytext())));
-}
+	{white}		{ }
+	{real} 		{ return(new DoubleOperandToken(Double.parseDouble(yytext()))); }
+	{integer} 	{ return(new IntegerOperandToken(Integer.parseInt(yytext()))); }
+    "true"		{return new BooleanOperandToken(true);}
+    "false"		{return new BooleanOperandToken(false);}
 
-
-"+" 		{ return(OperationToken.SUM); }
-"-" 		{ return(OperationToken.SUB); }
-"*" 		{ return(OperationToken.MULT); }
-"/" 		{ return(OperationToken.DIV); }
-"(" 		{ return(OperationToken.LPAREN); }
-")" 		{ return(OperationToken.RPAREN); }
-
-"true"			{
-	return new BooleanOperandToken(true);
-}
-
-"false"			{
-	return new BooleanOperandToken(false);
+    "not"		{ return(OperationToken.NOT);}
+    "and"		{ return(OperationToken.AND);}
+    "or"		{ return(OperationToken.OR);}
+	"+" 		{ return(OperationToken.SUM); }
+	"-" 		{ return(OperationToken.SUB); }
+	"*" 		{ return(OperationToken.MULT); }
+	"/" 		{ return(OperationToken.DIV); }
+	"(" 		{ return(OperationToken.LPAREN); }
+	")" 		{ return(OperationToken.RPAREN); }
 }
 
-"not"		{ return(OperationToken.NOT);}
-"and"		{ return(OperationToken.AND);}
-"or"		{ return(OperationToken.OR);}
+<HIST> {
+	"("
+	{
+		if (false != this.histFlag)
+			throw new InvalidHistoricTokenException();
+		this.histFlag = true;
+	}
+
+	{integer}
+	{
+		if (true != this.histFlag)
+			throw new InvalidHistoricTokenException();
+		this.currentToken = new HistoricToken(Integer.parseInt(yytext()));
+	}
+
+	")"
+	{
+		if (null == this.currentToken)
+			throw new InvalidHistoricTokenException();
+		yybegin(YYINITIAL);
+		return this.currentToken;
+	}
+}
