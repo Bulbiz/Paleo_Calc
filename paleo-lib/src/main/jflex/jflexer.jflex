@@ -31,6 +31,14 @@ real 	= [-]?{integer}("."{integer})
 	return(new IntegerOperandToken(Integer.parseInt(yytext())));
 }
 
+
+"+" 		{ return(OperationToken.SUM); }
+"-" 		{ return(OperationToken.SUB); }
+"*" 		{ return(OperationToken.MULT); }
+"/" 		{ return(OperationToken.DIV); }
+"(" 		{ return(OperationToken.LPAREN); }
+")" 		{ return(OperationToken.RPAREN); }
+
 "true"			{
 	return new BooleanOperandToken(true);
 }
@@ -39,10 +47,6 @@ real 	= [-]?{integer}("."{integer})
 	return new BooleanOperandToken(false);
 }
 
-
-"+" 		{ return(OperationToken.SUM); }
-"-" 		{ return(OperationToken.SUB); }
-"*" 		{ return(OperationToken.MULT); }
-"/" 		{ return(OperationToken.DIV); }
-"(" 		{ return(OperationToken.LPAREN); }
-")" 		{ return(OperationToken.RPAREN); }
+"not"		{ return(OperationToken.NOT);}
+"and"		{ return(OperationToken.AND);}
+"or"		{ return(OperationToken.OR);}

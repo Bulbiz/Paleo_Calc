@@ -3,6 +3,48 @@ import paleo.lib.interpreter.OperationDictionary;
 import java.util.List;
 
 public final class BooleanOperandToken implements OperandToken {
+/**
+     * Adds corresponding {@link OperationEvaluator} implementations
+     * to the {@link OperationDictionary}.
+     */
+    {
+        OperationDictionary.addEntry(
+            OperationToken.AND,
+            (operands) -> {
+				return (
+                    new BooleanOperandToken(
+                        ((BooleanOperandToken)operands.pop()).getValue() && ((BooleanOperandToken)operands.pop()).getValue()
+                    )
+                );
+			},
+            List.of(BooleanOperandToken.key,BooleanOperandToken.key)
+        );
+        
+        OperationDictionary.addEntry(
+            OperationToken.OR,
+            (operands) -> {
+				return (
+                    new BooleanOperandToken(
+                        ((BooleanOperandToken)operands.pop()).getValue() || ((BooleanOperandToken)operands.pop()).getValue()
+                    )
+                );
+			},
+            List.of(BooleanOperandToken.key,BooleanOperandToken.key)
+        );
+
+        OperationDictionary.addEntry(
+            OperationToken.NOT,
+            (operands) -> {
+				return (
+                    new BooleanOperandToken(
+                        !((BooleanOperandToken)operands.pop()).getValue()
+                    )
+                );
+			},
+            List.of(BooleanOperandToken.key)
+        );
+    }
+
     private boolean value;
     public static final String key = "Boolean";
     /**

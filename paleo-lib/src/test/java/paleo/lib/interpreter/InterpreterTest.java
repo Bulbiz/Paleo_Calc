@@ -11,6 +11,7 @@ import java.util.Optional;
 import paleo.lib.parser.Parser;
 import paleo.lib.token.DoubleOperandToken;
 import paleo.lib.token.IntegerOperandToken;
+import paleo.lib.token.BooleanOperandToken;
 
 /**
  * Unit test for {@link Interpreter}.
@@ -130,5 +131,45 @@ public class InterpreterTest {
         } catch(IllegalArgumentException e) {
             assertTrue(true);
         }
+    }
+
+    @Test
+    public void simpleBooleanToken() {
+        assertEquals(
+            new BooleanOperandToken (true),
+            new Interpreter(new Parser("true").parse().get()).evaluate()
+        );
+    }
+
+    @Test
+    public void simpleOrBooleanExpression() {
+        assertEquals(
+            new BooleanOperandToken (true),
+            new Interpreter(new Parser("true or false").parse().get()).evaluate()
+        );
+    }
+
+    @Test
+    public void simpleAndBooleanExpression() {
+        assertEquals(
+            new BooleanOperandToken (false),
+            new Interpreter(new Parser("true and false").parse().get()).evaluate()
+        );
+    }
+
+    @Test
+    public void simpleNotBooleanExpression() {
+        assertEquals(
+            new BooleanOperandToken (false),
+            new Interpreter(new Parser("not true").parse().get()).evaluate()
+        );
+    }
+
+    @Test
+    public void BooleanExpression() {
+        assertEquals(
+            new BooleanOperandToken (false),
+            new Interpreter(new Parser("not (true or (true and false))").parse().get()).evaluate()
+        );
     }
 }
