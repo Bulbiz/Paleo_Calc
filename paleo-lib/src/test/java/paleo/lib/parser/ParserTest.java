@@ -212,6 +212,13 @@ public class ParserTest {
         assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
     }
 
+    @Test
+    public void simpleBooleanToken() {
+        final Queue<Yytoken> actualTokens = new Parser("true").parse().get();
+        final Queue<Yytoken> expectedTokens = createTokenQueue(new BooleanOperandToken(true));
+
+        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+    }
 
     @Test
     public void simpleBooleanExpression() {
@@ -221,15 +228,25 @@ public class ParserTest {
                     new BooleanOperandToken(true),
                     OperationToken.AND,
                     OperationToken.NOT,
-                    new BooleanOperandToken(false));
+                    new BooleanOperandToken(false)
+            );
         assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
     }
 
     @Test
-    public void simpleBooleanToken() {
-        final Queue<Yytoken> actualTokens = new Parser("true").parse().get();
-        final Queue<Yytoken> expectedTokens = createTokenQueue(new BooleanOperandToken(true));
-
+    public void simpleParenBooleanExpression() {
+        final Queue<Yytoken> actualTokens = new Parser("true  and (not false and true)").parse().get();
+        final Queue<Yytoken> expectedTokens = 
+            createTokenQueue(
+                    new BooleanOperandToken(true),
+                    OperationToken.AND,
+                    OperationToken.LPAREN,
+                    OperationToken.NOT,
+                    new BooleanOperandToken(false),
+                    OperationToken.AND,
+                    new BooleanOperandToken(true),
+                    OperationToken.RPAREN
+            );
         assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
     }
 }
