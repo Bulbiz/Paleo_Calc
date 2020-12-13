@@ -11,7 +11,7 @@ lib:
 
 calc:
 	cd paleo-calc && mvn compile test assembly:single
-	cp paleo-calc/target/calc-0.1-jar-with-dependencies.jar \
+	cp paleo-calc/target/calc-1.2-jar-with-dependencies.jar \
 	   $(JAR_NAME).jar
 
 test:

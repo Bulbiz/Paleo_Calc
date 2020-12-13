@@ -28,9 +28,9 @@ public final class OperationDictionary {
 
 	private static String generateKeyFrom (
 					OperationToken operation,
-					List<String> signature){
-		Stream <String> stream = signature.stream();
-		String key = operation.getKey() + stream.collect(Collectors.joining("|"));
+					List<Class <? extends OperandToken>> signature){
+		Stream <Class <? extends OperandToken>> stream = signature.stream();
+		String key = operation.getKey() + stream.map(e -> e.toString()).collect(Collectors.joining("|"));
 		return key;
 	}
 
@@ -46,7 +46,7 @@ public final class OperationDictionary {
 	public static void addEntry(
 					OperationToken operation, 
 					OperationEvaluator opEvaluator, 
-					List<String> signature)
+					List<Class <? extends OperandToken>> signature)
 	{
 		String key = generateKeyFrom(operation,signature);
 		if (!operationMap.containsKey(key)) {
@@ -68,7 +68,7 @@ public final class OperationDictionary {
 					OperationToken operation, 
 					Deque<OperandToken> signature)
 	{
-		List<String> signatureKey = signature.stream().map(o -> o.getKey()).collect(Collectors.toList());
+		List<Class <? extends OperandToken>> signatureKey = signature.stream().map(o -> o.getClass()).collect(Collectors.toList());
 		String key = generateKeyFrom(operation, signatureKey);
 		if (!operationMap.containsKey(key))
 			throw new IllegalArgumentException( operation.toString() + " unsupported operation" );

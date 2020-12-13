@@ -21,7 +21,7 @@ public final class IntegerOperandToken implements OperandToken {
                     )
                 );
 			},
-            List.of(IntegerOperandToken.key,IntegerOperandToken.key)
+            List.of(IntegerOperandToken.class,IntegerOperandToken.class)
         );
         OperationDictionary.addEntry(
             OperationToken.SUB,
@@ -32,7 +32,7 @@ public final class IntegerOperandToken implements OperandToken {
                     )
                 );
 			},
-            List.of(IntegerOperandToken.key,IntegerOperandToken.key)
+            List.of(IntegerOperandToken.class,IntegerOperandToken.class)
         );
         OperationDictionary.addEntry(
             OperationToken.MULT,
@@ -43,7 +43,7 @@ public final class IntegerOperandToken implements OperandToken {
                     )
                 );
 			},
-            List.of(IntegerOperandToken.key,IntegerOperandToken.key)
+            List.of(IntegerOperandToken.class,IntegerOperandToken.class)
         );
         OperationDictionary.addEntry(
             OperationToken.DIV,
@@ -59,12 +59,11 @@ public final class IntegerOperandToken implements OperandToken {
                     )
                 );
 			},
-            List.of(IntegerOperandToken.key,IntegerOperandToken.key)
+            List.of(IntegerOperandToken.class,IntegerOperandToken.class)
         );
     }
 
     private int value;
-    public static final String key = "Integer";
     /**
      * {@link IntegerOperandToken} constructor.
      *
@@ -105,9 +104,5 @@ public final class IntegerOperandToken implements OperandToken {
      */
     public void setValue(int value) {
         this.value = value;
-    }
-
-    public String getKey (){
-        return key;
     }
 }
