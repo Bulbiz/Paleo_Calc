@@ -21,7 +21,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            List.of(DoubleOperandToken.key,DoubleOperandToken.key)
+            List.of(DoubleOperandToken.class,DoubleOperandToken.class)
         );
         OperationDictionary.addEntry(
             OperationToken.SUB,
@@ -32,7 +32,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            List.of(DoubleOperandToken.key,DoubleOperandToken.key)
+            List.of(DoubleOperandToken.class,DoubleOperandToken.class)
         );
         OperationDictionary.addEntry(
             OperationToken.MULT,
@@ -43,7 +43,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            List.of(DoubleOperandToken.key,DoubleOperandToken.key)
+            List.of(DoubleOperandToken.class,DoubleOperandToken.class)
         );
         OperationDictionary.addEntry(
             OperationToken.DIV,
@@ -59,7 +59,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            List.of(DoubleOperandToken.key,DoubleOperandToken.key)
+            List.of(DoubleOperandToken.class,DoubleOperandToken.class)
         );
 
         /**
@@ -74,7 +74,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            List.of(IntegerOperandToken.key,DoubleOperandToken.key)
+            List.of(IntegerOperandToken.class,DoubleOperandToken.class)
         );
         OperationDictionary.addEntry(
             OperationToken.SUM,
@@ -85,7 +85,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            List.of(DoubleOperandToken.key,IntegerOperandToken.key)
+            List.of(DoubleOperandToken.class,IntegerOperandToken.class)
         );
         OperationDictionary.addEntry(
             OperationToken.SUB,
@@ -96,7 +96,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            List.of(IntegerOperandToken.key,DoubleOperandToken.key)
+            List.of(IntegerOperandToken.class,DoubleOperandToken.class)
         );
         OperationDictionary.addEntry(
             OperationToken.SUB,
@@ -107,7 +107,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            List.of(DoubleOperandToken.key,IntegerOperandToken.key)
+            List.of(DoubleOperandToken.class,IntegerOperandToken.class)
         );
         OperationDictionary.addEntry(
             OperationToken.MULT,
@@ -118,7 +118,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            List.of(IntegerOperandToken.key,DoubleOperandToken.key)
+            List.of(IntegerOperandToken.class,DoubleOperandToken.class)
         );
         OperationDictionary.addEntry(
             OperationToken.MULT,
@@ -129,7 +129,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            List.of(DoubleOperandToken.key,IntegerOperandToken.key)
+            List.of(DoubleOperandToken.class,IntegerOperandToken.class)
         );
         OperationDictionary.addEntry(
             OperationToken.DIV,
@@ -145,7 +145,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            List.of(IntegerOperandToken.key,DoubleOperandToken.key)
+            List.of(IntegerOperandToken.class,DoubleOperandToken.class)
         );
         OperationDictionary.addEntry(
             OperationToken.DIV,
@@ -161,7 +161,7 @@ public final class DoubleOperandToken implements OperandToken {
                     )
                 );
 			},
-            List.of(DoubleOperandToken.key,IntegerOperandToken.key)
+            List.of(DoubleOperandToken.class,IntegerOperandToken.class)
         );
     }
 
