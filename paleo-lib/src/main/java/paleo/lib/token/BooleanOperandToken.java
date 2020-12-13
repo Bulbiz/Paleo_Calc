@@ -30,7 +30,7 @@ public final class BooleanOperandToken implements OperandToken {
 
     @Override
     public String toString() {
-        return String.valueOf(this.value);
+        return value?"true" : "false";
     }
 
     /**

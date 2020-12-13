@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import paleo.lib.token.DoubleOperandToken;
 import paleo.lib.token.IntegerOperandToken;
+import paleo.lib.token.BooleanOperandToken;
 import paleo.lib.token.OperationToken;
 import paleo.lib.token.Yytoken;
 
@@ -207,6 +208,15 @@ public class ParserTest {
                     OperationToken.RPAREN,
                     OperationToken.SUM,
                     new IntegerOperandToken(1));
+
+        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+    }
+
+
+    @Test
+    public void simpleBooleanToken() {
+        final Queue<Yytoken> actualTokens = new Parser("true").parse().get();
+        final Queue<Yytoken> expectedTokens = createTokenQueue(new BooleanOperandToken(true));
 
         assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
     }
