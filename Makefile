@@ -2,6 +2,7 @@
 
 JFLEX_OUTPUT = paleo-lib/src/main/java/paleo/lib/parser/JFLexer.java
 JAR_NAME = paleo-calculator
+CALC_VERSION = 1.2
 
 all: lib calc
 
@@ -11,7 +12,7 @@ lib:
 
 calc:
 	cd paleo-calc && mvn compile test assembly:single
-	cp paleo-calc/target/calc-1.2-jar-with-dependencies.jar \
+	cp paleo-calc/target/calc-$(CALC_VERSION)-jar-with-dependencies.jar \
 	   $(JAR_NAME).jar
 
 test:
@@ -20,7 +21,7 @@ test:
 run:
 	java -jar $(JAR_NAME).jar
 
-doc:
+doc: clean
 	if [ -f paleolib-doc.html ]; then rm paleolib-doc.html; fi;
 	if [ -f paleocalc-doc.html ]; then rm paleocalc-doc.html; fi;
 	cd paleo-lib && mvn javadoc:javadoc
