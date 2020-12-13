@@ -17,7 +17,7 @@ public final class BooleanOperandToken implements OperandToken {
                     )
                 );
 			},
-            List.of(BooleanOperandToken.key,BooleanOperandToken.key)
+            List.of(BooleanOperandToken.class,BooleanOperandToken.class)
         );
         
         OperationDictionary.addEntry(
@@ -29,7 +29,7 @@ public final class BooleanOperandToken implements OperandToken {
                     )
                 );
 			},
-            List.of(BooleanOperandToken.key,BooleanOperandToken.key)
+            List.of(BooleanOperandToken.class,BooleanOperandToken.class)
         );
 
         OperationDictionary.addEntry(
@@ -41,12 +41,11 @@ public final class BooleanOperandToken implements OperandToken {
                     )
                 );
 			},
-            List.of(BooleanOperandToken.key)
+            List.of(BooleanOperandToken.class)
         );
     }
 
     private boolean value;
-    public static final String key = "Boolean";
     /**
      * {@link DoubleOperandToken} constructor.
      *
@@ -87,9 +86,5 @@ public final class BooleanOperandToken implements OperandToken {
      */
     public void setValue(final Boolean value) {
         this.value = value;
-    }
-
-    public String getKey (){
-        return key;
     }
 }
