@@ -9,13 +9,11 @@ import paleo.lib.token.OperandToken;
  */
 @FunctionalInterface
 public interface OperationEvaluator {
-
 	/**
-	 * Evaluates an operation according two operands.
+	 * Evaluates an operation according a queue of operands.
 	 *
-	 * @param op1 is the left operand.
-	 * @param op2 is the right operand.
-	 * @return the resulting operand.
+	 * @param operands is a {@link Deque} of {@link OperandToken} used for the evalutation.
+	 * @return the resulting {@link OperandToken}.
 	 */
-	 public OperandToken evaluateOperation(Deque<OperandToken> operands);
+	public OperandToken evaluateOperation(Deque<OperandToken> operands);
 }
