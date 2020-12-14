@@ -9,7 +9,7 @@ public enum OperationToken implements Yytoken {
 	MULT("MULT_TOKEN", 2, 2),
 	DIV("DIV_TOKEN", 2, 2),
 	SUB("SUB_TOKEN", 1, 2),
-	SUM("SUM_TOKEN", 1, 2);
+	SUM("SUM_TOKEN", 1, 2),
     AND("AND", 1, 2),
     OR("OR", 1, 2),
     NOT("NOT", 2, 1);
