@@ -12,6 +12,9 @@ public interface OperationEvaluator {
 	/**
 	 * Evaluates an operation according a queue of operands.
 	 *
+	 * @note {@link Deque} is used in order to keep the right operand "position" by using
+	 * a single `pop` call.
+	 *
 	 * @param operands is a {@link Deque} of {@link OperandToken} used for the evalutation.
 	 * @return the resulting {@link OperandToken}.
 	 */
