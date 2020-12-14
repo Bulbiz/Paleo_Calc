@@ -28,7 +28,7 @@ public final class OperationDictionary {
 	) {
 		return (
 			operation.toString() +
-			signature.stream().map(e -> e.toString()).collect(Collectors.joining("|"))
+			signature.stream().map(e -> e.toString()).collect(Collectors.joining(" "))
 		);
 	}
 
@@ -37,9 +37,8 @@ public final class OperationDictionary {
 	 * in operationMap.
 	 *
 	 * @param operation is the {@link OperationToken} implemented by the opEvaluator.
-	 * @param op1 is the {@link Class} of the left operand.
-	 * @param op2 is the {@link Class} of the right operand.
-	 * @param opEvaluator is the implementation of the operation.
+	 * @param opEvaluator is the {@link OperationEvaluator} implementation of the operation.
+	 * @param signature is the list of {@link Operand} classes supported by the opereation.
 	 */
 	public static void addEntry(
 		OperationToken operation,
@@ -47,6 +46,7 @@ public final class OperationDictionary {
 		List<Class<? extends OperandToken>> signature
 	) {
 		String key = generateKeyFrom(operation, signature);
+
 		if (!operationMap.containsKey(key)) {
 			operationMap.put(key, opEvaluator);
 		}
@@ -57,8 +57,7 @@ public final class OperationDictionary {
 	 * operation and operands types.
 	 *
 	 * @param operation is the wanted {@link OperationToken}.
-	 * @param op1 is the {@link Class} of the left operand.
-	 * @param op2 is the {@link Class} of the right operand.
+	 * @param signature is the list of {@link Operand} classes of the argument.
 	 * @return the corresponding implementation of the operation if its
 	 * provided, otherwise, throw an {@link IllegalArgumentException}.
 	 */
@@ -71,8 +70,13 @@ public final class OperationDictionary {
 			.map(o -> o.getClass())
 			.collect(Collectors.toList());
 		String key = generateKeyFrom(operation, signatureKey);
-		if (!operationMap.containsKey(key)) throw new IllegalArgumentException(
-			operation.toString() + " unsupported operation"
-		); else return operationMap.get(key);
+
+		if (!operationMap.containsKey(key)) {
+			throw new IllegalArgumentException(
+				operation.toString() + " unsupported operation"
+			);
+		} else {
+			return operationMap.get(key);
+		}
 	}
 }

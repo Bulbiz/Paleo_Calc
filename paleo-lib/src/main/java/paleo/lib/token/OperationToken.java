@@ -11,9 +11,9 @@ public enum OperationToken implements Yytoken {
 	SUB("SUB_TOKEN", 1, 2),
 	SUM("SUM_TOKEN", 1, 2);
 
-	private final String name; ///< Only used for debug.
+	private final String name; ///< Is the operation name used for generate {@link OperationDictionary} entry key.
 	private final int priority; ///< Is the operation priority for evaluation.
-	private final int arity;
+	private final int arity; ///< Is the operation arity.
 
 	private OperationToken(final String name, final int priority, final int arity) {
 		this.name = name;
