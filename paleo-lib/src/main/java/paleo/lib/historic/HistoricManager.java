@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Queue;
-import java.util.stream.Stream;
 import paleo.lib.interpreter.Interpreter;
 import paleo.lib.interpreter.OperationEvaluator;
 import paleo.lib.parser.Parser;

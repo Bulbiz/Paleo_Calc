@@ -1,11 +1,9 @@
 package paleo.lib.interpreter;
 
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.Deque;
-
 import paleo.lib.token.OperandToken;
 import paleo.lib.token.OperationToken;
 
@@ -22,16 +20,16 @@ public final class OperationDictionary {
 	/**
 	 * Stores all {@link OperationEvaluator}.
 	 */
-	private static HashMap<String,OperationEvaluator> operationMap = 
-					new HashMap<String,OperationEvaluator>();
+	private static HashMap<String, OperationEvaluator> operationMap = new HashMap<>();
 
-
-	private static String generateKeyFrom (
-					OperationToken operation,
-					List<Class <? extends OperandToken>> signature){
-		Stream <Class <? extends OperandToken>> stream = signature.stream();
-		String key = operation.getKey() + stream.map(e -> e.toString()).collect(Collectors.joining("|"));
-		return key;
+	private static String generateKeyFrom(
+		OperationToken operation,
+		List<Class<? extends OperandToken>> signature
+	) {
+		return (
+			operation.toString() +
+			signature.stream().map(e -> e.toString()).collect(Collectors.joining(" "))
+		);
 	}
 
 	/**
@@ -39,18 +37,18 @@ public final class OperationDictionary {
 	 * in operationMap.
 	 *
 	 * @param operation is the {@link OperationToken} implemented by the opEvaluator.
-	 * @param op1 is the {@link Class} of the left operand.
-	 * @param op2 is the {@link Class} of the right operand.
-	 * @param opEvaluator is the implementation of the operation.
+	 * @param opEvaluator is the {@link OperationEvaluator} implementation of the operation.
+	 * @param signature is the list of {@link Operand} classes supported by the opereation.
 	 */
 	public static void addEntry(
-					OperationToken operation, 
-					OperationEvaluator opEvaluator, 
-					List<Class <? extends OperandToken>> signature)
-	{
-		String key = generateKeyFrom(operation,signature);
+		OperationToken operation,
+		OperationEvaluator opEvaluator,
+		List<Class<? extends OperandToken>> signature
+	) {
+		String key = generateKeyFrom(operation, signature);
+
 		if (!operationMap.containsKey(key)) {
-			operationMap.put(key,opEvaluator);
+			operationMap.put(key, opEvaluator);
 		}
 	}
 
@@ -59,20 +57,26 @@ public final class OperationDictionary {
 	 * operation and operands types.
 	 *
 	 * @param operation is the wanted {@link OperationToken}.
-	 * @param op1 is the {@link Class} of the left operand.
-	 * @param op2 is the {@link Class} of the right operand.
+	 * @param signature is the list of {@link Operand} classes of the argument.
 	 * @return the corresponding implementation of the operation if its
 	 * provided, otherwise, throw an {@link IllegalArgumentException}.
 	 */
 	public static OperationEvaluator getOperationEvaluator(
-					OperationToken operation, 
-					Deque<OperandToken> signature)
-	{
-		List<Class <? extends OperandToken>> signatureKey = signature.stream().map(o -> o.getClass()).collect(Collectors.toList());
+		OperationToken operation,
+		Deque<OperandToken> signature
+	) {
+		List<Class<? extends OperandToken>> signatureKey = signature
+			.stream()
+			.map(o -> o.getClass())
+			.collect(Collectors.toList());
 		String key = generateKeyFrom(operation, signatureKey);
-		if (!operationMap.containsKey(key))
-			throw new IllegalArgumentException( operation.toString() + " unsupported operation" );
-		else
+
+		if (!operationMap.containsKey(key)) {
+			throw new IllegalArgumentException(
+				operation.toString() + " unsupported operation"
+			);
+		} else {
 			return operationMap.get(key);
+		}
 	}
 }

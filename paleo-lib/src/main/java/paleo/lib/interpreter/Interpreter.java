@@ -1,10 +1,9 @@
 package paleo.lib.interpreter;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Queue;
 import java.util.Stack;
-import java.util.Deque;
-import java.util.ArrayDeque;
-
 import paleo.lib.token.OperandToken;
 import paleo.lib.token.OperationToken;
 import paleo.lib.token.Yytoken;
@@ -48,20 +47,24 @@ public final class Interpreter {
 
 			if (token.isAnOperandToken()) {
 				operandStack.push((OperandToken) token);
-			}
-			else {
+			} else {
 				operationToken = (OperationToken) token;
-				switch (operationToken){
-					case LPAREN : operationStack.push(operationToken); break;
-					case RPAREN : 
-						while (OperationToken.LPAREN != operationStack.peek()){
+				switch (operationToken) {
+					case LPAREN:
+						operationStack.push(operationToken);
+						break;
+					case RPAREN:
+						while (OperationToken.LPAREN != operationStack.peek()) {
 							evaluateOperation();
 						}
 						operationStack.pop();
 						break;
-					default :
-						while (!operationStack.isEmpty() 
-							&& operationToken.getPriority() <= operationStack.peek().getPriority()){
+					default:
+						while (
+							!operationStack.isEmpty() &&
+							operationToken.getPriority() <=
+							operationStack.peek().getPriority()
+						) {
 							evaluateOperation();
 						}
 						operationStack.push(operationToken);
@@ -82,19 +85,27 @@ public final class Interpreter {
 	}
 
 	private void evaluateOperation() throws IllegalArgumentException {
-		if (operationStack.isEmpty()) 
+		OperationToken operation;
+		Deque<OperandToken> operandsDeque;
+
+		if (operationStack.isEmpty()) {
 			throw new IllegalArgumentException("Not enough operations");
-			
-		OperationToken operation = operationStack.pop();
+		}
 
-		if (operation.getArity() > operandStack.size()) 
+		operation = operationStack.pop();
+		if (operation.getArity() > operandStack.size()) {
 			throw new IllegalArgumentException("Not enough operands");
+		}
 
-		Deque <OperandToken> argument = new ArrayDeque <OperandToken> ();
-		for (int i=0; i < operation.getArity(); i ++)
-			argument.push(operandStack.pop());
+		operandsDeque = new ArrayDeque<OperandToken>();
+		for (int i = 0; i < operation.getArity(); i++) {
+			operandsDeque.push(operandStack.pop());
+		}
 
-		operandStack.push(OperationDictionary.getOperationEvaluator(
-			operation, argument).evaluateOperation(argument));
+		operandStack.push(
+			OperationDictionary
+				.getOperationEvaluator(operation, operandsDeque)
+				.evaluateOperation(operandsDeque)
+		);
 	}
 }
