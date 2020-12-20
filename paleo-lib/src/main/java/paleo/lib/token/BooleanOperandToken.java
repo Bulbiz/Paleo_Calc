@@ -47,9 +47,9 @@ public final class BooleanOperandToken implements OperandToken {
 
     private boolean value;
     /**
-     * {@link DoubleOperandToken} constructor.
+     * {@link BooleanOperandToken} constructor.
      *
-     * @param value is the operand corresponding real value.
+     * @param value is the boolean operand corresponding the value.
      */
     public BooleanOperandToken(final boolean value) {
         this.value = value;
