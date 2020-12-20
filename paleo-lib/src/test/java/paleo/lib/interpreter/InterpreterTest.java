@@ -7,11 +7,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Optional;
+import java.util.List;
 
 import paleo.lib.parser.Parser;
 import paleo.lib.token.DoubleOperandToken;
 import paleo.lib.token.IntegerOperandToken;
 import paleo.lib.token.BooleanOperandToken;
+import paleo.lib.token.SetOperandToken;
 
 /**
  * Unit test for {@link Interpreter}.
@@ -170,6 +172,63 @@ public class InterpreterTest {
         assertEquals(
             new BooleanOperandToken (false),
             new Interpreter(new Parser("not (true or (true and false))").parse().get()).evaluate()
+        );
+    }
+    @Test
+    public void SetSimple() {
+        assertEquals(
+            new SetOperandToken (List.of()),
+            new Interpreter(new Parser("{ }").parse().get()).evaluate()
+        );
+    }
+
+    @Test
+    public void SetIntegerSimple() {
+        assertEquals(
+            new SetOperandToken (List.of(new IntegerOperandToken(3))),
+            new Interpreter(new Parser("{ 3 }").parse().get()).evaluate()
+        );
+    }
+    @Test
+    public void SetDoubleSimple() {
+        assertEquals(
+            new SetOperandToken (List.of(new DoubleOperandToken(-3.5))),
+            new Interpreter(new Parser("{ -3.5 }").parse().get()).evaluate()
+        );
+    }
+    @Test
+    public void SetBooleanSimple() {
+        assertEquals(
+            new SetOperandToken (List.of(new BooleanOperandToken(true))),
+            new Interpreter(new Parser("{ true }").parse().get()).evaluate()
+        );
+    }
+    @Test
+    public void SetExpression() {
+        assertEquals(
+            new SetOperandToken (List.of(new BooleanOperandToken(true),new DoubleOperandToken(1.0),new BooleanOperandToken(false),new IntegerOperandToken(5))),
+            new Interpreter(new Parser("{ true ; 1.0 ; false ; 5 }").parse().get()).evaluate()
+        );
+    }
+    @Test
+    public void SetUnion() {
+        assertEquals(
+            new SetOperandToken (List.of(new BooleanOperandToken(true),new BooleanOperandToken(false),new IntegerOperandToken(1))),
+            new Interpreter(new Parser("{ true } union {false ; true ; false ; 1}").parse().get()).evaluate()
+        );
+    }
+    @Test
+    public void SetInter() {
+        assertEquals(
+            new SetOperandToken (List.of(new BooleanOperandToken(true))),
+            new Interpreter(new Parser("{ true } inter {false ; true ; false}").parse().get()).evaluate()
+        );
+    }
+    @Test
+    public void SetDiff() {
+        assertEquals(
+            new SetOperandToken (List.of(new DoubleOperandToken(1.0))),
+            new Interpreter(new Parser("{ true ; 1.0 } diff {false ; true ; false}").parse().get()).evaluate()
         );
     }
 }

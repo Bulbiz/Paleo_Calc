@@ -54,7 +54,10 @@ public final class SetOperandToken implements OperandToken {
     
     @Override
 	public boolean equals(Object obj) {
-        return true;
+        if (!(obj instanceof SetOperandToken))
+            return false;
+        List<OperandToken> objElement = ((SetOperandToken) obj).getElements();
+        return objElement.containsAll(this.getElements()) && this.getElements().containsAll(objElement);
     }
     
     @Override

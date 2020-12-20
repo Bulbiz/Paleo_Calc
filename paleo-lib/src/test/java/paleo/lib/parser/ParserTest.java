@@ -3,6 +3,7 @@ package paleo.lib.parser;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import paleo.lib.historic.HistoricToken;
 import paleo.lib.token.DoubleOperandToken;
 import paleo.lib.token.IntegerOperandToken;
 import paleo.lib.token.BooleanOperandToken;
+import paleo.lib.token.SetOperandToken;
 import paleo.lib.token.OperationToken;
 import paleo.lib.token.Yytoken;
 
@@ -293,5 +295,18 @@ public class ParserTest {
     @Test
     public void histCmdWhithNotValidArgShouldReturnEmpty() {
         assertTrue(new Parser("hist1) + hist(1(hist(3)))").parse().isEmpty());
+    }
+
+    @Test
+    public void expressionWithSimpleSet() {
+        final Queue<Yytoken> actualTokens =
+            new Parser("{1} union 3").parse().get();
+        final Queue<Yytoken> expectedTokens =
+            createTokenQueue(
+                new SetOperandToken(List.of(new IntegerOperandToken(1))),
+                OperationToken.UNION,
+                new IntegerOperandToken(3));
+
+        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
     }
 }
