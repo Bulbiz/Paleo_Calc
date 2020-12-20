@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.Queue;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import paleo.lib.interpreter.Interpreter;
+import paleo.lib.parser.Parser;
+import paleo.lib.token.OperandToken;
+import paleo.lib.token.Yytoken;
+import java.util.Optional;
 
 public final class SetOperandToken implements OperandToken {
 
@@ -37,11 +42,11 @@ public final class SetOperandToken implements OperandToken {
             List.of(SetOperandToken.class,SetOperandToken.class)
         );
     }
-    private ArrayList <String> elements;
+    private ArrayList <OperandToken> elements;
 
-    private SetOperandToken (List <String> ajout){
+    private SetOperandToken (List <OperandToken> ajout){
         /* Defensive Copy */
-        this.elements = new ArrayList<String> ();
+        this.elements = new ArrayList<OperandToken> ();
         this.elements.addAll(ajout);
     }
 
@@ -58,42 +63,48 @@ public final class SetOperandToken implements OperandToken {
     
     @Override
 	public String toString() {
-        return "{ " + elements.stream().collect(Collectors.joining(" ; ")) + " }";
+        return "{" + elements.stream().map(e -> e.toString()).collect(Collectors.joining(";")) + "}";
 	}
 
-    public List<String> getElements (){
-        List<String> res = new ArrayList<String> ();
+    public List<OperandToken> getElements (){
+        List<OperandToken> res = new ArrayList<OperandToken> ();
         res.addAll(this.elements);
         return res;
     }
 
     private static SetOperandToken inter (SetOperandToken op1, SetOperandToken op2){
-        List<String> element_op1 = op1.getElements();
-        List<String> element_op2 = op2.getElements();
-        List<String> element_inter = element_op1.stream().filter(e -> element_op2.contains(e)).collect(Collectors.toList());
+        List<OperandToken> element_op1 = op1.getElements();
+        List<OperandToken> element_op2 = op2.getElements();
+        List<OperandToken> element_inter = element_op1.stream().filter(e -> element_op2.contains(e)).collect(Collectors.toList());
         return new SetOperandToken (element_inter);
     }
 
     private static SetOperandToken union (SetOperandToken op1, SetOperandToken op2){
-        List<String> element_op1 = op1.getElements();
-        List<String> element_op2 = op2.getElements();
-        element_op2.stream().filter(e -> !element_op1.contains(e)).forEach(e -> element_op1.add(e));
-        return new SetOperandToken (element_op1);
+        List<OperandToken> element_op1 = op1.getElements();
+        List<OperandToken> element_op2 = op2.getElements();
+        element_op1.stream().filter(e -> !element_op2.contains(e)).forEach(e -> element_op2.add(e));
+        return new SetOperandToken (element_op2);
     }
 
     private static SetOperandToken diff (SetOperandToken op1, SetOperandToken op2){
-        List<String> element_op1 = op1.getElements();
-        List<String> element_op2 = op2.getElements();
-        element_op1.stream().filter(e -> !element_op2.contains(e)).collect(Collectors.toList());
-        return new SetOperandToken (element_op1);
+        List<OperandToken> element_op1 = op1.getElements();
+        List<OperandToken> element_op2 = op2.getElements();
+        List<OperandToken> recuperation =  element_op1.stream().filter(e -> !element_op2.contains(e)).collect(Collectors.toList());
+        return new SetOperandToken (recuperation);
     }
 
     /******* SetOperandToken Factory ***************/
-    private static List <String> storage = new ArrayList <String> ();
+    private static List <OperandToken> storage = new ArrayList <OperandToken> ();
 
     /*TODO: Reduce all the space to one space and delete the start space and the end space (    1   2    ) -> (1 2) */
     public static void addElement (String element){
-        storage.add(element);
+		Optional<Queue<Yytoken>> tokenExpression = new Parser(element).parse();
+
+        if (!tokenExpression.isPresent())
+            throw new IllegalArgumentException ("Element is not readable !");
+            
+        OperandToken e = new Interpreter(tokenExpression.get()).evaluate();
+        storage.add(e);
     }
 
     public static SetOperandToken build (){

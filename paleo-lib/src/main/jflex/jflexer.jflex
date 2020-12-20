@@ -60,16 +60,15 @@ real 	= [-]?{integer}("."{integer})
 }
 
 <SET> {
-	[^\;]+;  		{String element = yytext(); SetOperandToken.addElement (element.substring(0,element.length() - 1));}
-	
-	[^\}]+}  		
+	{integer}
 		{
-			yybegin(YYINITIAL);
 			String element = yytext(); 
-			SetOperandToken.addElement (element.substring(0,element.length() - 1)); 
-			return SetOperandToken.build();
+			SetOperandToken.addElement (element);
 		}
-
+		
+	{white}		{ }
+	";"			{ }
+	"}"			{yybegin(YYINITIAL);return SetOperandToken.build();}
 }
 <HIST> {
 	"("
