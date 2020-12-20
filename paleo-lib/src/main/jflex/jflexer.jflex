@@ -60,11 +60,10 @@ real 	= [-]?{integer}("."{integer})
 }
 
 <SET> {
-	{integer}
-		{
-			String element = yytext(); 
-			SetOperandToken.addElement (element);
-		}
+	{integer}	{ SetOperandToken.addElement (new IntegerOperandToken(Integer.parseInt(yytext())));}
+	{real} 		{ SetOperandToken.addElement (new DoubleOperandToken(Double.parseDouble(yytext()))); }
+	"true"		{ SetOperandToken.addElement (new BooleanOperandToken(true));}
+	"false"		{ SetOperandToken.addElement (new BooleanOperandToken(false));}
 		
 	{white}		{ }
 	";"			{ }

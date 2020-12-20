@@ -97,14 +97,8 @@ public final class SetOperandToken implements OperandToken {
     private static List <OperandToken> storage = new ArrayList <OperandToken> ();
 
     /*TODO: Reduce all the space to one space and delete the start space and the end space (    1   2    ) -> (1 2) */
-    public static void addElement (String element){
-		Optional<Queue<Yytoken>> tokenExpression = new Parser(element).parse();
-
-        if (!tokenExpression.isPresent())
-            throw new IllegalArgumentException ("Element is not readable !");
-            
-        OperandToken e = new Interpreter(tokenExpression.get()).evaluate();
-        storage.add(e);
+    public static void addElement (OperandToken element){  
+        storage.add(element);
     }
 
     public static SetOperandToken build (){
