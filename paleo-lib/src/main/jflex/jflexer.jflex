@@ -52,13 +52,17 @@ real 	= [-]?{integer}("."{integer})
 	"(" 		{ return(OperationToken.LPAREN); }
 	")" 		{ return(OperationToken.RPAREN); }
 
+	"inter"		{return(OperationToken.INTER);}
+	"union"		{return(OperationToken.UNION);}
+	"diff"		{return(OperationToken.DIFF);}
+
 	"{" 		{ SetOperandToken.flush(); yybegin(SET);}
 }
 
 <SET> {
-	[^]+;  		{String element = yytext(); SetOperandToken.addElement (element.substring(0,element.length() - 1));}
+	[^\;]+;  		{String element = yytext(); SetOperandToken.addElement (element.substring(0,element.length() - 1));}
 	
-	[^]+}  		
+	[^\}]+}  		
 		{
 			yybegin(YYINITIAL);
 			String element = yytext(); 

@@ -12,7 +12,10 @@ public enum OperationToken implements Yytoken {
 	SUM("SUM_TOKEN", 1, 2),
     AND("AND", 1, 2),
     OR("OR", 1, 2),
-    NOT("NOT", 2, 1);
+	NOT("NOT", 2, 1),
+	INTER("INTER", 1, 2),
+	UNION("UNION", 1, 2),
+	DIFF("INTER", 1, 2);
     
 	private final String name; ///< Is the operation name used for generate {@link OperationDictionary} entry key.
 	private final int priority; ///< Is the operation priority for evaluation.
