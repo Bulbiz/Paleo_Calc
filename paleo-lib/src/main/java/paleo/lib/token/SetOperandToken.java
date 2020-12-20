@@ -31,7 +31,11 @@ public final class SetOperandToken implements OperandToken {
         return "{ " + elements.stream().collect(Collectors.joining(" ; ")) + " }";
 	}
 
-    
+    public List<String> getElements (){
+        List<String> res = new ArrayList<String> ();
+        res.addAll(this.element);
+        return res;
+    }
 
     
     /******* SetOperandToken Factory ***************/
