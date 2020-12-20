@@ -29,6 +29,7 @@ integer = [-]?{digit}+
 real 	= [-]?{integer}("."{integer})
 
 %state HIST
+%state SET
 
 %%
 
@@ -50,8 +51,22 @@ real 	= [-]?{integer}("."{integer})
 	"/" 		{ return(OperationToken.DIV); }
 	"(" 		{ return(OperationToken.LPAREN); }
 	")" 		{ return(OperationToken.RPAREN); }
+
+	"{" 		{ SetOperandToken.flush(); yybegin(SET);}
 }
 
+<SET> {
+	[^]+;  		{String element = yytext(); SetOperandToken.addElement (element.substring(0,element.length() - 1));}
+	
+	[^]+}  		
+		{
+			yybegin(YYINITIAL);
+			String element = yytext(); 
+			SetOperandToken.addElement (element.substring(0,element.length() - 1)); 
+			return SetOperandToken.build();
+		}
+
+}
 <HIST> {
 	"("
 	{

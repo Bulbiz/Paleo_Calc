@@ -7,10 +7,12 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public final class SetOperandToken implements OperandToken {
-    private List <String> elements;
+    private ArrayList <String> elements;
 
-    private SetOperandToken (List <String> elements){
-        this.elements = elements;
+    private SetOperandToken (List <String> ajout){
+        /* Defensive Copy */
+        this.elements = new ArrayList<String> ();
+        this.elements.addAll(ajout);
     }
 
     // TODO: Needs to find a better design.
@@ -26,7 +28,7 @@ public final class SetOperandToken implements OperandToken {
     
     @Override
 	public String toString() {
-		return "{ " + elements.stream().collect(Collectors.joining(" ; ")) + " }";
+        return "{ " + elements.stream().collect(Collectors.joining(" ; ")) + " }";
 	}
 
     
