@@ -5,11 +5,7 @@ import java.util.ArrayList;
 import java.util.Queue;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import paleo.lib.interpreter.Interpreter;
-import paleo.lib.parser.Parser;
 import paleo.lib.token.OperandToken;
-import paleo.lib.token.Yytoken;
-import java.util.Optional;
 
 public final class SetOperandToken implements OperandToken {
 
@@ -44,7 +40,7 @@ public final class SetOperandToken implements OperandToken {
     }
     private ArrayList <OperandToken> elements;
 
-    private SetOperandToken (List <OperandToken> ajout){
+    public SetOperandToken (List <OperandToken> ajout){
         /* Defensive Copy */
         this.elements = new ArrayList<OperandToken> ();
         this.elements.addAll(ajout);
@@ -66,12 +62,16 @@ public final class SetOperandToken implements OperandToken {
         return "{" + elements.stream().map(e -> e.toString()).collect(Collectors.joining(";")) + "}";
 	}
 
+    /*  @return the list of elements in the set */
     public List<OperandToken> getElements (){
         List<OperandToken> res = new ArrayList<OperandToken> ();
         res.addAll(this.elements);
         return res;
     }
 
+    /*  Auxilary function 
+     *  @return a new Set that is the result of op1 inter op2 
+     */
     private static SetOperandToken inter (SetOperandToken op1, SetOperandToken op2){
         List<OperandToken> element_op1 = op1.getElements();
         List<OperandToken> element_op2 = op2.getElements();
@@ -79,6 +79,9 @@ public final class SetOperandToken implements OperandToken {
         return new SetOperandToken (element_inter);
     }
 
+    /*  Auxilary function 
+     *  @return a new Set that is the result of op1 union op2 
+     */
     private static SetOperandToken union (SetOperandToken op1, SetOperandToken op2){
         List<OperandToken> element_op1 = op1.getElements();
         List<OperandToken> element_op2 = op2.getElements();
@@ -86,30 +89,13 @@ public final class SetOperandToken implements OperandToken {
         return new SetOperandToken (element_op2);
     }
 
+    /*  Auxilary function 
+     *  @return a new Set that is the result of op1 diff op2 
+     */
     private static SetOperandToken diff (SetOperandToken op1, SetOperandToken op2){
         List<OperandToken> element_op1 = op1.getElements();
         List<OperandToken> element_op2 = op2.getElements();
         List<OperandToken> recuperation =  element_op1.stream().filter(e -> !element_op2.contains(e)).collect(Collectors.toList());
         return new SetOperandToken (recuperation);
     }
-
-    /******* SetOperandToken Factory ***************/
-    private static List <OperandToken> storage = new ArrayList <OperandToken> ();
-
-    /*TODO: Reduce all the space to one space and delete the start space and the end space (    1   2    ) -> (1 2) */
-    public static void addElement (OperandToken element){  
-        storage.add(element);
-    }
-
-    public static SetOperandToken build (){
-        SetOperandToken res = new SetOperandToken (storage);
-        flush();
-        return res;
-    }
-
-    public static void flush () {
-        storage.clear();
-    }
-    
-    
 }

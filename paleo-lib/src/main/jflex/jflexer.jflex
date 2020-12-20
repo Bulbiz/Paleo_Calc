@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import paleo.lib.token.*;
 import paleo.lib.historic.HistoricToken;
 import paleo.lib.historic.exception.InvalidHistoricTokenException;
+import paleo.lib.token.OperandToken;
+import java.util.List;
+import paleo.lib.token.SetOperandToken;
 
 %%
 
@@ -21,6 +24,8 @@ import paleo.lib.historic.exception.InvalidHistoricTokenException;
 %{
 	private boolean histFlag = false;
 	private HistoricToken currentToken = null;
+
+	private static List <OperandToken> storage = new ArrayList <OperandToken> ();
 %}
 
 white	= [ \t\f]+
@@ -56,18 +61,24 @@ real 	= [-]?{integer}("."{integer})
 	"union"		{return(OperationToken.UNION);}
 	"diff"		{return(OperationToken.DIFF);}
 
-	"{" 		{ SetOperandToken.flush(); yybegin(SET);}
+	"{" 		{ storage.clear(); yybegin(SET);}
 }
 
 <SET> {
-	{integer}	{ SetOperandToken.addElement (new IntegerOperandToken(Integer.parseInt(yytext())));}
-	{real} 		{ SetOperandToken.addElement (new DoubleOperandToken(Double.parseDouble(yytext()))); }
-	"true"		{ SetOperandToken.addElement (new BooleanOperandToken(true));}
-	"false"		{ SetOperandToken.addElement (new BooleanOperandToken(false));}
+	{integer}	{ storage.add(new IntegerOperandToken(Integer.parseInt(yytext())));}
+	{real} 		{ storage.add(new DoubleOperandToken(Double.parseDouble(yytext()))); }
+	"true"		{ storage.add(new BooleanOperandToken(true));}
+	"false"		{ storage.add(new BooleanOperandToken(false));}
 		
 	{white}		{ }
 	";"			{ }
-	"}"			{yybegin(YYINITIAL);return SetOperandToken.build();}
+	"}"			
+		{
+			yybegin(YYINITIAL);
+			SetOperandToken res = new SetOperandToken (storage);
+        	storage.clear();
+        	return res;
+		}
 }
 <HIST> {
 	"("
