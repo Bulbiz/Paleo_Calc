@@ -37,6 +37,7 @@ public final class SetOperandToken implements OperandToken {
     /******* SetOperandToken Factory ***************/
     private static List <String> storage = new ArrayList <String> ();
 
+    /*TODO: Reduce all the space to one space and delete the start space and the end space (    1   2    ) -> (1 2) */
     public static void addElement (String element){
         storage.add(element);
     }
