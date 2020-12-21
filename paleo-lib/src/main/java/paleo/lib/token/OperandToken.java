@@ -5,11 +5,11 @@ package paleo.lib.token;
  */
 public interface OperandToken extends Yytoken {
 	/**
-	 * Allows to distinguish the instances of {@link OperandToken}
-	 * and {@link OperationToken}.
+	 * Default implementation of the {@link Yytoken} function.
 	 *
-	 * @return true.
+	 * @return Always true.
 	 */
+	@Override
 	default boolean isAnOperandToken() {
 		return true;
 	}

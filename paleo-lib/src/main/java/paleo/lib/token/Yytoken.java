@@ -6,5 +6,11 @@ package paleo.lib.token;
  */
 @FunctionalInterface
 public interface Yytoken {
-    boolean isAnOperandToken();
+	/**
+	 * Allows to distinguish the instances of {@link OperandToken}
+	 * and {@link OperationToken}.
+	 *
+	 * @return true.
+	 */
+	boolean isAnOperandToken();
 }
