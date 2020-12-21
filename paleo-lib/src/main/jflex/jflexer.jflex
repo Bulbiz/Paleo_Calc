@@ -35,6 +35,7 @@ real 	= [-]?{integer}("."{integer})
 
 %state HIST
 %state SET
+%state OPERATION
 
 %%
 
@@ -42,18 +43,29 @@ real 	= [-]?{integer}("."{integer})
 	"hist" 		{ this.histFlag = false; this.currentToken = null; yybegin(HIST); }
 
 	{white}		{ }
-	{real} 		{ return(new DoubleOperandToken(Double.parseDouble(yytext()))); }
-	{integer} 	{ return(new IntegerOperandToken(Integer.parseInt(yytext()))); }
-    "true"		{ return new BooleanOperandToken(true);}
-    "false"		{ return new BooleanOperandToken(false);}
+	{real} 		{ yybegin(OPERATION); return(new DoubleOperandToken(Double.parseDouble(yytext()))); }
+	{integer} 	{ yybegin(OPERATION); return(new IntegerOperandToken(Integer.parseInt(yytext()))); }
 
-    "not"		{ return(OperationToken.NOT);}
-    "and"		{ return(OperationToken.AND);}
-    "or"		{ return(OperationToken.OR);}
-	"+" 		{ return(OperationToken.SUM); }
-	"-" 		{ return(OperationToken.SUB); }
-	"*" 		{ return(OperationToken.MULT); }
-	"/" 		{ return(OperationToken.DIV); }
+	"not"		{ return(OperationToken.NOT);}
+    "true"		{ yybegin(OPERATION); return new BooleanOperandToken(true);}
+    "false"		{ yybegin(OPERATION); return new BooleanOperandToken(false);}
+
+	"(" 		{ return(OperationToken.LPAREN); }
+	")" 		{ return(OperationToken.RPAREN); }
+}
+
+<OPERATION> {
+	{white}		{ }
+
+	"+" 		{ yybegin(YYINITIAL); return(OperationToken.SUM); }
+	"-" 		{ yybegin(YYINITIAL); return(OperationToken.SUB); }
+	"*" 		{ yybegin(YYINITIAL); return(OperationToken.MULT); }
+	"/" 		{ yybegin(YYINITIAL); return(OperationToken.DIV); }
+
+	"not"		{ yybegin(YYINITIAL); return(OperationToken.NOT);}
+    "and"		{ yybegin(YYINITIAL); return(OperationToken.AND);}
+    "or"		{ yybegin(YYINITIAL); return(OperationToken.OR);}
+
 	"(" 		{ return(OperationToken.LPAREN); }
 	")" 		{ return(OperationToken.RPAREN); }
 
@@ -69,17 +81,19 @@ real 	= [-]?{integer}("."{integer})
 	{real} 		{ setBuilder.add(new DoubleOperandToken(Double.parseDouble(yytext()))); }
 	"true"		{ setBuilder.add(new BooleanOperandToken(true));}
 	"false"		{ setBuilder.add(new BooleanOperandToken(false));}
-		
+
 	{white}		{ }
 	";"			{ }
-	"}"			
-		{
-			yybegin(YYINITIAL);
-			SetOperandToken res = setBuilder.build();
-        	setBuilder = null;
-        	return res;
-		}
+
+	"}"
+	{
+		yybegin(YYINITIAL);
+		SetOperandToken res = setBuilder.build();
+		setBuilder = null;
+		return res;
+	}
 }
+
 <HIST> {
 	"("
 	{
@@ -99,7 +113,7 @@ real 	= [-]?{integer}("."{integer})
 	{
 		if (null == this.currentToken)
 			throw new InvalidHistoricTokenException();
-		yybegin(YYINITIAL);
+		yybegin(OPERATION);
 		return this.currentToken;
 	}
 }

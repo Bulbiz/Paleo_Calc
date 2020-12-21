@@ -3,20 +3,16 @@ package paleo.lib.parser;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
-import java.util.Optional;
-
-import org.junit.Ignore;
 import org.junit.Test;
-
 import paleo.lib.historic.HistoricToken;
+import paleo.lib.token.BooleanOperandToken;
 import paleo.lib.token.DoubleOperandToken;
 import paleo.lib.token.IntegerOperandToken;
-import paleo.lib.token.BooleanOperandToken;
-import paleo.lib.token.SetOperandToken;
 import paleo.lib.token.OperationToken;
+import paleo.lib.token.SetOperandToken;
 import paleo.lib.token.Yytoken;
 
 /**
@@ -24,292 +20,300 @@ import paleo.lib.token.Yytoken;
  */
 public class ParserTest {
 
-    /**
-     * Compares two {@link Queue} of {@link Yytoken}.
-     *
-     * @param expectedTokens is the expected queue.
-     * @param actualTokens is the actual queue.
-     * @return true if both queues have the same tokens in the same order.
-     */
-    private boolean areTokenQueuesEqual(
-            final Queue<Yytoken> expectedTokens,
-            final Queue<Yytoken> actualTokens)
-    {
-        final int expectedSize = expectedTokens.size();
+	/**
+	 * Compares two {@link Queue} of {@link Yytoken}.
+	 *
+	 * @param expectedTokens is the expected queue.
+	 * @param actualTokens is the actual queue.
+	 * @return true if both queues have the same tokens in the same order.
+	 */
+	private boolean areTokenQueuesEqual(
+		final Queue<Yytoken> expectedTokens,
+		final Queue<Yytoken> actualTokens
+	) {
+		final int expectedSize = expectedTokens.size();
 
-        if (expectedSize != actualTokens.size()) {
-            return false;
-        }
+		if (expectedSize != actualTokens.size()) {
+			return false;
+		}
 
-        for (int i = 0; i < expectedSize; ++i) {
-            if (!expectedTokens.remove().equals(actualTokens.remove())) {
-                return false;
-            }
-        }
+		for (int i = 0; i < expectedSize; ++i) {
+			if (!expectedTokens.remove().equals(actualTokens.remove())) {
+				return false;
+			}
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    /**
-     * Creates a {@link Queue} of {@link Yytoken} from a varargs.
-     *
-     * @param tokens is a sequence of token.
-     * @return a queue of token.
-     */
-    private Queue<Yytoken> createTokenQueue(final Yytoken ... tokens) {
-        Queue<Yytoken> tokenQueue = new LinkedList<>();
+	/**
+	 * Creates a {@link Queue} of {@link Yytoken} from a varargs.
+	 *
+	 * @param tokens is a sequence of token.
+	 * @return a queue of token.
+	 */
+	private Queue<Yytoken> createTokenQueue(final Yytoken... tokens) {
+		Queue<Yytoken> tokenQueue = new LinkedList<>();
 
-        for (Yytoken token : tokens) {
-            tokenQueue.add(token);
-        }
+		for (Yytoken token : tokens) {
+			tokenQueue.add(token);
+		}
 
-        return tokenQueue;
-    }
+		return tokenQueue;
+	}
 
-    @Test
-    public void shouldReturnEmptyListWithEmptyString() {
-        assertEquals(0, new Parser("").parse().get().size());
-    }
+	@Test
+	public void shouldReturnEmptyListWithEmptyString() {
+		assertEquals(0, new Parser("").parse().get().size());
+	}
 
-    @Test
-    public void simpleIntegerToken() {
-        final Queue<Yytoken> actualTokens = new Parser("3").parse().get();
-        final Queue<Yytoken> expectedTokens = createTokenQueue(new IntegerOperandToken(3));
+	@Test
+	public void simpleIntegerToken() {
+		final Queue<Yytoken> actualTokens = new Parser("3").parse().get();
+		final Queue<Yytoken> expectedTokens = createTokenQueue(
+			new IntegerOperandToken(3)
+		);
 
-        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
-    }
+		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+	}
 
-    @Test
-    public void simpleSumExpression() {
-        final Queue<Yytoken> actualTokens = new Parser("3 + 5").parse().get();
-        final Queue<Yytoken> expectedTokens =
-            createTokenQueue(
-                    new IntegerOperandToken(3),
-                    OperationToken.SUM,
-                    new IntegerOperandToken(5));
+	@Test
+	public void simpleSumExpression() {
+		final Queue<Yytoken> actualTokens = new Parser("3 + 5").parse().get();
+		final Queue<Yytoken> expectedTokens = createTokenQueue(
+			new IntegerOperandToken(3),
+			OperationToken.SUM,
+			new IntegerOperandToken(5)
+		);
 
-        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
-    }
+		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+	}
 
-    @Test
-    public void simpleMultExpression() {
-        final Queue<Yytoken> actualTokens = new Parser("3 * 5").parse().get();
-        final Queue<Yytoken> expectedTokens =
-            createTokenQueue(
-                    new IntegerOperandToken(3),
-                    OperationToken.MULT,
-                    new IntegerOperandToken(5));
+	@Test
+	public void simpleMultExpression() {
+		final Queue<Yytoken> actualTokens = new Parser("3 * 5").parse().get();
+		final Queue<Yytoken> expectedTokens = createTokenQueue(
+			new IntegerOperandToken(3),
+			OperationToken.MULT,
+			new IntegerOperandToken(5)
+		);
 
-        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
-    }
+		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+	}
 
-    @Test
-    public void simpleParenExpression() {
-        final Queue<Yytoken> actualTokens = new Parser("(3 * 5)").parse().get();
-        final Queue<Yytoken> expectedTokens =
-            createTokenQueue(
-                    OperationToken.LPAREN,
-                    new IntegerOperandToken(3),
-                    OperationToken.MULT,
-                    new IntegerOperandToken(5),
-                    OperationToken.RPAREN);
+	@Test
+	public void simpleParenExpression() {
+		final Queue<Yytoken> actualTokens = new Parser("(3 * 5)").parse().get();
+		final Queue<Yytoken> expectedTokens = createTokenQueue(
+			OperationToken.LPAREN,
+			new IntegerOperandToken(3),
+			OperationToken.MULT,
+			new IntegerOperandToken(5),
+			OperationToken.RPAREN
+		);
 
-        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
-    }
+		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+	}
 
-    @Test
-    public void simpleDoubleExpression() {
-        final Queue<Yytoken> actualTokens = new Parser("(3.4 * 5.6)").parse().get();
-        final Queue<Yytoken> expectedTokens =
-            createTokenQueue(
-                    OperationToken.LPAREN,
-                    new DoubleOperandToken(3.4),
-                    OperationToken.MULT,
-                    new DoubleOperandToken(5.6),
-                    OperationToken.RPAREN);
+	@Test
+	public void simpleDoubleExpression() {
+		final Queue<Yytoken> actualTokens = new Parser("(3.4 * 5.6)").parse().get();
+		final Queue<Yytoken> expectedTokens = createTokenQueue(
+			OperationToken.LPAREN,
+			new DoubleOperandToken(3.4),
+			OperationToken.MULT,
+			new DoubleOperandToken(5.6),
+			OperationToken.RPAREN
+		);
 
-        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
-    }
+		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+	}
 
-    @Test
-    public void intAndDoubleExpression() {
-        final Queue<Yytoken> actualTokens = new Parser("(3.4 * 5.6) / 3").parse().get();
-        final Queue<Yytoken> expectedTokens =
-            createTokenQueue(
-                    OperationToken.LPAREN,
-                    new DoubleOperandToken(3.4),
-                    OperationToken.MULT,
-                    new DoubleOperandToken(5.6),
-                    OperationToken.RPAREN,
-                    OperationToken.DIV,
-                    new IntegerOperandToken(3));
+	@Test
+	public void intAndDoubleExpression() {
+		final Queue<Yytoken> actualTokens = new Parser("(3.4 * 5.6) / 3").parse().get();
+		final Queue<Yytoken> expectedTokens = createTokenQueue(
+			OperationToken.LPAREN,
+			new DoubleOperandToken(3.4),
+			OperationToken.MULT,
+			new DoubleOperandToken(5.6),
+			OperationToken.RPAREN,
+			OperationToken.DIV,
+			new IntegerOperandToken(3)
+		);
 
-        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
-    }
+		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+	}
 
-    @Test
-    public void expressionWithANegativeDouble() {
-        final Queue<Yytoken> actualTokens = new Parser("3.4 * -5.6").parse().get();
-        final Queue<Yytoken> expectedTokens =
-            createTokenQueue(
-                    new DoubleOperandToken(3.4),
-                    OperationToken.MULT,
-                    new DoubleOperandToken(-5.6));
+	@Test
+	public void expressionWithANegativeDouble() {
+		final Queue<Yytoken> actualTokens = new Parser("3.4 * -5.6").parse().get();
+		final Queue<Yytoken> expectedTokens = createTokenQueue(
+			new DoubleOperandToken(3.4),
+			OperationToken.MULT,
+			new DoubleOperandToken(-5.6)
+		);
 
-        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
-    }
+		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+	}
 
-    @Test
-    public void expressionWithANegativeInteger() {
-        final Queue<Yytoken> actualTokens = new Parser("3.4 * -5").parse().get();
-        final Queue<Yytoken> expectedTokens =
-            createTokenQueue(
-                    new DoubleOperandToken(3.4),
-                    OperationToken.MULT,
-                    new IntegerOperandToken(-5));
+	@Test
+	public void expressionWithANegativeInteger() {
+		final Queue<Yytoken> actualTokens = new Parser("3.4 * -5").parse().get();
+		final Queue<Yytoken> expectedTokens = createTokenQueue(
+			new DoubleOperandToken(3.4),
+			OperationToken.MULT,
+			new IntegerOperandToken(-5)
+		);
 
-        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
-    }
+		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+	}
 
-    @Test
-    public void notFormattedExpression() {
-        final Queue<Yytoken> actualTokens = new Parser("/3.4* -5 ))").parse().get();
-        final Queue<Yytoken> expectedTokens =
-            createTokenQueue(
-                    OperationToken.DIV,
-                    new DoubleOperandToken(3.4),
-                    OperationToken.MULT,
-                    new IntegerOperandToken(-5),
-                    OperationToken.RPAREN,
-                    OperationToken.RPAREN);
+	@Test
+	public void notFormattedExpression() {
+		final Queue<Yytoken> actualTokens = new Parser("/3.4* -5 ))").parse().get();
+		final Queue<Yytoken> expectedTokens = createTokenQueue(
+			OperationToken.DIV,
+			new DoubleOperandToken(3.4),
+			OperationToken.MULT,
+			new IntegerOperandToken(-5),
+			OperationToken.RPAREN,
+			OperationToken.RPAREN
+		);
 
-        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
-    }
+		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+	}
 
-    @Test
-    public void expressionWithMultipleParenDepth() {
-        final Queue<Yytoken> actualTokens =
-            new Parser("(2 - 3 * 4 + (2 + 4 - 6 * 5)) + 1").parse().get();
-        final Queue<Yytoken> expectedTokens =
-            createTokenQueue(
-                    OperationToken.LPAREN,
-                    new IntegerOperandToken(2),
-                    OperationToken.SUB,
-                    new IntegerOperandToken(3),
-                    OperationToken.MULT,
-                    new IntegerOperandToken(4),
-                    OperationToken.SUM,
-                    OperationToken.LPAREN,
-                    new IntegerOperandToken(2),
-                    OperationToken.SUM,
-                    new IntegerOperandToken(4),
-                    OperationToken.SUB,
-                    new IntegerOperandToken(6),
-                    OperationToken.MULT,
-                    new IntegerOperandToken(5),
-                    OperationToken.RPAREN,
-                    OperationToken.RPAREN,
-                    OperationToken.SUM,
-                    new IntegerOperandToken(1));
+	@Test
+	public void expressionWithMultipleParenDepth() {
+		final Queue<Yytoken> actualTokens = new Parser(
+			"(2 - 3 * 4 + (2 + 4 - 6 * 5)) + 1"
+		)
+			.parse()
+			.get();
+		final Queue<Yytoken> expectedTokens = createTokenQueue(
+			OperationToken.LPAREN,
+			new IntegerOperandToken(2),
+			OperationToken.SUB,
+			new IntegerOperandToken(3),
+			OperationToken.MULT,
+			new IntegerOperandToken(4),
+			OperationToken.SUM,
+			OperationToken.LPAREN,
+			new IntegerOperandToken(2),
+			OperationToken.SUM,
+			new IntegerOperandToken(4),
+			OperationToken.SUB,
+			new IntegerOperandToken(6),
+			OperationToken.MULT,
+			new IntegerOperandToken(5),
+			OperationToken.RPAREN,
+			OperationToken.RPAREN,
+			OperationToken.SUM,
+			new IntegerOperandToken(1)
+		);
 
-        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
-    }
+		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+	}
 
-    @Test
-    public void simpleBooleanToken() {
-        final Queue<Yytoken> actualTokens = new Parser("true").parse().get();
-        final Queue<Yytoken> expectedTokens = createTokenQueue(new BooleanOperandToken(true));
-        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
-    }
+	@Test
+	public void simpleBooleanToken() {
+		final Queue<Yytoken> actualTokens = new Parser("true").parse().get();
+		final Queue<Yytoken> expectedTokens = createTokenQueue(
+			new BooleanOperandToken(true)
+		);
+		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+	}
 
-    @Test
-    public void simpleBooleanExpression() {
-        final Queue<Yytoken> actualTokens = new Parser("true  and not false").parse().get();
-        final Queue<Yytoken> expectedTokens = 
-            createTokenQueue(
-                    new BooleanOperandToken(true),
-                    OperationToken.AND,
-                    OperationToken.NOT,
-                    new BooleanOperandToken(false)
-            );
-        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
-    }
+	@Test
+	public void simpleBooleanExpression() {
+		final Queue<Yytoken> actualTokens = new Parser("true  and not false")
+			.parse()
+			.get();
+		final Queue<Yytoken> expectedTokens = createTokenQueue(
+			new BooleanOperandToken(true),
+			OperationToken.AND,
+			OperationToken.NOT,
+			new BooleanOperandToken(false)
+		);
+		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+	}
 
-    @Test
-    public void simpleParenBooleanExpression() {
-        final Queue<Yytoken> actualTokens = new Parser("true  and (not false and true)").parse().get();
-        final Queue<Yytoken> expectedTokens = 
-            createTokenQueue(
-                    new BooleanOperandToken(true),
-                    OperationToken.AND,
-                    OperationToken.LPAREN,
-                    OperationToken.NOT,
-                    new BooleanOperandToken(false),
-                    OperationToken.AND,
-                    new BooleanOperandToken(true),
-                    OperationToken.RPAREN
-            );
-        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
-    }
-    
-    @Test
-    public void expressionWithSimpleHistCall() {
-        final Queue<Yytoken> actualTokens =
-            new Parser("hist(1) + 3").parse().get();
-        final Queue<Yytoken> expectedTokens =
-            createTokenQueue(
-                new HistoricToken(1),
-                OperationToken.SUM,
-                new IntegerOperandToken(3));
+	@Test
+	public void simpleParenBooleanExpression() {
+		final Queue<Yytoken> actualTokens = new Parser("true  and (not false and true)")
+			.parse()
+			.get();
+		final Queue<Yytoken> expectedTokens = createTokenQueue(
+			new BooleanOperandToken(true),
+			OperationToken.AND,
+			OperationToken.LPAREN,
+			OperationToken.NOT,
+			new BooleanOperandToken(false),
+			OperationToken.AND,
+			new BooleanOperandToken(true),
+			OperationToken.RPAREN
+		);
+		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+	}
 
-        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
-    }
-    
-    @Test
-    public void expressionWithMultipleHistCall() {
-        final Queue<Yytoken> actualTokens =
-            new Parser("hist(1) + hist(1)(hist(3)))").parse().get();
-        final Queue<Yytoken> expectedTokens =
-            createTokenQueue(
-                new HistoricToken(1),
-                OperationToken.SUM,
-                new HistoricToken(1),
-                OperationToken.LPAREN,
-                new HistoricToken(3),
-                OperationToken.RPAREN,
-                OperationToken.RPAREN);
+	@Test
+	public void expressionWithSimpleHistCall() {
+		final Queue<Yytoken> actualTokens = new Parser("hist(1) + 3").parse().get();
+		final Queue<Yytoken> expectedTokens = createTokenQueue(
+			new HistoricToken(1),
+			OperationToken.SUM,
+			new IntegerOperandToken(3)
+		);
 
-        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
-    }
-    
-    @Test
-    public void histCmdWihoutArgShouldReturnEmpty() {
-        assertTrue(new Parser("hist() + hist(1)(hist(3)))").parse().isEmpty());
-    }
+		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+	}
 
-    @Test
-    public void histCmdWhithMissingParenShouldReturnEmpty() {
-        assertTrue(new Parser("hist1) + hist(1)(hist(3)))").parse().isEmpty());
-    }
+	@Test
+	public void expressionWithMultipleHistCall() {
+		final Queue<Yytoken> actualTokens = new Parser("hist(1) + hist(1)(hist(3)))")
+			.parse()
+			.get();
+		final Queue<Yytoken> expectedTokens = createTokenQueue(
+			new HistoricToken(1),
+			OperationToken.SUM,
+			new HistoricToken(1),
+			OperationToken.LPAREN,
+			new HistoricToken(3),
+			OperationToken.RPAREN,
+			OperationToken.RPAREN
+		);
 
-    @Test
-    public void histCmdWhithNotValidArgShouldReturnEmpty() {
-        assertTrue(new Parser("hist1) + hist(1(hist(3)))").parse().isEmpty());
-    }
+		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+	}
 
-    @Test
-    public void expressionWithSimpleSet() {
-        SetOperandToken.SetBuilder builder = new SetOperandToken.SetBuilder();
-        builder.addAll(List.of(new IntegerOperandToken(1)));
-        
-        final Queue<Yytoken> actualTokens =
-            new Parser("{1} union 3").parse().get();
-        final Queue<Yytoken> expectedTokens =
-            createTokenQueue(
-                builder.build(),
-                OperationToken.UNION,
-                new IntegerOperandToken(3));
+	@Test
+	public void histCmdWihoutArgShouldReturnEmpty() {
+		assertTrue(new Parser("hist() + hist(1)(hist(3)))").parse().isEmpty());
+	}
 
-        assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
-    }
+	@Test
+	public void histCmdWhithMissingParenShouldReturnEmpty() {
+		assertTrue(new Parser("hist1) + hist(1)(hist(3)))").parse().isEmpty());
+	}
+
+	@Test
+	public void histCmdWhithNotValidArgShouldReturnEmpty() {
+		assertTrue(new Parser("hist1) + hist(1(hist(3)))").parse().isEmpty());
+	}
+
+	@Test
+	public void expressionWithSimpleSet() {
+		SetOperandToken.SetBuilder builder = new SetOperandToken.SetBuilder();
+		builder.addAll(List.of(new IntegerOperandToken(1)));
+
+		final Queue<Yytoken> actualTokens = new Parser("{1} union 3").parse().get();
+		final Queue<Yytoken> expectedTokens = createTokenQueue(
+			builder.build(),
+			OperationToken.UNION,
+			new IntegerOperandToken(3)
+		);
+
+		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
+	}
 }
