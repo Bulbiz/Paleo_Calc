@@ -171,8 +171,9 @@ public class ParserTest {
 
 	@Test
 	public void notFormattedExpression() {
-		final Queue<Yytoken> actualTokens = new Parser("/3.4* -5 ))").parse().get();
+		final Queue<Yytoken> actualTokens = new Parser("1/3.4* -5 ))").parse().get();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
+			new IntegerOperandToken(1),
 			OperationToken.DIV,
 			new DoubleOperandToken(3.4),
 			OperationToken.MULT,
@@ -271,13 +272,14 @@ public class ParserTest {
 
 	@Test
 	public void expressionWithMultipleHistCall() {
-		final Queue<Yytoken> actualTokens = new Parser("hist(1) + hist(1)(hist(3)))")
+		final Queue<Yytoken> actualTokens = new Parser("hist(1) + hist(1) - (hist(3)))")
 			.parse()
 			.get();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new HistoricToken(1),
 			OperationToken.SUM,
 			new HistoricToken(1),
+			OperationToken.SUB,
 			OperationToken.LPAREN,
 			new HistoricToken(3),
 			OperationToken.RPAREN,

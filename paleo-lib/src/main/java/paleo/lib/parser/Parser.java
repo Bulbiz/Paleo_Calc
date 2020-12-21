@@ -3,9 +3,8 @@ package paleo.lib.parser;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Optional;
-
+import java.util.Queue;
 import paleo.lib.token.Yytoken;
 
 /**
@@ -19,38 +18,38 @@ import paleo.lib.token.Yytoken;
  */
 public final class Parser {
 
-    private String expr;
+	private String expr;
 
-    /**
-     * Parser constructor.
-     *
-     * @param expr Is a string representation of the wanted parsed expression.
-     */
-    public Parser(String expr) {
-        this.expr = expr;
-    }
+	/**
+	 * Parser constructor.
+	 *
+	 * @param expr Is a string representation of the wanted parsed expression.
+	 */
+	public Parser(String expr) {
+		this.expr = expr;
+	}
 
-    /**
-     * Parses `expr` with an {@link Lexer} instance.
-     *
-     * @return A queue of tokens or null if an {@link IOException} is catched.
-     */
-    public Optional<Queue<Yytoken>> parse() {
-        JFLexer lexer = new JFLexer(new StringReader(this.expr));
-        Queue<Yytoken> tokens = new LinkedList<>();
-        Yytoken token;
+	/**
+	 * Parses `expr` with an {@link Lexer} instance.
+	 *
+	 * @return A queue of tokens or null if an {@link IOException} is catched.
+	 */
+	public Optional<Queue<Yytoken>> parse() {
+		JFLexer lexer = new JFLexer(new StringReader(this.expr));
+		Queue<Yytoken> tokens = new LinkedList<>();
+		Yytoken token;
 
-        try {
+		try {
 			while (null != (token = lexer.yylex())) {
-			    tokens.add(token);
+				tokens.add(token);
 			}
-        //TODO: Must find a way to get error messages.
+			//TODO: Must find a way to get error messages.
 		} catch (Exception e) {
-            return Optional.empty();
-        } catch (Error e) {
-            return Optional.empty();
-        }
+			return Optional.empty();
+		} catch (Error e) {
+			return Optional.empty();
+		}
 
-        return Optional.of(tokens);
-    }
+		return Optional.of(tokens);
+	}
 }

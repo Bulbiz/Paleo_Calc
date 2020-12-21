@@ -22,9 +22,11 @@ import paleo.lib.token.SetOperandToken;
 %unicode
 
 %{
+	/** Attributes used for historic lexing. */
 	private boolean histFlag = false;
 	private HistoricToken currentToken = null;
 
+	/** Attributes used for set lexing. */
 	private SetOperandToken.SetBuilder setBuilder;
 %}
 
@@ -52,6 +54,8 @@ real 	= [-]?{integer}("."{integer})
 
 	"(" 		{ return(OperationToken.LPAREN); }
 	")" 		{ return(OperationToken.RPAREN); }
+
+	"{" 		{ setBuilder = new SetOperandToken.SetBuilder(); yybegin(SET); }
 }
 
 <OPERATION> {
@@ -69,27 +73,25 @@ real 	= [-]?{integer}("."{integer})
 	"(" 		{ return(OperationToken.LPAREN); }
 	")" 		{ return(OperationToken.RPAREN); }
 
-	"inter"		{ return(OperationToken.INTER);}
-	"union"		{ return(OperationToken.UNION);}
-	"diff"		{ return(OperationToken.DIFF);}
-
-	"{" 		{ setBuilder = new SetOperandToken.SetBuilder(); yybegin(SET);}
+	"inter"		{ yybegin(YYINITIAL); return(OperationToken.INTER); }
+	"union"		{ yybegin(YYINITIAL); return(OperationToken.UNION); }
+	"diff"		{ yybegin(YYINITIAL); return(OperationToken.DIFF); }
 }
 
 <SET> {
-	{integer}	{ setBuilder.add(new IntegerOperandToken(Integer.parseInt(yytext())));}
+	{integer}	{ setBuilder.add(new IntegerOperandToken(Integer.parseInt(yytext()))); }
 	{real} 		{ setBuilder.add(new DoubleOperandToken(Double.parseDouble(yytext()))); }
-	"true"		{ setBuilder.add(new BooleanOperandToken(true));}
-	"false"		{ setBuilder.add(new BooleanOperandToken(false));}
+	"true"		{ setBuilder.add(new BooleanOperandToken(true)); }
+	"false"		{ setBuilder.add(new BooleanOperandToken(false)); }
 
 	{white}		{ }
 	";"			{ }
 
 	"}"
 	{
-		yybegin(YYINITIAL);
 		SetOperandToken res = setBuilder.build();
 		setBuilder = null;
+		yybegin(OPERATION);
 		return res;
 	}
 }

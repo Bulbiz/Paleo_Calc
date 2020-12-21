@@ -1,130 +1,139 @@
 package paleo.lib.token;
-import paleo.lib.interpreter.OperationDictionary;
-import java.util.List;
+
 import java.util.ArrayList;
-import java.util.Queue;
-import java.util.stream.Collector;
+import java.util.List;
 import java.util.stream.Collectors;
-import paleo.lib.token.OperandToken;
+import paleo.lib.interpreter.OperationDictionary;
 
 public final class SetOperandToken implements OperandToken {
-
-    {
-        OperationDictionary.addEntry(
-            OperationToken.INTER,
-            (operands) -> {
-                SetOperandToken op1 = (SetOperandToken) operands.pop();
-                SetOperandToken op2 = (SetOperandToken) operands.pop();
-				return (inter(op1,op2));
+	{
+		OperationDictionary.addEntry(
+			OperationToken.INTER,
+			operands -> {
+				SetOperandToken op1 = (SetOperandToken) operands.pop();
+				SetOperandToken op2 = (SetOperandToken) operands.pop();
+				return (inter(op1, op2));
 			},
-            List.of(SetOperandToken.class,SetOperandToken.class)
-        );
-        OperationDictionary.addEntry(
-            OperationToken.UNION,
-            (operands) -> {
-                SetOperandToken op1 = (SetOperandToken) operands.pop();
-                SetOperandToken op2 = (SetOperandToken) operands.pop();
-				return (union(op1,op2));
+			List.of(SetOperandToken.class, SetOperandToken.class)
+		);
+		OperationDictionary.addEntry(
+			OperationToken.UNION,
+			operands -> {
+				SetOperandToken op1 = (SetOperandToken) operands.pop();
+				SetOperandToken op2 = (SetOperandToken) operands.pop();
+				return (union(op1, op2));
 			},
-            List.of(SetOperandToken.class,SetOperandToken.class)
-        );
-        OperationDictionary.addEntry(
-            OperationToken.DIFF,
-            (operands) -> {
-                SetOperandToken op1 = (SetOperandToken) operands.pop();
-                SetOperandToken op2 = (SetOperandToken) operands.pop();
-				return (diff(op1,op2));
+			List.of(SetOperandToken.class, SetOperandToken.class)
+		);
+		OperationDictionary.addEntry(
+			OperationToken.DIFF,
+			operands -> {
+				SetOperandToken op1 = (SetOperandToken) operands.pop();
+				SetOperandToken op2 = (SetOperandToken) operands.pop();
+				return (diff(op1, op2));
 			},
-            List.of(SetOperandToken.class,SetOperandToken.class)
-        );
-    }
-    private ArrayList <OperandToken> elements;
-
-    private SetOperandToken (List <OperandToken> ajout){
-        /* Defensive Copy */
-        this.elements = new ArrayList<OperandToken> ();
-        this.elements.addAll(ajout);
-    }
-
-    // TODO: Needs to find a better design.
-	@Override
-	public boolean isAnOperandToken() {
-		return true;
-    }
-    
-    @Override
-	public boolean equals(Object obj) {
-        if (!(obj instanceof SetOperandToken))
-            return false;
-        List<OperandToken> objElement = ((SetOperandToken) obj).getElements();
-        return objElement.containsAll(this.getElements()) && this.getElements().containsAll(objElement);
-    }
-    
-    @Override
-	public String toString() {
-        return "{" + elements.stream().map(e -> e.toString()).collect(Collectors.joining(";")) + "}";
+			List.of(SetOperandToken.class, SetOperandToken.class)
+		);
 	}
 
-    /*  @return a copy of the list of elements in the set */
-    public List<OperandToken> getElements (){
-        List<OperandToken> res = new ArrayList<OperandToken> ();
-        res.addAll(this.elements);
-        return res;
-    }
+	private ArrayList<OperandToken> elements;
 
-    /*  Auxilary function 
-     *  @return a new Set that is the result of op1 inter op2 
-     */
-    private static SetOperandToken inter (SetOperandToken op1, SetOperandToken op2){
-        List<OperandToken> element_op1 = op1.getElements();
-        List<OperandToken> element_op2 = op2.getElements();
-        List<OperandToken> element_inter = element_op1.stream().filter(e -> element_op2.contains(e)).collect(Collectors.toList());
-        SetBuilder builder = new SetBuilder();
-        builder.addAll(element_inter);
-        return builder.build();
-    }
+	private SetOperandToken(List<OperandToken> ajout) {
+		/* Defensive Copy */
+		this.elements = new ArrayList<OperandToken>();
+		this.elements.addAll(ajout);
+	}
 
-    /*  Auxilary function 
-     *  @return a new Set that is the result of op1 union op2 
-     */
-    private static SetOperandToken union (SetOperandToken op1, SetOperandToken op2){
-        List<OperandToken> element_op1 = op1.getElements();
-        List<OperandToken> element_op2 = op2.getElements();
-        element_op1.stream().filter(e -> !element_op2.contains(e)).forEach(e -> element_op2.add(e));
-        SetBuilder builder = new SetBuilder();
-        builder.addAll(element_op2);
-        return builder.build();
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof SetOperandToken)) return false;
+		List<OperandToken> objElement = ((SetOperandToken) obj).getElements();
+		return (
+			objElement.containsAll(this.getElements()) &&
+			this.getElements().containsAll(objElement)
+		);
+	}
 
-    /*  Auxilary function 
-     *  @return a new Set that is the result of op1 diff op2 
-     */
-    private static SetOperandToken diff (SetOperandToken op1, SetOperandToken op2){
-        List<OperandToken> element_op1 = op1.getElements();
-        List<OperandToken> element_op2 = op2.getElements();
-        List<OperandToken> recuperation =  element_op1.stream().filter(e -> !element_op2.contains(e)).collect(Collectors.toList());
-        SetBuilder builder = new SetBuilder();
-        builder.addAll(recuperation);
-        return builder.build();
-    }
+	@Override
+	public String toString() {
+		return (
+			"{" +
+			elements.stream().map(e -> e.toString()).collect(Collectors.joining(";")) +
+			"}"
+		);
+	}
 
-    /* A builder for Set Operand */
-    public static final class SetBuilder {
-        private List <OperandToken> storage;
-        
-        public SetBuilder () {
-            storage = new ArrayList <OperandToken> ();
-        }
+	/*  @return a copy of the list of elements in the set */
+	public List<OperandToken> getElements() {
+		List<OperandToken> res = new ArrayList<OperandToken>();
+		res.addAll(this.elements);
+		return res;
+	}
 
-        public void add (OperandToken element){
-            if (element != null && !storage.contains(element))
-                storage.add(element);
-        }
-        public void addAll (List <OperandToken> elements){
-            elements.stream().forEach(e -> this.add(e));
-        }
-        public SetOperandToken build (){
-            return new SetOperandToken (storage);
-        }
-    }
+	/*  Auxilary function
+	 *  @return a new Set that is the result of op1 inter op2
+	 */
+	private static SetOperandToken inter(SetOperandToken op1, SetOperandToken op2) {
+		List<OperandToken> element_op1 = op1.getElements();
+		List<OperandToken> element_op2 = op2.getElements();
+		List<OperandToken> element_inter = element_op1
+			.stream()
+			.filter(e -> element_op2.contains(e))
+			.collect(Collectors.toList());
+		SetBuilder builder = new SetBuilder();
+		builder.addAll(element_inter);
+		return builder.build();
+	}
+
+	/*  Auxilary function
+	 *  @return a new Set that is the result of op1 union op2
+	 */
+	private static SetOperandToken union(SetOperandToken op1, SetOperandToken op2) {
+		List<OperandToken> element_op1 = op1.getElements();
+		List<OperandToken> element_op2 = op2.getElements();
+		element_op1
+			.stream()
+			.filter(e -> !element_op2.contains(e))
+			.forEach(e -> element_op2.add(e));
+		SetBuilder builder = new SetBuilder();
+		builder.addAll(element_op2);
+		return builder.build();
+	}
+
+	/*  Auxilary function
+	 *  @return a new Set that is the result of op1 diff op2
+	 */
+	private static SetOperandToken diff(SetOperandToken op1, SetOperandToken op2) {
+		List<OperandToken> element_op1 = op1.getElements();
+		List<OperandToken> element_op2 = op2.getElements();
+		List<OperandToken> recuperation = element_op1
+			.stream()
+			.filter(e -> !element_op2.contains(e))
+			.collect(Collectors.toList());
+		SetBuilder builder = new SetBuilder();
+		builder.addAll(recuperation);
+		return builder.build();
+	}
+
+	/* A builder for Set Operand */
+	public static final class SetBuilder {
+
+		private List<OperandToken> storage;
+
+		public SetBuilder() {
+			storage = new ArrayList<OperandToken>();
+		}
+
+		public void add(OperandToken element) {
+			if (element != null && !storage.contains(element)) storage.add(element);
+		}
+
+		public void addAll(List<OperandToken> elements) {
+			elements.stream().forEach(e -> this.add(e));
+		}
+
+		public SetOperandToken build() {
+			return new SetOperandToken(storage);
+		}
+	}
 }
