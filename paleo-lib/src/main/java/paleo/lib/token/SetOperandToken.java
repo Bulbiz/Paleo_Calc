@@ -52,13 +52,13 @@ public final class SetOperandToken implements OperandToken {
 	 * @return a new Set that correspond to op1 inter op2.
 	 */
 	private static SetOperandToken inter(SetOperandToken op1, SetOperandToken op2) {
+        SetBuilder builder = new SetBuilder();
 		List<OperandToken> element_op1 = op1.getElements();
 		List<OperandToken> element_op2 = op2.getElements();
 		List<OperandToken> element_inter = element_op1
 			.stream()
 			.filter(e -> element_op2.contains(e))
 			.collect(Collectors.toList());
-		SetBuilder builder = new SetBuilder();
 		builder.addAll(element_inter);
 		return builder.build();
 	}
@@ -71,13 +71,13 @@ public final class SetOperandToken implements OperandToken {
 	 * @return a new Set that correspond to op1 union op2.
 	 */
 	private static SetOperandToken union(SetOperandToken op1, SetOperandToken op2) {
+        SetBuilder builder = new SetBuilder();
 		List<OperandToken> element_op1 = op1.getElements();
 		List<OperandToken> element_op2 = op2.getElements();
 		element_op1
 			.stream()
 			.filter(e -> !element_op2.contains(e))
 			.forEach(e -> element_op2.add(e));
-		SetBuilder builder = new SetBuilder();
 		builder.addAll(element_op2);
 		return builder.build();
 	}
@@ -90,13 +90,13 @@ public final class SetOperandToken implements OperandToken {
 	 * @return a new Set that correspond to op1 diff op2.
 	 */
 	private static SetOperandToken diff(SetOperandToken op1, SetOperandToken op2) {
+        SetBuilder builder = new SetBuilder();
 		List<OperandToken> element_op1 = op1.getElements();
 		List<OperandToken> element_op2 = op2.getElements();
 		List<OperandToken> recuperation = element_op1
 			.stream()
 			.filter(e -> !element_op2.contains(e))
 			.collect(Collectors.toList());
-		SetBuilder builder = new SetBuilder();
 		builder.addAll(recuperation);
 		return builder.build();
     }
