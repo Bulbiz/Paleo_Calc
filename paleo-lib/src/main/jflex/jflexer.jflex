@@ -44,8 +44,8 @@ real 	= [-]?{integer}("."{integer})
 	{white}		{ }
 	{real} 		{ return(new DoubleOperandToken(Double.parseDouble(yytext()))); }
 	{integer} 	{ return(new IntegerOperandToken(Integer.parseInt(yytext()))); }
-    "true"		{return new BooleanOperandToken(true);}
-    "false"		{return new BooleanOperandToken(false);}
+    "true"		{ return new BooleanOperandToken(true);}
+    "false"		{ return new BooleanOperandToken(false);}
 
     "not"		{ return(OperationToken.NOT);}
     "and"		{ return(OperationToken.AND);}
@@ -57,9 +57,9 @@ real 	= [-]?{integer}("."{integer})
 	"(" 		{ return(OperationToken.LPAREN); }
 	")" 		{ return(OperationToken.RPAREN); }
 
-	"inter"		{return(OperationToken.INTER);}
-	"union"		{return(OperationToken.UNION);}
-	"diff"		{return(OperationToken.DIFF);}
+	"inter"		{ return(OperationToken.INTER);}
+	"union"		{ return(OperationToken.UNION);}
+	"diff"		{ return(OperationToken.DIFF);}
 
 	"{" 		{ setBuilder = new SetOperandToken.SetBuilder(); yybegin(SET);}
 }
