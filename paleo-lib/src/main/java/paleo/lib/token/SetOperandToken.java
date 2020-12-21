@@ -65,7 +65,7 @@ public final class SetOperandToken implements OperandToken {
         return "{" + elements.stream().map(e -> e.toString()).collect(Collectors.joining(";")) + "}";
 	}
 
-    /*  @return the list of elements in the set */
+    /*  @return a copy of the list of elements in the set */
     public List<OperandToken> getElements (){
         List<OperandToken> res = new ArrayList<OperandToken> ();
         res.addAll(this.elements);
