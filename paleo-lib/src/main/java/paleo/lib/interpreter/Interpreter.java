@@ -1,8 +1,9 @@
 package paleo.lib.interpreter;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Queue;
 import java.util.Stack;
-
 import paleo.lib.token.OperandToken;
 import paleo.lib.token.OperationToken;
 import paleo.lib.token.Yytoken;
@@ -46,27 +47,28 @@ public final class Interpreter {
 
 			if (token.isAnOperandToken()) {
 				operandStack.push((OperandToken) token);
-			}
-			else {
+			} else {
 				operationToken = (OperationToken) token;
-
-				if (OperationToken.LPAREN == operationToken) {
-					operationStack.push(operationToken);
-				}
-				else if (OperationToken.RPAREN == operationToken) {
-					while (OperationToken.LPAREN != operationStack.peek()) {
-						evaluateOperation();
-					}
-					operationStack.pop();
-				}
-				else {
-					while (
-						!operationStack.isEmpty()
-						&& operationToken.getPriority() <= operationStack.peek().getPriority())
-					{
-						evaluateOperation();
-					}
-					operationStack.push(operationToken);
+				switch (operationToken) {
+					case LPAREN:
+						operationStack.push(operationToken);
+						break;
+					case RPAREN:
+						while (OperationToken.LPAREN != operationStack.peek()) {
+							evaluateOperation();
+						}
+						operationStack.pop();
+						break;
+					default:
+						while (
+							!operationStack.isEmpty() &&
+							operationToken.getPriority() <=
+							operationStack.peek().getPriority()
+						) {
+							evaluateOperation();
+						}
+						operationStack.push(operationToken);
+						break;
 				}
 			}
 		}
@@ -83,25 +85,27 @@ public final class Interpreter {
 	}
 
 	private void evaluateOperation() throws IllegalArgumentException {
-		OperandToken op1;
-		OperandToken op2;
-
-		if (2 > operandStack.size()) {
-			throw new IllegalArgumentException("Not enough operands");
-		}
+		OperationToken operation;
+		Deque<OperandToken> operandsDeque;
 
 		if (operationStack.isEmpty()) {
 			throw new IllegalArgumentException("Not enough operations");
 		}
 
-		op2 = operandStack.pop();
-		op1 = operandStack.pop();
+		operation = operationStack.pop();
+		if (operation.getArity() > operandStack.size()) {
+			throw new IllegalArgumentException("Not enough operands");
+		}
+
+		operandsDeque = new ArrayDeque<OperandToken>();
+		for (int i = 0; i < operation.getArity(); i++) {
+			operandsDeque.push(operandStack.pop());
+		}
 
 		operandStack.push(
-			OperationDictionary.getOperationEvaluator(
-				operationStack.pop(), op1.getClass(),
-				op2.getClass()
-			).evaluateOperation(op1, op2)
+			OperationDictionary
+				.getOperationEvaluator(operation, operandsDeque)
+				.evaluateOperation(operandsDeque)
 		);
 	}
 }

@@ -1,7 +1,9 @@
 package paleo.lib.interpreter;
 
+import java.util.Deque;
 import java.util.HashMap;
-
+import java.util.List;
+import java.util.stream.Collectors;
 import paleo.lib.token.OperandToken;
 import paleo.lib.token.OperationToken;
 
@@ -18,35 +20,36 @@ public final class OperationDictionary {
 	/**
 	 * Stores all {@link OperationEvaluator}.
 	 */
-	private static HashMap<OperationToken,
-							HashMap<Class <? extends OperandToken>,
-									HashMap<Class <? extends OperandToken>,
-										 OperationEvaluator>>>
-							operationMap = new HashMap<>();
+	private static HashMap<String, OperationEvaluator> operationMap = new HashMap<>();
+
+	private static String generateKeyFrom(
+		OperationToken operation,
+		List<Class<? extends OperandToken>> signature
+	) {
+		return (
+			operation.toString() +
+			signature.stream().map(e -> e.toString()).collect(Collectors.joining(" "))
+		);
+	}
 
 	/**
 	 * Adds an {@link OperationEvaluator} to the corresponding {@link HashMap}
 	 * in operationMap.
 	 *
 	 * @param operation is the {@link OperationToken} implemented by the opEvaluator.
-	 * @param op1 is the {@link Class} of the left operand.
-	 * @param op2 is the {@link Class} of the right operand.
-	 * @param opEvaluator is the implementation of the operation.
+	 * @param opEvaluator is the {@link OperationEvaluator} implementation of the operation.
+	 * @param signature is the list of {@link Operand} classes supported by the opereation.
 	 */
 	public static void addEntry(
-			OperationToken operation,
-			Class<? extends OperandToken> op1,
-			Class<? extends OperandToken> op2,
-			OperationEvaluator opEvaluator)
-	{
-		if (null == operationMap.get(operation)) {
-			operationMap.put(operation, new HashMap<>());
-		}
-		if (null == operationMap.get(operation).get(op1)) {
-			operationMap.get(operation).put(op1, new HashMap<>());
-		}
+		OperationToken operation,
+		OperationEvaluator opEvaluator,
+		List<Class<? extends OperandToken>> signature
+	) {
+		String key = generateKeyFrom(operation, signature);
 
-		operationMap.get(operation).get(op1).put(op2, opEvaluator);
+		if (!operationMap.containsKey(key)) {
+			operationMap.put(key, opEvaluator);
+		}
 	}
 
 	/**
@@ -54,39 +57,26 @@ public final class OperationDictionary {
 	 * operation and operands types.
 	 *
 	 * @param operation is the wanted {@link OperationToken}.
-	 * @param op1 is the {@link Class} of the left operand.
-	 * @param op2 is the {@link Class} of the right operand.
+	 * @param signature is the list of {@link Operand} classes of the argument.
 	 * @return the corresponding implementation of the operation if its
 	 * provided, otherwise, throw an {@link IllegalArgumentException}.
 	 */
 	public static OperationEvaluator getOperationEvaluator(
-			OperationToken operation,
-			Class<? extends OperandToken> op1,
-			Class<? extends OperandToken> op2)
-	{
-		if (!operationMap.containsKey(operation)) {
+		OperationToken operation,
+		Deque<OperandToken> signature
+	) {
+		List<Class<? extends OperandToken>> signatureKey = signature
+			.stream()
+			.map(o -> o.getClass())
+			.collect(Collectors.toList());
+		String key = generateKeyFrom(operation, signatureKey);
+
+		if (!operationMap.containsKey(key)) {
 			throw new IllegalArgumentException(
-					operation.toString() + " unsupported operation"
+				operation.toString() + " unsupported operation"
 			);
+		} else {
+			return operationMap.get(key);
 		}
-		if (!operationMap.get(operation).containsKey(op1)) {
-			throw new IllegalArgumentException(
-					operation.toString()
-					+ " unsupported operation for the operand '"
-					+ op1.toString()
-					+ "'"
-			);
-		}
-		if (!operationMap.get(operation).get(op1).containsKey(op2)) {
-			throw new IllegalArgumentException(
-					operation.toString() + " "
-					+ "unsupported operation for the operand '"
-					+ op1.toString()
-					+ "' and '"
-					+ op2.toString()
-					+ "'"
-			);
-		}
-		return operationMap.get(operation).get(op1).get(op2);
 	}
 }

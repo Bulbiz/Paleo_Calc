@@ -29,6 +29,7 @@ integer = [-]?{digit}+
 real 	= [-]?{integer}("."{integer})
 
 %state HIST
+%state OPERATION
 
 %%
 
@@ -36,13 +37,29 @@ real 	= [-]?{integer}("."{integer})
 	"hist" 		{ this.histFlag = false; this.currentToken = null; yybegin(HIST); }
 
 	{white}		{ }
-	{real} 		{ return(new DoubleOperandToken(Double.parseDouble(yytext()))); }
-	{integer} 	{ return(new IntegerOperandToken(Integer.parseInt(yytext()))); }
+	{real} 		{ yybegin(OPERATION); return(new DoubleOperandToken(Double.parseDouble(yytext()))); }
+	{integer} 	{ yybegin(OPERATION); return(new IntegerOperandToken(Integer.parseInt(yytext()))); }
 
-	"+" 		{ return(OperationToken.SUM); }
-	"-" 		{ return(OperationToken.SUB); }
-	"*" 		{ return(OperationToken.MULT); }
-	"/" 		{ return(OperationToken.DIV); }
+	"not"		{ return(OperationToken.NOT);}
+    "true"		{ yybegin(OPERATION); return new BooleanOperandToken(true);}
+    "false"		{ yybegin(OPERATION); return new BooleanOperandToken(false);}
+
+	"(" 		{ return(OperationToken.LPAREN); }
+	")" 		{ return(OperationToken.RPAREN); }
+}
+
+<OPERATION> {
+	{white}		{ }
+
+	"+" 		{ yybegin(YYINITIAL); return(OperationToken.SUM); }
+	"-" 		{ yybegin(YYINITIAL); return(OperationToken.SUB); }
+	"*" 		{ yybegin(YYINITIAL); return(OperationToken.MULT); }
+	"/" 		{ yybegin(YYINITIAL); return(OperationToken.DIV); }
+
+	"not"		{ yybegin(YYINITIAL); return(OperationToken.NOT);}
+    "and"		{ yybegin(YYINITIAL); return(OperationToken.AND);}
+    "or"		{ yybegin(YYINITIAL); return(OperationToken.OR);}
+
 	"(" 		{ return(OperationToken.LPAREN); }
 	")" 		{ return(OperationToken.RPAREN); }
 }
@@ -66,7 +83,7 @@ real 	= [-]?{integer}("."{integer})
 	{
 		if (null == this.currentToken)
 			throw new InvalidHistoricTokenException();
-		yybegin(YYINITIAL);
+		yybegin(OPERATION);
 		return this.currentToken;
 	}
 }

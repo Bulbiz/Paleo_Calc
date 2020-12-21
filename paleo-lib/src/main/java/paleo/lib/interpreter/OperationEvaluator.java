@@ -1,5 +1,6 @@
 package paleo.lib.interpreter;
 
+import java.util.Deque;
 import paleo.lib.token.OperandToken;
 
 /**
@@ -8,13 +9,14 @@ import paleo.lib.token.OperandToken;
  */
 @FunctionalInterface
 public interface OperationEvaluator {
-
 	/**
-	 * Evaluates an operation according two operands.
+	 * Evaluates an operation according a queue of operands.
 	 *
-	 * @param op1 is the left operand.
-	 * @param op2 is the right operand.
-	 * @return the resulting operand.
+	 * @note {@link Deque} is used in order to keep the right operand "position" by using
+	 * a single `pop` call.
+	 *
+	 * @param operands is a {@link Deque} of {@link OperandToken} used for the evalutation.
+	 * @return the resulting {@link OperandToken}.
 	 */
-	 public OperandToken evaluateOperation(OperandToken op1, OperandToken op2);
+	public OperandToken evaluateOperation(Deque<OperandToken> operands);
 }
