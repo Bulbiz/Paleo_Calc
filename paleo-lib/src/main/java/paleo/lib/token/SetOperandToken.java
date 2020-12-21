@@ -44,8 +44,12 @@ public final class SetOperandToken implements OperandToken {
 		);
 	}
 
-    /*  Auxilary function
-	 *  @return a new Set that is the result of op1 inter op2
+    /**
+	 * Auxilary function
+	 * Do the intersection of two set
+     * @param op1 is the first Set parameter.
+	 * @param op2 is the second Set parameter.
+	 * @return a new Set that correspond to op1 inter op2.
 	 */
 	private static SetOperandToken inter(SetOperandToken op1, SetOperandToken op2) {
 		List<OperandToken> element_op1 = op1.getElements();
@@ -59,8 +63,12 @@ public final class SetOperandToken implements OperandToken {
 		return builder.build();
 	}
 
-	/*  Auxilary function
-	 *  @return a new Set that is the result of op1 union op2
+	/**
+	 * Auxilary function
+	 * Do the union of two set
+     * @param op1 is the first Set parameter.
+	 * @param op2 is the second Set parameter.
+	 * @return a new Set that correspond to op1 union op2.
 	 */
 	private static SetOperandToken union(SetOperandToken op1, SetOperandToken op2) {
 		List<OperandToken> element_op1 = op1.getElements();
@@ -74,8 +82,12 @@ public final class SetOperandToken implements OperandToken {
 		return builder.build();
 	}
 
-	/*  Auxilary function
-	 *  @return a new Set that is the result of op1 diff op2
+	/**
+	 * Auxilary function
+	 * Do the difference of two set
+     * @param op1 is the first Set parameter.
+	 * @param op2 is the second Set parameter.
+	 * @return a new Set that correspond to op1 diff op2.
 	 */
 	private static SetOperandToken diff(SetOperandToken op1, SetOperandToken op2) {
 		List<OperandToken> element_op1 = op1.getElements();
@@ -98,10 +110,9 @@ public final class SetOperandToken implements OperandToken {
 		this.elements.addAll(ajout);
 	}
 
-    /*  A Set is considered equals to another one if 
-     *  all the element of set1 is in set2 and 
-     *  all the element of set2 is in set1.
-     */
+    /* Look if the set is equals to the second set.
+     * Order doesn't count here
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		List<OperandToken> operandSet;
@@ -125,16 +136,24 @@ public final class SetOperandToken implements OperandToken {
 		);
 	}
 
-	/*  @return a list of elements in the set */
+	/** 
+	 * @return a list that contains all the elements of the set.
+	 */
 	public List<OperandToken> getElements() {
 		List<OperandToken> res = new ArrayList<OperandToken>();
 		res.addAll(this.elements);
 		return res;
 	}
 
-	/* A builder for Set Operand */
+    /**
+     * Builder for Set Operand,
+     * Here the builder will build a Set that doesn't have 
+     * multiple instance of the same element.
+     * (it doesn't build a Multi Set but a simple Set)
+     */
 	public static final class SetBuilder {
 
+        /* List for the elements of the Set */
 		private List<OperandToken> storage;
 
         /* Constructor for builder */
@@ -142,7 +161,7 @@ public final class SetOperandToken implements OperandToken {
 			storage = new ArrayList<OperandToken>();
 		}
 
-        /*  Add {element} to the builder,
+        /** Add {element} to the builder,
          *  the element is accepted if it's not null
          *  and if the element is not already in the builder
          */
@@ -158,7 +177,10 @@ public final class SetOperandToken implements OperandToken {
 			elements.stream().forEach(e -> this.add(e));
 		}
 
-        /*  @return a new SetOperandToken from the builder */
+        /**
+         * Build a SetOperandToken according to the builder
+         * @return a new SetOperandToken from the builder 
+         */
 		public SetOperandToken build() {
 			return new SetOperandToken(storage);
 		}
