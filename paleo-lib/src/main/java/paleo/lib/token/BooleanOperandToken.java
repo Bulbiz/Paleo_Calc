@@ -55,13 +55,16 @@ public final class BooleanOperandToken implements OperandToken {
 
 	/**
 	 * {@link BooleanOperandToken} constructor.
-	 *
 	 * @param value is the boolean operand corresponding value.
 	 */
 	public BooleanOperandToken(final boolean value) {
 		this.value = value;
 	}
 
+	/**
+	 * Verify if this is equals to obj
+	 * @param obj is the object we compare to.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		return (

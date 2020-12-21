@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import paleo.lib.interpreter.OperationDictionary;
 
 /**
- * Models a Set.
+ * Model a Set.
  */
 public final class SetOperandToken implements OperandToken {
 
@@ -101,16 +101,23 @@ public final class SetOperandToken implements OperandToken {
 		return builder.build();
     }
     
-    /* List that contains all the elements */
+    /** 
+     * List that contains all the elements 
+     */
 	private ArrayList<OperandToken> elements;
 
+    /**
+	 * {@link SetOperandToken} constructor.
+	 * @param ajout is the list of operand that have to be added in the set.
+	 */
 	private SetOperandToken(List<OperandToken> ajout) {
 		/* Defensive Copy */
 		this.elements = new ArrayList<OperandToken>();
 		this.elements.addAll(ajout);
 	}
 
-    /* Look if the set is equals to the second set.
+    /**
+     * Look if the set is equals to the second set.
      * Order doesn't count here
 	 */
 	@Override
