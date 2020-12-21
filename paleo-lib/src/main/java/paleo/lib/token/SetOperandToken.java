@@ -46,11 +46,15 @@ public final class SetOperandToken implements OperandToken {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof SetOperandToken)) return false;
-		List<OperandToken> objElement = ((SetOperandToken) obj).getElements();
+		List<OperandToken> operandSet;
+
+		if (!(obj instanceof SetOperandToken)) {
+			return false;
+		}
+		operandSet = ((SetOperandToken) obj).getElements();
 		return (
-			objElement.containsAll(this.getElements()) &&
-			this.getElements().containsAll(objElement)
+			operandSet.containsAll(this.getElements()) &&
+			this.getElements().containsAll(operandSet)
 		);
 	}
 
@@ -58,7 +62,7 @@ public final class SetOperandToken implements OperandToken {
 	public String toString() {
 		return (
 			"{" +
-			elements.stream().map(e -> e.toString()).collect(Collectors.joining(";")) +
+			elements.stream().map(e -> e.toString()).collect(Collectors.joining("; ")) +
 			"}"
 		);
 	}
