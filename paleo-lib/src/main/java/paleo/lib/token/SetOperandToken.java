@@ -40,7 +40,7 @@ public final class SetOperandToken implements OperandToken {
     }
     private ArrayList <OperandToken> elements;
 
-    public SetOperandToken (List <OperandToken> ajout){
+    private SetOperandToken (List <OperandToken> ajout){
         /* Defensive Copy */
         this.elements = new ArrayList<OperandToken> ();
         this.elements.addAll(ajout);
@@ -79,7 +79,9 @@ public final class SetOperandToken implements OperandToken {
         List<OperandToken> element_op1 = op1.getElements();
         List<OperandToken> element_op2 = op2.getElements();
         List<OperandToken> element_inter = element_op1.stream().filter(e -> element_op2.contains(e)).collect(Collectors.toList());
-        return new SetOperandToken (element_inter);
+        SetBuilder builder = new SetBuilder();
+        builder.addAll(element_inter);
+        return builder.build();
     }
 
     /*  Auxilary function 
@@ -89,7 +91,9 @@ public final class SetOperandToken implements OperandToken {
         List<OperandToken> element_op1 = op1.getElements();
         List<OperandToken> element_op2 = op2.getElements();
         element_op1.stream().filter(e -> !element_op2.contains(e)).forEach(e -> element_op2.add(e));
-        return new SetOperandToken (element_op2);
+        SetBuilder builder = new SetBuilder();
+        builder.addAll(element_op2);
+        return builder.build();
     }
 
     /*  Auxilary function 
@@ -99,6 +103,28 @@ public final class SetOperandToken implements OperandToken {
         List<OperandToken> element_op1 = op1.getElements();
         List<OperandToken> element_op2 = op2.getElements();
         List<OperandToken> recuperation =  element_op1.stream().filter(e -> !element_op2.contains(e)).collect(Collectors.toList());
-        return new SetOperandToken (recuperation);
+        SetBuilder builder = new SetBuilder();
+        builder.addAll(recuperation);
+        return builder.build();
+    }
+
+    /* A builder for Set Operand */
+    public static final class SetBuilder {
+        private List <OperandToken> storage;
+        
+        public SetBuilder () {
+            storage = new ArrayList <OperandToken> ();
+        }
+
+        public void add (OperandToken element){
+            if (element != null && !storage.contains(element))
+                storage.add(element);
+        }
+        public void addAll (List <OperandToken> elements){
+            elements.stream().forEach(e -> this.add(e));
+        }
+        public SetOperandToken build (){
+            return new SetOperandToken (storage);
+        }
     }
 }

@@ -25,7 +25,7 @@ import paleo.lib.token.SetOperandToken;
 	private boolean histFlag = false;
 	private HistoricToken currentToken = null;
 
-	private static List <OperandToken> storage = new ArrayList <OperandToken> ();
+	private SetOperandToken.SetBuilder setBuilder;
 %}
 
 white	= [ \t\f]+
@@ -61,22 +61,22 @@ real 	= [-]?{integer}("."{integer})
 	"union"		{return(OperationToken.UNION);}
 	"diff"		{return(OperationToken.DIFF);}
 
-	"{" 		{ storage.clear(); yybegin(SET);}
+	"{" 		{ setBuilder = new SetOperandToken.SetBuilder(); yybegin(SET);}
 }
 
 <SET> {
-	{integer}	{ storage.add(new IntegerOperandToken(Integer.parseInt(yytext())));}
-	{real} 		{ storage.add(new DoubleOperandToken(Double.parseDouble(yytext()))); }
-	"true"		{ storage.add(new BooleanOperandToken(true));}
-	"false"		{ storage.add(new BooleanOperandToken(false));}
+	{integer}	{ setBuilder.add(new IntegerOperandToken(Integer.parseInt(yytext())));}
+	{real} 		{ setBuilder.add(new DoubleOperandToken(Double.parseDouble(yytext()))); }
+	"true"		{ setBuilder.add(new BooleanOperandToken(true));}
+	"false"		{ setBuilder.add(new BooleanOperandToken(false));}
 		
 	{white}		{ }
 	";"			{ }
 	"}"			
 		{
 			yybegin(YYINITIAL);
-			SetOperandToken res = new SetOperandToken (storage);
-        	storage.clear();
+			SetOperandToken res = setBuilder.build();
+        	setBuilder = null;
         	return res;
 		}
 }

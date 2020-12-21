@@ -176,58 +176,80 @@ public class InterpreterTest {
     }
     @Test
     public void SetSimple() {
+        SetOperandToken.SetBuilder builder = new SetOperandToken.SetBuilder ();
+        builder.addAll(List.of());
         assertEquals(
-            new SetOperandToken (List.of()),
+            builder.build(),
             new Interpreter(new Parser("{ }").parse().get()).evaluate()
         );
     }
 
     @Test
     public void SetIntegerSimple() {
+        SetOperandToken.SetBuilder builder = new SetOperandToken.SetBuilder ();
+        builder.addAll(List.of(new IntegerOperandToken(3)));
         assertEquals(
-            new SetOperandToken (List.of(new IntegerOperandToken(3))),
+            builder.build(),
             new Interpreter(new Parser("{ 3 }").parse().get()).evaluate()
         );
     }
     @Test
     public void SetDoubleSimple() {
+        SetOperandToken.SetBuilder builder = new SetOperandToken.SetBuilder ();
+        builder.addAll(List.of(new DoubleOperandToken(-3.5)));
         assertEquals(
-            new SetOperandToken (List.of(new DoubleOperandToken(-3.5))),
+            builder.build(),
             new Interpreter(new Parser("{ -3.5 }").parse().get()).evaluate()
         );
     }
     @Test
     public void SetBooleanSimple() {
+        SetOperandToken.SetBuilder builder = new SetOperandToken.SetBuilder ();
+        builder.addAll(List.of(new BooleanOperandToken(true)));
         assertEquals(
-            new SetOperandToken (List.of(new BooleanOperandToken(true))),
+            builder.build(),
             new Interpreter(new Parser("{ true }").parse().get()).evaluate()
         );
     }
     @Test
     public void SetExpression() {
+        SetOperandToken.SetBuilder builder = new SetOperandToken.SetBuilder ();
+        builder.addAll(List.of(
+            new BooleanOperandToken(true),
+            new DoubleOperandToken(1.0),
+            new BooleanOperandToken(false),
+            new IntegerOperandToken(5)
+            )
+        );
         assertEquals(
-            new SetOperandToken (List.of(new BooleanOperandToken(true),new DoubleOperandToken(1.0),new BooleanOperandToken(false),new IntegerOperandToken(5))),
+            builder.build(),
             new Interpreter(new Parser("{ true ; 1.0 ; false ; 5 }").parse().get()).evaluate()
         );
     }
     @Test
     public void SetUnion() {
+        SetOperandToken.SetBuilder builder = new SetOperandToken.SetBuilder ();
+        builder.addAll(List.of(new BooleanOperandToken(true),new BooleanOperandToken(false),new IntegerOperandToken(1)));
         assertEquals(
-            new SetOperandToken (List.of(new BooleanOperandToken(true),new BooleanOperandToken(false),new IntegerOperandToken(1))),
+            builder.build(),
             new Interpreter(new Parser("{ true } union {false ; true ; false ; 1}").parse().get()).evaluate()
         );
     }
     @Test
     public void SetInter() {
+        SetOperandToken.SetBuilder builder = new SetOperandToken.SetBuilder ();
+        builder.addAll(List.of(new BooleanOperandToken(true)));
         assertEquals(
-            new SetOperandToken (List.of(new BooleanOperandToken(true))),
+            builder.build(),
             new Interpreter(new Parser("{ true } inter {false ; true ; false}").parse().get()).evaluate()
         );
     }
     @Test
     public void SetDiff() {
+        SetOperandToken.SetBuilder builder = new SetOperandToken.SetBuilder ();
+        builder.addAll(List.of(new DoubleOperandToken(1.0)));
         assertEquals(
-            new SetOperandToken (List.of(new DoubleOperandToken(1.0))),
+            builder.build(),
             new Interpreter(new Parser("{ true ; 1.0 } diff {false ; true ; false}").parse().get()).evaluate()
         );
     }
