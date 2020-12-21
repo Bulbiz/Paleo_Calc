@@ -120,10 +120,18 @@ public final class SetOperandToken implements OperandToken {
         this.elements = new ArrayList<OperandToken>();
 	}
 
+	/**
+	 * add one element to the set
+	 * @param element is the operand that have to be added in the set.
+	 */
 	public void add(OperandToken element){
 		if (element != null && !this.elements.contains(element)) this.elements.add(element);
 	}
 
+	/**
+	 * add a bunch of element to the Set
+	 * @param listElements is a list of operand that have to be added in the set.
+	 */
 	public void addAll(List<OperandToken> listElements){
 		listElements.stream().forEach(e -> this.add(e));
 	}
