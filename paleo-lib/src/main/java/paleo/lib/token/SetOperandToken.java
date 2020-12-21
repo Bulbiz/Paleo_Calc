@@ -54,12 +54,14 @@ public final class SetOperandToken implements OperandToken {
 	private static SetOperandToken inter(SetOperandToken op1, SetOperandToken op2) {
         SetBuilder builder = new SetBuilder();
 		List<OperandToken> element_op1 = op1.getElements();
-		List<OperandToken> element_op2 = op2.getElements();
+        List<OperandToken> element_op2 = op2.getElements();
+        
 		List<OperandToken> element_inter = element_op1
 			.stream()
 			.filter(e -> element_op2.contains(e))
 			.collect(Collectors.toList());
-		builder.addAll(element_inter);
+        builder.addAll(element_inter);
+        
 		return builder.build();
 	}
 
@@ -73,12 +75,14 @@ public final class SetOperandToken implements OperandToken {
 	private static SetOperandToken union(SetOperandToken op1, SetOperandToken op2) {
         SetBuilder builder = new SetBuilder();
 		List<OperandToken> element_op1 = op1.getElements();
-		List<OperandToken> element_op2 = op2.getElements();
+        List<OperandToken> element_op2 = op2.getElements();
+        
 		element_op1
 			.stream()
 			.filter(e -> !element_op2.contains(e))
-			.forEach(e -> element_op2.add(e));
-		builder.addAll(element_op2);
+            .forEach(e -> element_op2.add(e));
+        builder.addAll(element_op2);
+        
 		return builder.build();
 	}
 
@@ -92,12 +96,14 @@ public final class SetOperandToken implements OperandToken {
 	private static SetOperandToken diff(SetOperandToken op1, SetOperandToken op2) {
         SetBuilder builder = new SetBuilder();
 		List<OperandToken> element_op1 = op1.getElements();
-		List<OperandToken> element_op2 = op2.getElements();
+        List<OperandToken> element_op2 = op2.getElements();
+        
 		List<OperandToken> recuperation = element_op1
 			.stream()
 			.filter(e -> !element_op2.contains(e))
-			.collect(Collectors.toList());
-		builder.addAll(recuperation);
+            .collect(Collectors.toList());
+        builder.addAll(recuperation);
+        
 		return builder.build();
     }
     
@@ -112,7 +118,8 @@ public final class SetOperandToken implements OperandToken {
 	 */
 	private SetOperandToken(List<OperandToken> ajout) {
 		/* Defensive Copy */
-		this.elements = new ArrayList<OperandToken>();
+        this.elements = new ArrayList<OperandToken>();
+        
 		this.elements.addAll(ajout);
 	}
 
@@ -127,7 +134,8 @@ public final class SetOperandToken implements OperandToken {
 		if (!(obj instanceof SetOperandToken)) {
 			return false;
 		}
-		operandSet = ((SetOperandToken) obj).getElements();
+        operandSet = ((SetOperandToken) obj).getElements();
+        
 		return (
 			operandSet.containsAll(this.getElements()) &&
 			this.getElements().containsAll(operandSet)
@@ -147,8 +155,10 @@ public final class SetOperandToken implements OperandToken {
 	 * @return a list that contains all the elements of the set.
 	 */
 	public List<OperandToken> getElements() {
-		List<OperandToken> res = new ArrayList<OperandToken>();
-		res.addAll(this.elements);
+        List<OperandToken> res = new ArrayList<OperandToken>();
+        
+        res.addAll(this.elements);
+        
 		return res;
 	}
 
