@@ -52,7 +52,7 @@ public final class SetOperandToken implements OperandToken {
 	 * @return a new Set that correspond to op1 inter op2.
 	 */
 	private static SetOperandToken inter(SetOperandToken op1, SetOperandToken op2) {
-        SetBuilder builder = new SetBuilder();
+        SetOperandToken retour = new SetOperandToken();
 		List<OperandToken> element_op1 = op1.getElements();
         List<OperandToken> element_op2 = op2.getElements();
         
@@ -60,9 +60,9 @@ public final class SetOperandToken implements OperandToken {
 			.stream()
 			.filter(e -> element_op2.contains(e))
 			.collect(Collectors.toList());
-        builder.addAll(element_inter);
+		retour.addAll(element_inter);
         
-		return builder.build();
+		return retour;
 	}
 
 	/**
@@ -73,7 +73,7 @@ public final class SetOperandToken implements OperandToken {
 	 * @return a new Set that correspond to op1 union op2.
 	 */
 	private static SetOperandToken union(SetOperandToken op1, SetOperandToken op2) {
-        SetBuilder builder = new SetBuilder();
+        SetOperandToken retour = new SetOperandToken();
 		List<OperandToken> element_op1 = op1.getElements();
         List<OperandToken> element_op2 = op2.getElements();
         
@@ -81,9 +81,9 @@ public final class SetOperandToken implements OperandToken {
 			.stream()
 			.filter(e -> !element_op2.contains(e))
             .forEach(e -> element_op2.add(e));
-        builder.addAll(element_op2);
+		retour.addAll(element_op2);
         
-		return builder.build();
+		return retour;
 	}
 
 	/**
@@ -94,17 +94,17 @@ public final class SetOperandToken implements OperandToken {
 	 * @return a new Set that correspond to op1 diff op2.
 	 */
 	private static SetOperandToken diff(SetOperandToken op1, SetOperandToken op2) {
-        SetBuilder builder = new SetBuilder();
 		List<OperandToken> element_op1 = op1.getElements();
-        List<OperandToken> element_op2 = op2.getElements();
-        
+		List<OperandToken> element_op2 = op2.getElements();
+		SetOperandToken retour = new SetOperandToken();
+		
 		List<OperandToken> recuperation = element_op1
 			.stream()
 			.filter(e -> !element_op2.contains(e))
             .collect(Collectors.toList());
-        builder.addAll(recuperation);
-        
-		return builder.build();
+		retour.addAll(recuperation);
+		
+		return retour;
     }
     
     /** 
@@ -116,13 +116,17 @@ public final class SetOperandToken implements OperandToken {
 	 * {@link SetOperandToken} constructor.
 	 * @param ajout is the list of operand that have to be added in the set.
 	 */
-	private SetOperandToken(List<OperandToken> ajout) {
-		/* Defensive Copy */
+	public SetOperandToken() {
         this.elements = new ArrayList<OperandToken>();
-        
-		this.elements.addAll(ajout);
 	}
 
+	public void add(OperandToken element){
+		if (element != null && !this.elements.contains(element)) this.elements.add(element);
+	}
+
+	public void addAll(List<OperandToken> listElements){
+		listElements.stream().forEach(e -> this.add(e));
+	}
     /**
      * Look if the set is equals to the second set.
      * Order doesn't count here
@@ -160,46 +164,5 @@ public final class SetOperandToken implements OperandToken {
         res.addAll(this.elements);
         
 		return res;
-	}
-
-    /**
-     * Builder for Set Operand,
-     * Here the builder will build a Set that doesn't have 
-     * multiple instance of the same element.
-     * (it doesn't build a Multi Set but a simple Set)
-     */
-	public static final class SetBuilder {
-
-        /* List for the elements of the Set */
-		private List<OperandToken> storage;
-
-        /* Constructor for builder */
-		public SetBuilder() {
-			storage = new ArrayList<OperandToken>();
-		}
-
-        /** Add {element} to the builder,
-         *  the element is accepted if it's not null
-         *  and if the element is not already in the builder
-         */
-		public void add(OperandToken element) {
-			if (element != null && !storage.contains(element)) storage.add(element);
-		}
-
-        /*  Add all element of {elements} to the builder,
-         *  the element is accepted if it's not null
-         *  and if the element is not already in the builder
-         */
-		public void addAll(List<OperandToken> elements) {
-			elements.stream().forEach(e -> this.add(e));
-		}
-
-        /**
-         * Build a SetOperandToken according to the builder
-         * @return a new SetOperandToken from the builder 
-         */
-		public SetOperandToken build() {
-			return new SetOperandToken(storage);
-		}
 	}
 }
