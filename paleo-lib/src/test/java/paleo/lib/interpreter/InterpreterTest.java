@@ -178,48 +178,48 @@ public class InterpreterTest {
 
 	@Test
 	public void simpleEmptySet() {
-		SetOperandToken.SetBuilder builder = new SetOperandToken.SetBuilder();
-		builder.addAll(List.of());
+		SetOperandToken set = new SetOperandToken();
+		set.addAll(List.of());
 		assertEquals(
-			builder.build(),
+			set,
 			new Interpreter(new Parser("{ }").parse().get()).evaluate()
 		);
 	}
 
 	@Test
 	public void simpleIntegerSet() {
-		SetOperandToken.SetBuilder builder = new SetOperandToken.SetBuilder();
-		builder.addAll(List.of(new IntegerOperandToken(3)));
+		SetOperandToken set = new SetOperandToken();
+		set.addAll(List.of(new IntegerOperandToken(3)));
 		assertEquals(
-			builder.build(),
+			set,
 			new Interpreter(new Parser("{ 3 }").parse().get()).evaluate()
 		);
 	}
 
 	@Test
 	public void simpleDoubleSet() {
-		SetOperandToken.SetBuilder builder = new SetOperandToken.SetBuilder();
-		builder.addAll(List.of(new DoubleOperandToken(-3.5)));
+		SetOperandToken set = new SetOperandToken();
+		set.addAll(List.of(new DoubleOperandToken(-3.5)));
 		assertEquals(
-			builder.build(),
+			set,
 			new Interpreter(new Parser("{ -3.5 }").parse().get()).evaluate()
 		);
 	}
 
 	@Test
 	public void simpleBooleanSet() {
-		SetOperandToken.SetBuilder builder = new SetOperandToken.SetBuilder();
-		builder.addAll(List.of(new BooleanOperandToken(true)));
+		SetOperandToken set = new SetOperandToken();
+		set.addAll(List.of(new BooleanOperandToken(true)));
 		assertEquals(
-			builder.build(),
+			set,
 			new Interpreter(new Parser("{ true }").parse().get()).evaluate()
 		);
 	}
 
 	@Test
 	public void multitypedSet() {
-		SetOperandToken.SetBuilder builder = new SetOperandToken.SetBuilder();
-		builder.addAll(
+		SetOperandToken set = new SetOperandToken();
+		set.addAll(
 			List.of(
 				new BooleanOperandToken(true),
 				new DoubleOperandToken(1.0),
@@ -228,7 +228,7 @@ public class InterpreterTest {
 			)
 		);
 		assertEquals(
-			builder.build(),
+			set,
 			new Interpreter(new Parser("{ true ; 1.0 ; false ; 5 }").parse().get())
 				.evaluate()
 		);
@@ -236,8 +236,8 @@ public class InterpreterTest {
 
 	@Test
 	public void unionMultitypedSetExpression() {
-		SetOperandToken.SetBuilder builder = new SetOperandToken.SetBuilder();
-		builder.addAll(
+		SetOperandToken set = new SetOperandToken();
+		set.addAll(
 			List.of(
 				new BooleanOperandToken(true),
 				new BooleanOperandToken(false),
@@ -245,7 +245,7 @@ public class InterpreterTest {
 			)
 		);
 		assertEquals(
-			builder.build(),
+			set,
 			new Interpreter(
 				new Parser("{ true } union {false ; true ; false ; 1}").parse().get()
 			)
@@ -255,10 +255,10 @@ public class InterpreterTest {
 
 	@Test
 	public void interBooleanSetExpression() {
-		SetOperandToken.SetBuilder builder = new SetOperandToken.SetBuilder();
-		builder.addAll(List.of(new BooleanOperandToken(true)));
+		SetOperandToken set = new SetOperandToken();
+		set.addAll(List.of(new BooleanOperandToken(true)));
 		assertEquals(
-			builder.build(),
+			set,
 			new Interpreter(
 				new Parser("{ true } inter {false ; true ; false}").parse().get()
 			)
@@ -268,10 +268,10 @@ public class InterpreterTest {
 
 	@Test
 	public void diffMultitypedSetExpression() {
-		SetOperandToken.SetBuilder builder = new SetOperandToken.SetBuilder();
-		builder.addAll(List.of(new DoubleOperandToken(1.0)));
+		SetOperandToken set = new SetOperandToken();
+		set.addAll(List.of(new DoubleOperandToken(1.0)));
 		assertEquals(
-			builder.build(),
+			set,
 			new Interpreter(
 				new Parser("{ true ; 1.0 } diff {false ; true ; false}").parse().get()
 			)

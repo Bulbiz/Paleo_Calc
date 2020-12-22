@@ -306,12 +306,12 @@ public class ParserTest {
 
 	@Test
 	public void expressionWithSimpleSet() {
-		SetOperandToken.SetBuilder builder = new SetOperandToken.SetBuilder();
-		builder.addAll(List.of(new IntegerOperandToken(1)));
+		SetOperandToken set = new SetOperandToken();
+		set.addAll(List.of(new IntegerOperandToken(1)));
 
 		final Queue<Yytoken> actualTokens = new Parser("{1} union 3").parse().get();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
-			builder.build(),
+			set,
 			OperationToken.UNION,
 			new IntegerOperandToken(3)
 		);

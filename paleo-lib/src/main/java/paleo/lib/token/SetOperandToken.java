@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import paleo.lib.interpreter.OperationDictionary;
+import paleo.lib.interpreter.OperationEvaluator;
 
 /**
- * Model a Set.
+ * Models a mathematical set.
  */
 public final class SetOperandToken implements OperandToken {
-
-    /**
+	/**
 	 * Adds corresponding {@link OperationEvaluator} implementations
 	 * to the {@link OperationDictionary}.
 	 */
@@ -18,124 +18,144 @@ public final class SetOperandToken implements OperandToken {
 		OperationDictionary.addEntry(
 			OperationToken.INTER,
 			operands -> {
-				SetOperandToken op1 = (SetOperandToken) operands.pop();
-				SetOperandToken op2 = (SetOperandToken) operands.pop();
-				return (inter(op1, op2));
+				final SetOperandToken op1 = (SetOperandToken) operands.pop();
+				final SetOperandToken op2 = (SetOperandToken) operands.pop();
+				return (getIntersection(op1, op2));
 			},
 			List.of(SetOperandToken.class, SetOperandToken.class)
 		);
 		OperationDictionary.addEntry(
 			OperationToken.UNION,
 			operands -> {
-				SetOperandToken op1 = (SetOperandToken) operands.pop();
-				SetOperandToken op2 = (SetOperandToken) operands.pop();
-				return (union(op1, op2));
+				final SetOperandToken op1 = (SetOperandToken) operands.pop();
+				final SetOperandToken op2 = (SetOperandToken) operands.pop();
+				return (getUnion(op1, op2));
 			},
 			List.of(SetOperandToken.class, SetOperandToken.class)
 		);
 		OperationDictionary.addEntry(
 			OperationToken.DIFF,
 			operands -> {
-				SetOperandToken op1 = (SetOperandToken) operands.pop();
-				SetOperandToken op2 = (SetOperandToken) operands.pop();
-				return (diff(op1, op2));
+				final SetOperandToken op1 = (SetOperandToken) operands.pop();
+				final SetOperandToken op2 = (SetOperandToken) operands.pop();
+				return (getDiff(op1, op2));
 			},
 			List.of(SetOperandToken.class, SetOperandToken.class)
 		);
 	}
 
-    /**
-	 * Auxilary function
-	 * Do the intersection of two set
-     * @param op1 is the first Set parameter.
-	 * @param op2 is the second Set parameter.
-	 * @return a new Set that correspond to op1 inter op2.
+	/**
+	 * Returns the intersection of two given {@link SetOperandToken}.
+	 *
+	 * @param op1 is the first {@link SetOperandToken}.
+	 * @param op2 is the second {@link SetOperandToken}.
+	 *
+	 * @return a new instance of {@link OperandToken} corresponding to the intersection.
 	 */
-	private static SetOperandToken inter(SetOperandToken op1, SetOperandToken op2) {
-        SetBuilder builder = new SetBuilder();
-		List<OperandToken> element_op1 = op1.getElements();
-        List<OperandToken> element_op2 = op2.getElements();
-        
-		List<OperandToken> element_inter = element_op1
+	private static SetOperandToken getIntersection(
+		final SetOperandToken op1,
+		final SetOperandToken op2
+	) {
+		final SetOperandToken resElements = new SetOperandToken();
+		final List<OperandToken> element_op1 = op1.getElements();
+		final List<OperandToken> element_op2 = op2.getElements();
+
+		final List<OperandToken> element_inter = element_op1
 			.stream()
 			.filter(e -> element_op2.contains(e))
 			.collect(Collectors.toList());
-        builder.addAll(element_inter);
-        
-		return builder.build();
+		resElements.addAll(element_inter);
+
+		return resElements;
 	}
 
 	/**
-	 * Auxilary function
-	 * Do the union of two set
-     * @param op1 is the first Set parameter.
-	 * @param op2 is the second Set parameter.
-	 * @return a new Set that correspond to op1 union op2.
+	 * Returns the union of two given {@link SetOperandToken}.
+	 *
+	 * @param op1 is the first {@link SetOperandToken}.
+	 * @param op2 is the second {@link SetOperandToken}.
+	 *
+	 * @return a new instance of {@link OperandToken} corresponding to the union.
 	 */
-	private static SetOperandToken union(SetOperandToken op1, SetOperandToken op2) {
-        SetBuilder builder = new SetBuilder();
-		List<OperandToken> element_op1 = op1.getElements();
-        List<OperandToken> element_op2 = op2.getElements();
-        
+	private static SetOperandToken getUnion(
+		final SetOperandToken op1,
+		final SetOperandToken op2
+	) {
+		final SetOperandToken resElements = new SetOperandToken();
+		final List<OperandToken> element_op1 = op1.getElements();
+		final List<OperandToken> element_op2 = op2.getElements();
+
 		element_op1
 			.stream()
 			.filter(e -> !element_op2.contains(e))
-            .forEach(e -> element_op2.add(e));
-        builder.addAll(element_op2);
-        
-		return builder.build();
+			.forEach(e -> element_op2.add(e));
+		resElements.addAll(element_op2);
+
+		return resElements;
 	}
 
 	/**
-	 * Auxilary function
-	 * Do the difference of two set
-     * @param op1 is the first Set parameter.
-	 * @param op2 is the second Set parameter.
-	 * @return a new Set that correspond to op1 diff op2.
+	 * Returns the difference between two given {@link SetOperandToken}.
+	 *
+	 * @param op1 is the first {@link SetOperandToken}.
+	 * @param op2 is the second {@link SetOperandToken}.
+	 *
+	 * @return a new instance of {@link OperandToken} corresponding to the difference.
 	 */
-	private static SetOperandToken diff(SetOperandToken op1, SetOperandToken op2) {
-        SetBuilder builder = new SetBuilder();
-		List<OperandToken> element_op1 = op1.getElements();
-        List<OperandToken> element_op2 = op2.getElements();
-        
-		List<OperandToken> recuperation = element_op1
+	private static SetOperandToken getDiff(
+		final SetOperandToken op1,
+		final SetOperandToken op2
+	) {
+		final List<OperandToken> element_op1 = op1.getElements();
+		final List<OperandToken> element_op2 = op2.getElements();
+		final SetOperandToken resElements = new SetOperandToken();
+
+		final List<OperandToken> recuperation = element_op1
 			.stream()
 			.filter(e -> !element_op2.contains(e))
-            .collect(Collectors.toList());
-        builder.addAll(recuperation);
-        
-		return builder.build();
-    }
-    
-    /** 
-     * List that contains all the elements 
-     */
-	private ArrayList<OperandToken> elements;
+			.collect(Collectors.toList());
+		resElements.addAll(recuperation);
 
-    /**
-	 * {@link SetOperandToken} constructor.
-	 * @param ajout is the list of operand that have to be added in the set.
-	 */
-	private SetOperandToken(List<OperandToken> ajout) {
-		/* Defensive Copy */
-        this.elements = new ArrayList<OperandToken>();
-        
-		this.elements.addAll(ajout);
+		return resElements;
 	}
 
-    /**
-     * Look if the set is equals to the second set.
-     * Order doesn't count here
+	/** {@link ArrayList} containing the set {@link OperandToken} elements. */
+	private final ArrayList<OperandToken> elements;
+
+	/** {@link SetOperandToken} constructor. */
+	public SetOperandToken() {
+		this.elements = new ArrayList<OperandToken>();
+	}
+
+	/**
+	 * Adds one element to the set.
+	 *
+	 * @param element is the operand that have to be added in the set.
 	 */
+	public void add(final OperandToken element) {
+		if (element != null && !this.elements.contains(element)) {
+			this.elements.add(element);
+		}
+	}
+
+	/**
+	 * Adds multiple elements to the set.
+	 *
+	 * @param listElements is a list of {@link OperandToken} that have to be added in the set.
+	 */
+	public void addAll(final List<OperandToken> listElements) {
+		listElements.stream().forEach(e -> this.add(e));
+	}
+
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		List<OperandToken> operandSet;
 
 		if (!(obj instanceof SetOperandToken)) {
 			return false;
 		}
-        operandSet = ((SetOperandToken) obj).getElements();
-        
+		operandSet = ((SetOperandToken) obj).getElements();
+
 		return (
 			operandSet.containsAll(this.getElements()) &&
 			this.getElements().containsAll(operandSet)
@@ -151,55 +171,14 @@ public final class SetOperandToken implements OperandToken {
 		);
 	}
 
-	/** 
-	 * @return a list that contains all the elements of the set.
+	/**
+	 * @return a copy of the set elements.
 	 */
 	public List<OperandToken> getElements() {
-        List<OperandToken> res = new ArrayList<OperandToken>();
-        
-        res.addAll(this.elements);
-        
+		final List<OperandToken> res = new ArrayList<OperandToken>();
+
+		res.addAll(this.elements);
+
 		return res;
-	}
-
-    /**
-     * Builder for Set Operand,
-     * Here the builder will build a Set that doesn't have 
-     * multiple instance of the same element.
-     * (it doesn't build a Multi Set but a simple Set)
-     */
-	public static final class SetBuilder {
-
-        /* List for the elements of the Set */
-		private List<OperandToken> storage;
-
-        /* Constructor for builder */
-		public SetBuilder() {
-			storage = new ArrayList<OperandToken>();
-		}
-
-        /** Add {element} to the builder,
-         *  the element is accepted if it's not null
-         *  and if the element is not already in the builder
-         */
-		public void add(OperandToken element) {
-			if (element != null && !storage.contains(element)) storage.add(element);
-		}
-
-        /*  Add all element of {elements} to the builder,
-         *  the element is accepted if it's not null
-         *  and if the element is not already in the builder
-         */
-		public void addAll(List<OperandToken> elements) {
-			elements.stream().forEach(e -> this.add(e));
-		}
-
-        /**
-         * Build a SetOperandToken according to the builder
-         * @return a new SetOperandToken from the builder 
-         */
-		public SetOperandToken build() {
-			return new SetOperandToken(storage);
-		}
 	}
 }

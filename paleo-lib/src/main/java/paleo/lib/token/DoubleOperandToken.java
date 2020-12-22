@@ -177,8 +177,7 @@ public final class DoubleOperandToken implements OperandToken {
 		);
 	}
 
-	private double value; ///< Is the real value.
-	public static final String key = "Double";
+	private final double value; ///< Is the real value.
 
 	/**
 	 * {@link DoubleOperandToken} constructor.
@@ -207,16 +206,5 @@ public final class DoubleOperandToken implements OperandToken {
 	 */
 	public double getValue() {
 		return value;
-	}
-
-	/**
-	 * @param value the value to set.
-	 */
-	public void setValue(final double value) {
-		this.value = value;
-	}
-
-	public String getKey() {
-		return key;
 	}
 }

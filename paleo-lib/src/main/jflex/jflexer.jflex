@@ -27,7 +27,7 @@ import paleo.lib.token.SetOperandToken;
 	private HistoricToken currentToken = null;
 
 	/** Attributes used for set lexing. */
-	private SetOperandToken.SetBuilder setBuilder;
+	private SetOperandToken set;
 %}
 
 white	= [ \t\f]+
@@ -55,7 +55,7 @@ real 	= [-]?{integer}("."{integer})
 	"(" 		{ return(OperationToken.LPAREN); }
 	")" 		{ return(OperationToken.RPAREN); }
 
-	"{" 		{ setBuilder = new SetOperandToken.SetBuilder(); yybegin(SET); }
+	"{" 		{ set = new SetOperandToken(); yybegin(SET); }
 }
 
 <OPERATION> {
@@ -79,20 +79,18 @@ real 	= [-]?{integer}("."{integer})
 }
 
 <SET> {
-	{integer}	{ setBuilder.add(new IntegerOperandToken(Integer.parseInt(yytext()))); }
-	{real} 		{ setBuilder.add(new DoubleOperandToken(Double.parseDouble(yytext()))); }
-	"true"		{ setBuilder.add(new BooleanOperandToken(true)); }
-	"false"		{ setBuilder.add(new BooleanOperandToken(false)); }
+	{integer}	{ set.add(new IntegerOperandToken(Integer.parseInt(yytext()))); }
+	{real} 		{ set.add(new DoubleOperandToken(Double.parseDouble(yytext()))); }
+	"true"		{ set.add(new BooleanOperandToken(true)); }
+	"false"		{ set.add(new BooleanOperandToken(false)); }
 
 	{white}		{ }
 	";"			{ }
 
 	"}"
 	{
-		SetOperandToken res = setBuilder.build();
-		setBuilder = null;
 		yybegin(OPERATION);
-		return res;
+		return set;
 	}
 }
 
