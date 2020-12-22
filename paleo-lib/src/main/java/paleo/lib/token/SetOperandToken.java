@@ -127,7 +127,7 @@ public final class SetOperandToken implements OperandToken {
 		this.elements = new ArrayList<OperandToken>();
 	}
 
-	/*
+	/**
 	 * Adds one element to the set.
 	 *
 	 * @param element is the operand that have to be added in the set.
@@ -151,7 +151,7 @@ public final class SetOperandToken implements OperandToken {
 	public boolean equals(final Object obj) {
 		List<OperandToken> operandSet;
 
-		if (!(obj instanceof SetOperandToken set)) {
+		if (!(obj instanceof SetOperandToken)) {
 			return false;
 		}
 		operandSet = ((SetOperandToken) obj).getElements();
