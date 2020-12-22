@@ -67,7 +67,7 @@ public final class IntegerOperandToken implements OperandToken {
 		);
 	}
 
-	private int value;
+	private final int value;
 
 	/**
 	 * {@link IntegerOperandToken} constructor.
@@ -96,12 +96,5 @@ public final class IntegerOperandToken implements OperandToken {
 	 */
 	public int getValue() {
 		return value;
-	}
-
-	/**
-	 * @param value the value to set.
-	 */
-	public void setValue(int value) {
-		this.value = value;
 	}
 }

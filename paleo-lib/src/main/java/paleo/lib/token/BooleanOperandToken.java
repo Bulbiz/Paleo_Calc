@@ -51,7 +51,7 @@ public final class BooleanOperandToken implements OperandToken {
 		);
 	}
 
-	private boolean value;
+	private final boolean value;
 
 	/**
 	 * {@link BooleanOperandToken} constructor.
@@ -83,12 +83,5 @@ public final class BooleanOperandToken implements OperandToken {
 	 */
 	public boolean getValue() {
 		return value;
-	}
-
-	/**
-	 * @param value the value to set.
-	 */
-	public void setValue(final Boolean value) {
-		this.value = value;
 	}
 }
