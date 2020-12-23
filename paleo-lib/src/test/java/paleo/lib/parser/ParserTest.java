@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import org.junit.Test;
 import paleo.lib.historic.HistoricToken;
@@ -11,6 +12,7 @@ import paleo.lib.token.BooleanOperandToken;
 import paleo.lib.token.DoubleOperandToken;
 import paleo.lib.token.IntegerOperandToken;
 import paleo.lib.token.OperationToken;
+import paleo.lib.token.SetOperandToken;
 import paleo.lib.token.Yytoken;
 
 /**
@@ -169,9 +171,9 @@ public class ParserTest {
 
 	@Test
 	public void notFormattedExpression() {
-		final Queue<Yytoken> actualTokens = new Parser("-1/3.4* -5 ))").parse().get();
+		final Queue<Yytoken> actualTokens = new Parser("1/3.4* -5 ))").parse().get();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
-			new IntegerOperandToken(-1),
+			new IntegerOperandToken(1),
 			OperationToken.DIV,
 			new DoubleOperandToken(3.4),
 			OperationToken.MULT,
@@ -270,14 +272,14 @@ public class ParserTest {
 
 	@Test
 	public void expressionWithMultipleHistCall() {
-		final Queue<Yytoken> actualTokens = new Parser("hist(1) + hist(1) * (hist(3)))")
+		final Queue<Yytoken> actualTokens = new Parser("hist(1) + hist(1) - (hist(3)))")
 			.parse()
 			.get();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new HistoricToken(1),
 			OperationToken.SUM,
 			new HistoricToken(1),
-			OperationToken.MULT,
+			OperationToken.SUB,
 			OperationToken.LPAREN,
 			new HistoricToken(3),
 			OperationToken.RPAREN,
@@ -300,5 +302,20 @@ public class ParserTest {
 	@Test
 	public void histCmdWhithNotValidArgShouldReturnEmpty() {
 		assertTrue(new Parser("hist1) + hist(1(hist(3)))").parse().isEmpty());
+	}
+
+	@Test
+	public void expressionWithSimpleSet() {
+		SetOperandToken set = new SetOperandToken();
+		set.addAll(List.of(new IntegerOperandToken(1)));
+
+		final Queue<Yytoken> actualTokens = new Parser("{1} union 3").parse().get();
+		final Queue<Yytoken> expectedTokens = createTokenQueue(
+			set,
+			OperationToken.UNION,
+			new IntegerOperandToken(3)
+		);
+
+		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
 	}
 }

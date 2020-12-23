@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import paleo.lib.token.*;
 import paleo.lib.historic.HistoricToken;
 import paleo.lib.historic.exception.InvalidHistoricTokenException;
+import paleo.lib.token.OperandToken;
+import java.util.List;
+import paleo.lib.token.SetOperandToken;
 
 %%
 
@@ -19,8 +22,12 @@ import paleo.lib.historic.exception.InvalidHistoricTokenException;
 %unicode
 
 %{
+	/** Attributes used for historic lexing. */
 	private boolean histFlag = false;
 	private HistoricToken currentToken = null;
+
+	/** Attributes used for set lexing. */
+	private SetOperandToken set;
 %}
 
 white	= [ \t\f]+
@@ -29,6 +36,7 @@ integer = [-]?{digit}+
 real 	= [-]?{integer}("."{integer})
 
 %state HIST
+%state SET
 %state OPERATION
 
 %%
@@ -46,6 +54,8 @@ real 	= [-]?{integer}("."{integer})
 
 	"(" 		{ return(OperationToken.LPAREN); }
 	")" 		{ return(OperationToken.RPAREN); }
+
+	"{" 		{ set = new SetOperandToken(); yybegin(SET); }
 }
 
 <OPERATION> {
@@ -62,6 +72,26 @@ real 	= [-]?{integer}("."{integer})
 
 	"(" 		{ return(OperationToken.LPAREN); }
 	")" 		{ return(OperationToken.RPAREN); }
+
+	"inter"		{ yybegin(YYINITIAL); return(OperationToken.INTER); }
+	"union"		{ yybegin(YYINITIAL); return(OperationToken.UNION); }
+	"diff"		{ yybegin(YYINITIAL); return(OperationToken.DIFF); }
+}
+
+<SET> {
+	{integer}	{ set.add(new IntegerOperandToken(Integer.parseInt(yytext()))); }
+	{real} 		{ set.add(new DoubleOperandToken(Double.parseDouble(yytext()))); }
+	"true"		{ set.add(new BooleanOperandToken(true)); }
+	"false"		{ set.add(new BooleanOperandToken(false)); }
+
+	{white}		{ }
+	";"			{ }
+
+	"}"
+	{
+		yybegin(OPERATION);
+		return set;
+	}
 }
 
 <HIST> {
