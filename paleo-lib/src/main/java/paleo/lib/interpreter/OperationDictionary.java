@@ -4,8 +4,8 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-import paleo.lib.token.OperandToken;
-import paleo.lib.token.OperationToken;
+import paleo.lib.token.operand.OperandToken;
+import paleo.lib.token.operation.OperationToken;
 
 /**
  * Static module providing a dictionary for getting an {@link OperationEvaluator}

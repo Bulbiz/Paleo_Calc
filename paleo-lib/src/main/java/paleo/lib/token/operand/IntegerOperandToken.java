@@ -1,7 +1,8 @@
-package paleo.lib.token;
+package paleo.lib.token.operand;
 
 import java.util.List;
 import paleo.lib.interpreter.OperationDictionary;
+import paleo.lib.token.operation.*;
 
 /**
  * Models an integer number.
@@ -13,7 +14,7 @@ public final class IntegerOperandToken implements OperandToken {
 	 */
 	{
 		OperationDictionary.addEntry(
-			OperationToken.SUM,
+			new SumOperationToken(),
 			operands -> {
 				return (
 					new IntegerOperandToken(
@@ -25,7 +26,7 @@ public final class IntegerOperandToken implements OperandToken {
 			List.of(IntegerOperandToken.class, IntegerOperandToken.class)
 		);
 		OperationDictionary.addEntry(
-			OperationToken.SUB,
+			new SubOperationToken(),
 			operands -> {
 				return (
 					new IntegerOperandToken(
@@ -37,7 +38,7 @@ public final class IntegerOperandToken implements OperandToken {
 			List.of(IntegerOperandToken.class, IntegerOperandToken.class)
 		);
 		OperationDictionary.addEntry(
-			OperationToken.MULT,
+			new MultOperationToken(),
 			operands -> {
 				return (
 					new IntegerOperandToken(
@@ -49,7 +50,7 @@ public final class IntegerOperandToken implements OperandToken {
 			List.of(IntegerOperandToken.class, IntegerOperandToken.class)
 		);
 		OperationDictionary.addEntry(
-			OperationToken.DIV,
+			new DivOperationToken(),
 			operands -> {
 				OperandToken op1 = operands.pop();
 				OperandToken op2 = operands.pop();

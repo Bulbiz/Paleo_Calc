@@ -1,7 +1,8 @@
-package paleo.lib.token;
+package paleo.lib.token.operand;
 
 import java.util.List;
 import paleo.lib.interpreter.OperationDictionary;
+import paleo.lib.token.operation.*;
 
 /**
  * Models a boolean operand.
@@ -13,7 +14,7 @@ public final class BooleanOperandToken implements OperandToken {
 	 */
 	{
 		OperationDictionary.addEntry(
-			OperationToken.AND,
+			new AndOperationToken(),
 			operands -> {
 				return (
 					new BooleanOperandToken(
@@ -26,7 +27,7 @@ public final class BooleanOperandToken implements OperandToken {
 		);
 
 		OperationDictionary.addEntry(
-			OperationToken.OR,
+			new OrOperationToken(),
 			operands -> {
 				return (
 					new BooleanOperandToken(
@@ -39,7 +40,7 @@ public final class BooleanOperandToken implements OperandToken {
 		);
 
 		OperationDictionary.addEntry(
-			OperationToken.NOT,
+			new NotOperationToken(),
 			operands -> {
 				return (
 					new BooleanOperandToken(

@@ -4,9 +4,10 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Queue;
 import java.util.Stack;
-import paleo.lib.token.OperandToken;
-import paleo.lib.token.OperationToken;
 import paleo.lib.token.Yytoken;
+import paleo.lib.token.operand.OperandToken;
+import paleo.lib.token.operation.OperationToken;
+import paleo.lib.token.operation.ParenOperationToken;
 
 /**
  * Module allowing to evaluate a {@link Queue} of {@link Yytoken} in an infix form
@@ -14,16 +15,16 @@ import paleo.lib.token.Yytoken;
  */
 public final class Interpreter {
 
-	private Queue<Yytoken> tokens;
-	private Stack<OperandToken> operandStack;
-	private Stack<OperationToken> operationStack;
+	private final Queue<Yytoken> tokens;
+	private final Stack<OperandToken> operandStack;
+	private final Stack<OperationToken> operationStack;
 
 	/**
 	 * Interpreter constructor.
 	 *
 	 * @param tokens Is the token representation of an infix expression.
 	 */
-	public Interpreter(Queue<Yytoken> tokens) {
+	public Interpreter(final Queue<Yytoken> tokens) {
 		this.tokens = tokens;
 		this.operandStack = new Stack<>();
 		this.operationStack = new Stack<>();
@@ -49,26 +50,22 @@ public final class Interpreter {
 				operandStack.push((OperandToken) token);
 			} else {
 				operationToken = (OperationToken) token;
-				switch (operationToken) {
-					case LPAREN:
-						operationStack.push(operationToken);
-						break;
-					case RPAREN:
-						while (OperationToken.LPAREN != operationStack.peek()) {
-							evaluateOperation();
-						}
-						operationStack.pop();
-						break;
-					default:
-						while (
-							!operationStack.isEmpty() &&
-							operationToken.getPriority() <=
-							operationStack.peek().getPriority()
-						) {
-							evaluateOperation();
-						}
-						operationStack.push(operationToken);
-						break;
+				if (operationToken.equals(ParenOperationToken.LEFT)) {
+					operationStack.push(operationToken);
+				} else if (operationToken.equals(ParenOperationToken.RIGHT)) {
+					while (!operationStack.peek().equals(ParenOperationToken.LEFT)) {
+						evaluateOperation();
+					}
+					operationStack.pop();
+				} else {
+					while (
+						!operationStack.isEmpty() &&
+						operationToken.getPriority() <=
+						operationStack.peek().getPriority()
+					) {
+						evaluateOperation();
+					}
+					operationStack.push(operationToken);
 				}
 			}
 		}

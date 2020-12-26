@@ -1,7 +1,7 @@
 package paleo.lib.interpreter;
 
 import java.util.Deque;
-import paleo.lib.token.OperandToken;
+import paleo.lib.token.operand.OperandToken;
 
 /**
  * {@link FunctionalInterface} used for implements {@link OperationToken} in

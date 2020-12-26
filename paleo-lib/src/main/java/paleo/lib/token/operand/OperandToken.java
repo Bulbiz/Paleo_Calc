@@ -1,5 +1,5 @@
-package paleo.lib.token;
-
+package paleo.lib.token.operand;
+import paleo.lib.token.Yytoken;
 /**
  * Models a generic operand type.
  */

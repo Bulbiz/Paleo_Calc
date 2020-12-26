@@ -9,11 +9,8 @@ import java.util.Optional;
 import org.junit.Ignore;
 import org.junit.Test;
 import paleo.lib.parser.Parser;
-import paleo.lib.token.BooleanOperandToken;
-import paleo.lib.token.BooleanOperandToken;
-import paleo.lib.token.DoubleOperandToken;
-import paleo.lib.token.IntegerOperandToken;
-import paleo.lib.token.SetOperandToken;
+import paleo.lib.token.operand.*;
+
 
 /**
  * Unit test for {@link Interpreter}.

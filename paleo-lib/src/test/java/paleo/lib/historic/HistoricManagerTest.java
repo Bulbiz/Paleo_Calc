@@ -6,8 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import paleo.lib.parser.Parser;
-import paleo.lib.token.DoubleOperandToken;
-import paleo.lib.token.IntegerOperandToken;
+import paleo.lib.token.operand.*;
 
 /**
  * Unit test for {@link HistoricManager}.
