@@ -1,10 +1,11 @@
-package paleo.lib.token;
+package paleo.lib.token.operand;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import paleo.lib.interpreter.OperationDictionary;
 import paleo.lib.interpreter.OperationEvaluator;
+import paleo.lib.token.operation.*;
 
 /**
  * Models a mathematical set.
@@ -16,7 +17,7 @@ public final class SetOperandToken implements OperandToken {
 	 */
 	{
 		OperationDictionary.addEntry(
-			OperationToken.INTER,
+			new InterOperationToken(),
 			operands -> {
 				final SetOperandToken op1 = (SetOperandToken) operands.pop();
 				final SetOperandToken op2 = (SetOperandToken) operands.pop();
@@ -25,7 +26,7 @@ public final class SetOperandToken implements OperandToken {
 			List.of(SetOperandToken.class, SetOperandToken.class)
 		);
 		OperationDictionary.addEntry(
-			OperationToken.UNION,
+			new UnionOperationToken(),
 			operands -> {
 				final SetOperandToken op1 = (SetOperandToken) operands.pop();
 				final SetOperandToken op2 = (SetOperandToken) operands.pop();
@@ -34,7 +35,7 @@ public final class SetOperandToken implements OperandToken {
 			List.of(SetOperandToken.class, SetOperandToken.class)
 		);
 		OperationDictionary.addEntry(
-			OperationToken.DIFF,
+			new DiffOperationToken(),
 			operands -> {
 				final SetOperandToken op1 = (SetOperandToken) operands.pop();
 				final SetOperandToken op2 = (SetOperandToken) operands.pop();

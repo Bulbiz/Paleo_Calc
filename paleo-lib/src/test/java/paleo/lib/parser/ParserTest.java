@@ -8,12 +8,9 @@ import java.util.List;
 import java.util.Queue;
 import org.junit.Test;
 import paleo.lib.historic.HistoricToken;
-import paleo.lib.token.BooleanOperandToken;
-import paleo.lib.token.DoubleOperandToken;
-import paleo.lib.token.IntegerOperandToken;
-import paleo.lib.token.OperationToken;
-import paleo.lib.token.SetOperandToken;
 import paleo.lib.token.Yytoken;
+import paleo.lib.token.operand.*;
+import paleo.lib.token.operation.*;
 
 /**
  * Unit test for {@link Parser}.
@@ -53,9 +50,9 @@ public class ParserTest {
 	 * @return a queue of token.
 	 */
 	private Queue<Yytoken> createTokenQueue(final Yytoken... tokens) {
-		Queue<Yytoken> tokenQueue = new LinkedList<>();
+		final Queue<Yytoken> tokenQueue = new LinkedList<>();
 
-		for (Yytoken token : tokens) {
+		for (final Yytoken token : tokens) {
 			tokenQueue.add(token);
 		}
 
@@ -82,7 +79,7 @@ public class ParserTest {
 		final Queue<Yytoken> actualTokens = new Parser("3 + 5").parse().get();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new IntegerOperandToken(3),
-			OperationToken.SUM,
+			new SumOperationToken(),
 			new IntegerOperandToken(5)
 		);
 
@@ -94,7 +91,7 @@ public class ParserTest {
 		final Queue<Yytoken> actualTokens = new Parser("3 * 5").parse().get();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new IntegerOperandToken(3),
-			OperationToken.MULT,
+			new MultOperationToken(),
 			new IntegerOperandToken(5)
 		);
 
@@ -105,11 +102,11 @@ public class ParserTest {
 	public void simpleParenExpression() {
 		final Queue<Yytoken> actualTokens = new Parser("(3 * 5)").parse().get();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
-			OperationToken.LPAREN,
+			ParenOperationToken.LEFT,
 			new IntegerOperandToken(3),
-			OperationToken.MULT,
+			new MultOperationToken(),
 			new IntegerOperandToken(5),
-			OperationToken.RPAREN
+			ParenOperationToken.RIGHT
 		);
 
 		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
@@ -119,11 +116,11 @@ public class ParserTest {
 	public void simpleDoubleExpression() {
 		final Queue<Yytoken> actualTokens = new Parser("(3.4 * 5.6)").parse().get();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
-			OperationToken.LPAREN,
+			ParenOperationToken.LEFT,
 			new DoubleOperandToken(3.4),
-			OperationToken.MULT,
+			new MultOperationToken(),
 			new DoubleOperandToken(5.6),
-			OperationToken.RPAREN
+			ParenOperationToken.RIGHT
 		);
 
 		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
@@ -133,12 +130,12 @@ public class ParserTest {
 	public void intAndDoubleExpression() {
 		final Queue<Yytoken> actualTokens = new Parser("(3.4 * 5.6) / 3").parse().get();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
-			OperationToken.LPAREN,
+			ParenOperationToken.LEFT,
 			new DoubleOperandToken(3.4),
-			OperationToken.MULT,
+			new MultOperationToken(),
 			new DoubleOperandToken(5.6),
-			OperationToken.RPAREN,
-			OperationToken.DIV,
+			ParenOperationToken.RIGHT,
+			new DivOperationToken(),
 			new IntegerOperandToken(3)
 		);
 
@@ -150,7 +147,7 @@ public class ParserTest {
 		final Queue<Yytoken> actualTokens = new Parser("3.4 * -5.6").parse().get();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new DoubleOperandToken(3.4),
-			OperationToken.MULT,
+			new MultOperationToken(),
 			new DoubleOperandToken(-5.6)
 		);
 
@@ -162,7 +159,7 @@ public class ParserTest {
 		final Queue<Yytoken> actualTokens = new Parser("3.4 * -5").parse().get();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new DoubleOperandToken(3.4),
-			OperationToken.MULT,
+			new MultOperationToken(),
 			new IntegerOperandToken(-5)
 		);
 
@@ -174,12 +171,12 @@ public class ParserTest {
 		final Queue<Yytoken> actualTokens = new Parser("1/3.4* -5 ))").parse().get();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new IntegerOperandToken(1),
-			OperationToken.DIV,
+			new DivOperationToken(),
 			new DoubleOperandToken(3.4),
-			OperationToken.MULT,
+			new MultOperationToken(),
 			new IntegerOperandToken(-5),
-			OperationToken.RPAREN,
-			OperationToken.RPAREN
+			ParenOperationToken.RIGHT,
+			ParenOperationToken.RIGHT
 		);
 
 		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
@@ -193,24 +190,24 @@ public class ParserTest {
 			.parse()
 			.get();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
-			OperationToken.LPAREN,
+			ParenOperationToken.LEFT,
 			new IntegerOperandToken(2),
-			OperationToken.SUB,
+			new SubOperationToken(),
 			new IntegerOperandToken(3),
-			OperationToken.MULT,
+			new MultOperationToken(),
 			new IntegerOperandToken(4),
-			OperationToken.SUM,
-			OperationToken.LPAREN,
+			new SumOperationToken(),
+			ParenOperationToken.LEFT,
 			new IntegerOperandToken(2),
-			OperationToken.SUM,
+			new SumOperationToken(),
 			new IntegerOperandToken(4),
-			OperationToken.SUB,
+			new SubOperationToken(),
 			new IntegerOperandToken(6),
-			OperationToken.MULT,
+			new MultOperationToken(),
 			new IntegerOperandToken(5),
-			OperationToken.RPAREN,
-			OperationToken.RPAREN,
-			OperationToken.SUM,
+			ParenOperationToken.RIGHT,
+			ParenOperationToken.RIGHT,
+			new SumOperationToken(),
 			new IntegerOperandToken(1)
 		);
 
@@ -233,8 +230,8 @@ public class ParserTest {
 			.get();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new BooleanOperandToken(true),
-			OperationToken.AND,
-			OperationToken.NOT,
+			new AndOperationToken(),
+			new NotOperationToken(),
 			new BooleanOperandToken(false)
 		);
 		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
@@ -247,13 +244,13 @@ public class ParserTest {
 			.get();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new BooleanOperandToken(true),
-			OperationToken.AND,
-			OperationToken.LPAREN,
-			OperationToken.NOT,
+			new AndOperationToken(),
+			ParenOperationToken.LEFT,
+			new NotOperationToken(),
 			new BooleanOperandToken(false),
-			OperationToken.AND,
+			new AndOperationToken(),
 			new BooleanOperandToken(true),
-			OperationToken.RPAREN
+			ParenOperationToken.RIGHT
 		);
 		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
 	}
@@ -263,7 +260,7 @@ public class ParserTest {
 		final Queue<Yytoken> actualTokens = new Parser("hist(1) + 3").parse().get();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new HistoricToken(1),
-			OperationToken.SUM,
+			new SumOperationToken(),
 			new IntegerOperandToken(3)
 		);
 
@@ -277,13 +274,13 @@ public class ParserTest {
 			.get();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new HistoricToken(1),
-			OperationToken.SUM,
+			new SumOperationToken(),
 			new HistoricToken(1),
-			OperationToken.SUB,
-			OperationToken.LPAREN,
+			new SubOperationToken(),
+			ParenOperationToken.LEFT,
 			new HistoricToken(3),
-			OperationToken.RPAREN,
-			OperationToken.RPAREN
+			ParenOperationToken.RIGHT,
+			ParenOperationToken.RIGHT
 		);
 
 		assertTrue(areTokenQueuesEqual(expectedTokens, actualTokens));
@@ -306,13 +303,13 @@ public class ParserTest {
 
 	@Test
 	public void expressionWithSimpleSet() {
-		SetOperandToken set = new SetOperandToken();
+		final SetOperandToken set = new SetOperandToken();
 		set.addAll(List.of(new IntegerOperandToken(1)));
 
 		final Queue<Yytoken> actualTokens = new Parser("{1} union 3").parse().get();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			set,
-			OperationToken.UNION,
+			new UnionOperationToken(),
 			new IntegerOperandToken(3)
 		);
 

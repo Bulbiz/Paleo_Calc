@@ -1,7 +1,8 @@
-package paleo.lib.token;
+package paleo.lib.token.operand;
 
 import java.util.List;
 import paleo.lib.interpreter.OperationDictionary;
+import paleo.lib.token.operation.*;
 
 /**
  * Models a real number operand.
@@ -13,7 +14,7 @@ public final class DoubleOperandToken implements OperandToken {
 	 */
 	{
 		OperationDictionary.addEntry(
-			OperationToken.SUM,
+			new SumOperationToken(),
 			operands -> {
 				return (
 					new DoubleOperandToken(
@@ -25,7 +26,7 @@ public final class DoubleOperandToken implements OperandToken {
 			List.of(DoubleOperandToken.class, DoubleOperandToken.class)
 		);
 		OperationDictionary.addEntry(
-			OperationToken.SUB,
+			new SubOperationToken(),
 			operands -> {
 				return (
 					new DoubleOperandToken(
@@ -37,7 +38,7 @@ public final class DoubleOperandToken implements OperandToken {
 			List.of(DoubleOperandToken.class, DoubleOperandToken.class)
 		);
 		OperationDictionary.addEntry(
-			OperationToken.MULT,
+			new MultOperationToken(),
 			operands -> {
 				return (
 					new DoubleOperandToken(
@@ -49,7 +50,7 @@ public final class DoubleOperandToken implements OperandToken {
 			List.of(DoubleOperandToken.class, DoubleOperandToken.class)
 		);
 		OperationDictionary.addEntry(
-			OperationToken.DIV,
+			new DivOperationToken(),
 			operands -> {
 				OperandToken op1 = operands.pop();
 				OperandToken op2 = operands.pop();
@@ -70,7 +71,7 @@ public final class DoubleOperandToken implements OperandToken {
 		 * Double and Integer.
 		 */
 		OperationDictionary.addEntry(
-			OperationToken.SUM,
+			new SumOperationToken(),
 			operands -> {
 				return (
 					new DoubleOperandToken(
@@ -82,7 +83,7 @@ public final class DoubleOperandToken implements OperandToken {
 			List.of(IntegerOperandToken.class, DoubleOperandToken.class)
 		);
 		OperationDictionary.addEntry(
-			OperationToken.SUM,
+			new SumOperationToken(),
 			operands -> {
 				return (
 					new DoubleOperandToken(
@@ -94,7 +95,7 @@ public final class DoubleOperandToken implements OperandToken {
 			List.of(DoubleOperandToken.class, IntegerOperandToken.class)
 		);
 		OperationDictionary.addEntry(
-			OperationToken.SUB,
+			new SubOperationToken(),
 			operands -> {
 				return (
 					new DoubleOperandToken(
@@ -106,7 +107,7 @@ public final class DoubleOperandToken implements OperandToken {
 			List.of(IntegerOperandToken.class, DoubleOperandToken.class)
 		);
 		OperationDictionary.addEntry(
-			OperationToken.SUB,
+			new SubOperationToken(),
 			operands -> {
 				return (
 					new DoubleOperandToken(
@@ -118,7 +119,7 @@ public final class DoubleOperandToken implements OperandToken {
 			List.of(DoubleOperandToken.class, IntegerOperandToken.class)
 		);
 		OperationDictionary.addEntry(
-			OperationToken.MULT,
+			new MultOperationToken(),
 			operands -> {
 				return (
 					new DoubleOperandToken(
@@ -130,7 +131,7 @@ public final class DoubleOperandToken implements OperandToken {
 			List.of(IntegerOperandToken.class, DoubleOperandToken.class)
 		);
 		OperationDictionary.addEntry(
-			OperationToken.MULT,
+			new MultOperationToken(),
 			operands -> {
 				return (
 					new DoubleOperandToken(
@@ -142,7 +143,7 @@ public final class DoubleOperandToken implements OperandToken {
 			List.of(DoubleOperandToken.class, IntegerOperandToken.class)
 		);
 		OperationDictionary.addEntry(
-			OperationToken.DIV,
+			new DivOperationToken(),
 			operands -> {
 				OperandToken op1 = operands.pop();
 				OperandToken op2 = operands.pop();
@@ -159,7 +160,7 @@ public final class DoubleOperandToken implements OperandToken {
 			List.of(IntegerOperandToken.class, DoubleOperandToken.class)
 		);
 		OperationDictionary.addEntry(
-			OperationToken.DIV,
+			new DivOperationToken(),
 			operands -> {
 				OperandToken op1 = operands.pop();
 				OperandToken op2 = operands.pop();

@@ -7,12 +7,12 @@ package paleo.lib.parser;
 
 import java.util.ArrayList;
 
-import paleo.lib.token.*;
+import paleo.lib.token.operation.*;
+import paleo.lib.token.operand.*;
+import paleo.lib.token.Yytoken;
 import paleo.lib.historic.HistoricToken;
 import paleo.lib.historic.exception.InvalidHistoricTokenException;
-import paleo.lib.token.OperandToken;
 import java.util.List;
-import paleo.lib.token.SetOperandToken;
 
 %%
 
@@ -48,34 +48,35 @@ real 	= [-]?{integer}("."{integer})
 	{real} 		{ yybegin(OPERATION); return(new DoubleOperandToken(Double.parseDouble(yytext()))); }
 	{integer} 	{ yybegin(OPERATION); return(new IntegerOperandToken(Integer.parseInt(yytext()))); }
 
-	"not"		{ return(OperationToken.NOT);}
+	"not"		{ return(new NotOperationToken());}
     "true"		{ yybegin(OPERATION); return new BooleanOperandToken(true);}
     "false"		{ yybegin(OPERATION); return new BooleanOperandToken(false);}
 
-	"(" 		{ return(OperationToken.LPAREN); }
-	")" 		{ return(OperationToken.RPAREN); }
+	"(" 		{ return(ParenOperationToken.LEFT); }
+	")" 		{ return(ParenOperationToken.RIGHT); }
 
 	"{" 		{ set = new SetOperandToken(); yybegin(SET); }
+
 }
 
 <OPERATION> {
 	{white}		{ }
 
-	"+" 		{ yybegin(YYINITIAL); return(OperationToken.SUM); }
-	"-" 		{ yybegin(YYINITIAL); return(OperationToken.SUB); }
-	"*" 		{ yybegin(YYINITIAL); return(OperationToken.MULT); }
-	"/" 		{ yybegin(YYINITIAL); return(OperationToken.DIV); }
+	"+" 		{ yybegin(YYINITIAL); return(new SumOperationToken()); }
+	"-" 		{ yybegin(YYINITIAL); return(new SubOperationToken()); }
+	"*" 		{ yybegin(YYINITIAL); return(new MultOperationToken()); }
+	"/" 		{ yybegin(YYINITIAL); return(new DivOperationToken()); }
 
-	"not"		{ yybegin(YYINITIAL); return(OperationToken.NOT);}
-    "and"		{ yybegin(YYINITIAL); return(OperationToken.AND);}
-    "or"		{ yybegin(YYINITIAL); return(OperationToken.OR);}
+	"not"		{ yybegin(YYINITIAL); return(new NotOperationToken()); }
+    "and"		{ yybegin(YYINITIAL); return(new AndOperationToken()); }
+    "or"		{ yybegin(YYINITIAL); return(new OrOperationToken()); }
 
-	"(" 		{ return(OperationToken.LPAREN); }
-	")" 		{ return(OperationToken.RPAREN); }
+	"(" 		{ return(ParenOperationToken.LEFT); }
+	")" 		{ return(ParenOperationToken.RIGHT); }
 
-	"inter"		{ yybegin(YYINITIAL); return(OperationToken.INTER); }
-	"union"		{ yybegin(YYINITIAL); return(OperationToken.UNION); }
-	"diff"		{ yybegin(YYINITIAL); return(OperationToken.DIFF); }
+	"inter"		{ yybegin(YYINITIAL); return(new InterOperationToken()); }
+	"union"		{ yybegin(YYINITIAL); return(new UnionOperationToken()); }
+	"diff"		{ yybegin(YYINITIAL); return(new DiffOperationToken()); }
 }
 
 <SET> {

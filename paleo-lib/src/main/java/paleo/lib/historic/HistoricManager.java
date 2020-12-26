@@ -7,8 +7,8 @@ import java.util.Queue;
 import paleo.lib.interpreter.Interpreter;
 import paleo.lib.interpreter.OperationEvaluator;
 import paleo.lib.parser.Parser;
-import paleo.lib.token.OperandToken;
-import paleo.lib.token.OperationToken;
+import paleo.lib.token.operand.OperandToken;
+import paleo.lib.token.operation.OperationToken;
 import paleo.lib.token.Yytoken;
 
 /**
