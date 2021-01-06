@@ -1,18 +1,18 @@
 .PHONY: all clean test
 
 JFLEX_OUTPUT = paleo-lib/src/main/java/paleo/lib/parser/JFLexer.java
-JAR_NAME = paleo-calculator
+JAR_NAME = paleo-demo
 CALC_VERSION = 1.2
 
-all: lib calc
+all: lib demo
 
 lib:
 	if [ -f $(JFLEX_OUTPUT) ]; then rm $(JFLEX_OUTPUT)*; fi;
 	cd paleo-lib && mvn package install
 
-calc:
-	cd paleo-calc && mvn compile test assembly:single
-	cp paleo-calc/target/calc-$(CALC_VERSION)-jar-with-dependencies.jar \
+demo:
+	cd paleo-demo && mvn compile test assembly:single
+	cp paleo-demo/target/demo-$(CALC_VERSION)-jar-with-dependencies.jar \
 	   $(JAR_NAME).jar
 
 test:
@@ -25,9 +25,9 @@ doc: clean
 	if [ -f paleolib-doc.html ]; then rm paleolib-doc.html; fi;
 	if [ -f paleocalc-doc.html ]; then rm paleocalc-doc.html; fi;
 	cd paleo-lib && mvn javadoc:javadoc
-	cd paleo-calc && mvn javadoc:javadoc
+	cd paleo-demo && mvn javadoc:javadoc
 	ln -s paleo-lib/target/site/apidocs/index.html paleolib-doc.html
-	ln -s paleo-calc/target/site/apidocs/index.html paleocalc-doc.html
+	ln -s paleo-demo/target/site/apidocs/index.html paleocalc-doc.html
 
 clean:
 	if [ -f $(JAR_NAME).jar ]; then rm $(JAR_NAME).jar; fi;
@@ -35,4 +35,4 @@ clean:
 	if [ -f paleolib-doc.html ]; then rm paleolib-doc.html; fi;
 	if [ -f paleocalc-doc.html ]; then rm paleocalc-doc.html; fi;
 	cd paleo-lib && mvn clean
-	cd paleo-calc && mvn clean
+	cd paleo-demo && mvn clean

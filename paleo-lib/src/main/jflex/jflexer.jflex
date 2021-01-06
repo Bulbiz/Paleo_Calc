@@ -87,6 +87,7 @@ real 	= [-]?{integer}("."{integer})
 
 	{white}		{ }
 	";"			{ }
+	","			{ }
 
 	"}"
 	{

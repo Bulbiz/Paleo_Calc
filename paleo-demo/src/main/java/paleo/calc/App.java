@@ -1,42 +1,41 @@
 package paleo.calc;
 
 import java.util.Optional;
-import java.util.Queue;
 import java.util.Scanner;
 import paleo.calc.utils.Color;
-import paleo.lib.historic.HistoricManager;
-import paleo.lib.interpreter.Interpreter;
-import paleo.lib.parser.Parser;
-import paleo.lib.token.Yytoken;
+import paleo.lib.calculator.Calculator;
+import paleo.lib.calculator.HistCalculator;
+import paleo.lib.historic.TabHistoricManager;
+import paleo.lib.interpreter.InfixInterpreter;
+import paleo.lib.parser.JFLexParser;
 import paleo.lib.token.operand.OperandToken;
 
 /**
  * Application entry point.
  */
-public final class Calculator {
+public final class App {
 
 	private static final Scanner inScanner = new Scanner(System.in);
 
-	public static void main(String[] args) {
-		final HistoricManager historicManager = new HistoricManager();
+	public static void main(final String[] args) {
+		final Calculator calculator = new HistCalculator(
+			new InfixInterpreter.Factory(),
+			new JFLexParser(),
+			new TabHistoricManager()
+		);
+		int nbLine = 1;
 		Optional<OperandToken> optionalOp;
-		int historicCpt = 1;
 		String line = "";
 
 		printHeader();
-
 		while (!line.trim().equalsIgnoreCase("exit")) {
 			printPrompt();
 			line = readLine();
 
-			if (line.trim().equalsIgnoreCase("ls")) {
-				historicManager.printHistoric();
-			} else {
-				optionalOp = evaluate(line, historicManager);
-				if (optionalOp.isPresent()) {
-					historicManager.add(optionalOp.get());
-					printRes(optionalOp.get().toString(), historicCpt++);
-				}
+			optionalOp = calculator.calculate(line);
+			// Color.printlnWith("[ERR] : " + e.getMessage(), Color.LIGHT_RED);
+			if (optionalOp.isPresent()) {
+				printRes(optionalOp.get().toString(), nbLine++);
 			}
 		}
 	}
@@ -56,27 +55,6 @@ public final class Calculator {
 
 	private static void printPrompt() {
 		Color.printWith("> ", Color.LIGHT_BLUE);
-	}
-
-	private static Optional<OperandToken> evaluate(
-		final String expr,
-		final HistoricManager historicManager
-	) {
-		Interpreter interpreter;
-		Optional<Queue<Yytoken>> tokenExpression = new Parser(expr).parse();
-
-		if (tokenExpression.isPresent()) {
-			try {
-				interpreter =
-					new Interpreter(
-						historicManager.substitute(tokenExpression.get()).get()
-					);
-				return Optional.of(interpreter.evaluate());
-			} catch (Exception e) {
-				Color.printlnWith("[ERR] : " + e.getMessage(), Color.LIGHT_RED);
-			}
-		}
-		return Optional.empty();
 	}
 
 	private static void printRes(final String res, final int historicCpt) {
