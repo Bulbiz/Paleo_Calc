@@ -1,5 +1,10 @@
 image: emilerolley/maven
 
+testdate:
+  stage: build
+  script:
+    - date
+
 lib-compile:
   stage: build
   script:
