@@ -20,7 +20,7 @@ public class InfixInterpreterTest {
 	public void withOnlyOneIntegerOperand() {
 		assertEquals(
 			new IntegerOperandToken(3),
-			new InfixInterpreter(new JFLexParser().parse("3").get()).evaluate()
+			new InfixInterpreter(new JFLexParser().parse("3").right().value()).evaluate()
 		);
 	}
 
@@ -28,7 +28,8 @@ public class InfixInterpreterTest {
 	public void simpleIntegerSum() {
 		assertEquals(
 			new IntegerOperandToken(8),
-			new InfixInterpreter(new JFLexParser().parse("3 + 5").get()).evaluate()
+			new InfixInterpreter(new JFLexParser().parse("3 + 5").right().value())
+				.evaluate()
 		);
 	}
 
@@ -36,7 +37,8 @@ public class InfixInterpreterTest {
 	public void simpleIntegerSub() {
 		assertEquals(
 			new IntegerOperandToken(-2),
-			new InfixInterpreter(new JFLexParser().parse("3 - 5").get()).evaluate()
+			new InfixInterpreter(new JFLexParser().parse("3 - 5").right().value())
+				.evaluate()
 		);
 	}
 
@@ -44,7 +46,8 @@ public class InfixInterpreterTest {
 	public void simpleIntegerDiv() {
 		assertEquals(
 			new IntegerOperandToken(0),
-			new InfixInterpreter(new JFLexParser().parse("3 / 5").get()).evaluate()
+			new InfixInterpreter(new JFLexParser().parse("3 / 5").right().value())
+				.evaluate()
 		);
 	}
 
@@ -52,7 +55,8 @@ public class InfixInterpreterTest {
 	public void simpleIntegerMult() {
 		assertEquals(
 			new IntegerOperandToken(15),
-			new InfixInterpreter(new JFLexParser().parse("3 * 5").get()).evaluate()
+			new InfixInterpreter(new JFLexParser().parse("3 * 5").right().value())
+				.evaluate()
 		);
 	}
 
@@ -60,7 +64,8 @@ public class InfixInterpreterTest {
 	public void simpleParenIntegerExpression() {
 		assertEquals(
 			new IntegerOperandToken(16),
-			new InfixInterpreter(new JFLexParser().parse("2 * (3 + 5)").get()).evaluate()
+			new InfixInterpreter(new JFLexParser().parse("2 * (3 + 5)").right().value())
+				.evaluate()
 		);
 	}
 
@@ -68,7 +73,9 @@ public class InfixInterpreterTest {
 	public void multipleParenIntegerExpression() {
 		assertEquals(
 			new IntegerOperandToken(35),
-			new InfixInterpreter(new JFLexParser().parse("7 * ((8 + 3) / 2)").get())
+			new InfixInterpreter(
+				new JFLexParser().parse("7 * ((8 + 3) / 2)").right().value()
+			)
 				.evaluate()
 		);
 	}
@@ -77,7 +84,7 @@ public class InfixInterpreterTest {
 	public void testOperationPriority() {
 		assertEquals(
 			new IntegerOperandToken(-24),
-			new InfixInterpreter(new JFLexParser().parse("2 + 4 - 6 * 5").get())
+			new InfixInterpreter(new JFLexParser().parse("2 + 4 - 6 * 5").right().value())
 				.evaluate()
 		);
 	}
@@ -87,7 +94,10 @@ public class InfixInterpreterTest {
 		assertEquals(
 			new IntegerOperandToken(-33),
 			new InfixInterpreter(
-				new JFLexParser().parse("(2 - 3 * 4 + (2 + 4 - 6 * 5)) + 1").get()
+				new JFLexParser()
+					.parse("(2 - 3 * 4 + (2 + 4 - 6 * 5)) + 1")
+					.right()
+					.value()
 			)
 				.evaluate()
 		);
@@ -97,7 +107,8 @@ public class InfixInterpreterTest {
 	public void simpleDoubleSum() {
 		assertEquals(
 			new DoubleOperandToken(8.8),
-			new InfixInterpreter(new JFLexParser().parse("3.4 + 5.4").get()).evaluate()
+			new InfixInterpreter(new JFLexParser().parse("3.4 + 5.4").right().value())
+				.evaluate()
 		);
 	}
 
@@ -105,7 +116,9 @@ public class InfixInterpreterTest {
 	public void simpleParenDoubleExpression() {
 		assertEquals(
 			new DoubleOperandToken(17.6),
-			new InfixInterpreter(new JFLexParser().parse("2.0 * (3.4 + 5.4)").get())
+			new InfixInterpreter(
+				new JFLexParser().parse("2.0 * (3.4 + 5.4)").right().value()
+			)
 				.evaluate()
 		);
 	}
@@ -114,7 +127,8 @@ public class InfixInterpreterTest {
 	public void integerTimesDouble() {
 		assertEquals(
 			new DoubleOperandToken(9.0),
-			new InfixInterpreter(new JFLexParser().parse("2 * 4.5").get()).evaluate()
+			new InfixInterpreter(new JFLexParser().parse("2 * 4.5").right().value())
+				.evaluate()
 		);
 	}
 
@@ -122,7 +136,9 @@ public class InfixInterpreterTest {
 	public void multipleParenIntegerDoubleExpression() {
 		assertEquals(
 			new DoubleOperandToken(5.0),
-			new InfixInterpreter(new JFLexParser().parse("(2 - 4.5) * (4 - 6)").get())
+			new InfixInterpreter(
+				new JFLexParser().parse("(2 - 4.5) * (4 - 6)").right().value()
+			)
 				.evaluate()
 		);
 	}
@@ -130,7 +146,8 @@ public class InfixInterpreterTest {
 	@Test
 	public void divideByZeroShouldThrowAnException() {
 		try {
-			new InfixInterpreter(new JFLexParser().parse("3 / 0").get()).evaluate();
+			new InfixInterpreter(new JFLexParser().parse("3 / 0").right().value())
+				.evaluate();
 			assertTrue(false);
 		} catch (IllegalArgumentException e) {
 			assertTrue(true);
@@ -141,7 +158,8 @@ public class InfixInterpreterTest {
 	public void simpleBooleanToken() {
 		assertEquals(
 			new BooleanOperandToken(true),
-			new InfixInterpreter(new JFLexParser().parse("true").get()).evaluate()
+			new InfixInterpreter(new JFLexParser().parse("true").right().value())
+				.evaluate()
 		);
 	}
 
@@ -149,7 +167,7 @@ public class InfixInterpreterTest {
 	public void simpleOrBooleanExpression() {
 		assertEquals(
 			new BooleanOperandToken(true),
-			new InfixInterpreter(new JFLexParser().parse("true or false").get())
+			new InfixInterpreter(new JFLexParser().parse("true or false").right().value())
 				.evaluate()
 		);
 	}
@@ -158,7 +176,9 @@ public class InfixInterpreterTest {
 	public void simpleAndBooleanExpression() {
 		assertEquals(
 			new BooleanOperandToken(false),
-			new InfixInterpreter(new JFLexParser().parse("true and false").get())
+			new InfixInterpreter(
+				new JFLexParser().parse("true and false").right().value()
+			)
 				.evaluate()
 		);
 	}
@@ -167,7 +187,8 @@ public class InfixInterpreterTest {
 	public void simpleNotBooleanExpression() {
 		assertEquals(
 			new BooleanOperandToken(false),
-			new InfixInterpreter(new JFLexParser().parse("not true").get()).evaluate()
+			new InfixInterpreter(new JFLexParser().parse("not true").right().value())
+				.evaluate()
 		);
 	}
 
@@ -176,7 +197,7 @@ public class InfixInterpreterTest {
 		assertEquals(
 			new BooleanOperandToken(false),
 			new InfixInterpreter(
-				new JFLexParser().parse("not (true or (true and false))").get()
+				new JFLexParser().parse("not (true or (true and false))").right().value()
 			)
 				.evaluate()
 		);
@@ -188,7 +209,8 @@ public class InfixInterpreterTest {
 		set.addAll(List.of());
 		assertEquals(
 			set,
-			new InfixInterpreter(new JFLexParser().parse("{ }").get()).evaluate()
+			new InfixInterpreter(new JFLexParser().parse("{ }").right().value())
+				.evaluate()
 		);
 	}
 
@@ -198,7 +220,8 @@ public class InfixInterpreterTest {
 		set.addAll(List.of(new IntegerOperandToken(3)));
 		assertEquals(
 			set,
-			new InfixInterpreter(new JFLexParser().parse("{ 3 }").get()).evaluate()
+			new InfixInterpreter(new JFLexParser().parse("{ 3 }").right().value())
+				.evaluate()
 		);
 	}
 
@@ -208,7 +231,8 @@ public class InfixInterpreterTest {
 		set.addAll(List.of(new DoubleOperandToken(-3.5)));
 		assertEquals(
 			set,
-			new InfixInterpreter(new JFLexParser().parse("{ -3.5 }").get()).evaluate()
+			new InfixInterpreter(new JFLexParser().parse("{ -3.5 }").right().value())
+				.evaluate()
 		);
 	}
 
@@ -218,7 +242,8 @@ public class InfixInterpreterTest {
 		set.addAll(List.of(new BooleanOperandToken(true)));
 		assertEquals(
 			set,
-			new InfixInterpreter(new JFLexParser().parse("{ true }").get()).evaluate()
+			new InfixInterpreter(new JFLexParser().parse("{ true }").right().value())
+				.evaluate()
 		);
 	}
 
@@ -236,7 +261,7 @@ public class InfixInterpreterTest {
 		assertEquals(
 			set,
 			new InfixInterpreter(
-				new JFLexParser().parse("{ true ; 1.0 ; false ; 5 }").get()
+				new JFLexParser().parse("{ true ; 1.0 ; false ; 5 }").right().value()
 			)
 				.evaluate()
 		);
@@ -255,7 +280,10 @@ public class InfixInterpreterTest {
 		assertEquals(
 			set,
 			new InfixInterpreter(
-				new JFLexParser().parse("{ true } union {false ; true ; false ; 1}").get()
+				new JFLexParser()
+					.parse("{ true } union {false ; true ; false ; 1}")
+					.right()
+					.value()
 			)
 				.evaluate()
 		);
@@ -268,7 +296,10 @@ public class InfixInterpreterTest {
 		assertEquals(
 			set,
 			new InfixInterpreter(
-				new JFLexParser().parse("{ true } inter {false ; true ; false}").get()
+				new JFLexParser()
+					.parse("{ true } inter {false ; true ; false}")
+					.right()
+					.value()
 			)
 				.evaluate()
 		);
@@ -283,7 +314,8 @@ public class InfixInterpreterTest {
 			new InfixInterpreter(
 				new JFLexParser()
 					.parse("{ true ; 1.0 } diff {false ; true ; false}")
-					.get()
+					.right()
+					.value()
 			)
 				.evaluate()
 		);

@@ -1,5 +1,6 @@
 package paleo.lib.calculator;
 
+import fj.data.Either;
 import java.util.Optional;
 import paleo.lib.token.operand.OperandToken;
 
@@ -13,5 +14,5 @@ import paleo.lib.token.operand.OperandToken;
  */
 @FunctionalInterface
 public interface Calculator {
-	public Optional<OperandToken> calculate(final String line);
+	public Optional<Either<Throwable, OperandToken>> calculate(final String line);
 }

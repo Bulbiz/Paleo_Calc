@@ -101,7 +101,7 @@
       <configuration>
         <archive>
           <manifest>
-            <mainClass>paleo.calc.App</mainClass>
+            <mainClass>paleo.demo.App</mainClass>
           </manifest>
         </archive>
         <descriptorRefs>

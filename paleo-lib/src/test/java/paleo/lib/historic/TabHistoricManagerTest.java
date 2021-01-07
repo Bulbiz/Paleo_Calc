@@ -73,8 +73,10 @@ public class TabHistoricManagerTest {
 		historic.add(new IntegerOperandToken(2));
 
 		assertEquals(
-			new JFLexParser().parse("2 + 3"),
-			historic.substitute(new JFLexParser().parse("hist(1) + 3").get())
+			new JFLexParser().parse("2 + 3").right().value(),
+			historic
+				.substitute(new JFLexParser().parse("hist(1) + 3").right().value())
+				.get()
 		);
 	}
 
@@ -86,10 +88,12 @@ public class TabHistoricManagerTest {
 		historic.add(new DoubleOperandToken(3.3));
 
 		assertEquals(
-			new JFLexParser().parse("2 + 3 * (3.3 + 5)"),
-			historic.substitute(
-				new JFLexParser().parse("hist(1) + 3 * (hist(2) + 5)").get()
-			)
+			new JFLexParser().parse("2 + 3 * (3.3 + 5)").right().value(),
+			historic
+				.substitute(
+					new JFLexParser().parse("hist(1) + 3 * (hist(2) + 5)").right().value()
+				)
+				.get()
 		);
 	}
 
@@ -101,8 +105,8 @@ public class TabHistoricManagerTest {
 		historic.add(new DoubleOperandToken(3.3));
 
 		assertEquals(
-			new JFLexParser().parse("3.3"),
-			historic.substitute(new JFLexParser().parse("hist(0)").get())
+			new JFLexParser().parse("3.3").right().value(),
+			historic.substitute(new JFLexParser().parse("hist(0)").right().value()).get()
 		);
 	}
 
@@ -110,7 +114,7 @@ public class TabHistoricManagerTest {
 	public void invalidHistCmdShouldReturnEmpty() {
 		assertTrue(
 			new TabHistoricManager()
-				.substitute(new JFLexParser().parse("hist(1)").get())
+				.substitute(new JFLexParser().parse("hist(1)").right().value())
 				.isEmpty()
 		);
 	}

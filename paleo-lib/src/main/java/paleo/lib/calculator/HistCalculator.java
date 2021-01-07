@@ -1,5 +1,6 @@
 package paleo.lib.calculator;
 
+import fj.data.Either;
 import java.util.Optional;
 import java.util.Queue;
 import paleo.lib.historic.HistoricManager;
@@ -39,37 +40,39 @@ public class HistCalculator implements Calculator {
 	 * mathematical expression return the corresponding value, otherwise, an
 	 * empty optional.
 	 */
-	public Optional<OperandToken> calculate(final String line) {
-		Optional<OperandToken> optionalOp;
+	public Optional<Either<Throwable, OperandToken>> calculate(final String line) {
+		Either<Throwable, OperandToken> optionalOp;
 
 		if (line.trim().equalsIgnoreCase("ls")) {
 			historicManager.printHistoric();
 		} else {
 			optionalOp = evaluate(line);
-			if (optionalOp.isPresent()) {
-				historicManager.add(optionalOp.get());
-				return optionalOp;
+			if (optionalOp.isRight()) {
+				historicManager.add(optionalOp.right().value());
+				return Optional.of(optionalOp);
+			} else {
+				return Optional.of(optionalOp);
 			}
 		}
 		return Optional.empty();
 	}
 
-	private Optional<OperandToken> evaluate(final String expr) {
-		Interpreter interpreter;
-		final Optional<Queue<Yytoken>> tokenExpression = this.parser.parse(expr);
+	private Either<Throwable, OperandToken> evaluate(final String expr) {
+		final Either<Throwable, Queue<Yytoken>> tokenExpression = this.parser.parse(expr);
 
-		if (tokenExpression.isPresent()) {
+		if (tokenExpression.isRight()) {
 			try {
-				interpreter =
+				Interpreter interpreter =
 					this.interpreterFactory.create(
-							historicManager.substitute(tokenExpression.get()).get()
+							historicManager
+								.substitute(tokenExpression.right().value())
+								.get()
 						);
-				return Optional.of(interpreter.evaluate());
+				return Either.right(interpreter.evaluate());
 			} catch (final Exception e) {
-				//TODO: handle exception
-				System.err.println(e.getMessage());
+				return Either.left(e);
 			}
 		}
-		return Optional.empty();
+		return Either.left(tokenExpression.left().value());
 	}
 }

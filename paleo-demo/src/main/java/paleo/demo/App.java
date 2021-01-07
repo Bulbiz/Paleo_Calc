@@ -1,8 +1,9 @@
-package paleo.calc;
+package paleo.demo;
 
+import fj.data.Either;
 import java.util.Optional;
 import java.util.Scanner;
-import paleo.calc.utils.Color;
+import paleo.demo.utils.Color;
 import paleo.lib.calculator.Calculator;
 import paleo.lib.calculator.HistCalculator;
 import paleo.lib.historic.TabHistoricManager;
@@ -24,18 +25,23 @@ public final class App {
 			new TabHistoricManager()
 		);
 		int nbLine = 1;
-		Optional<OperandToken> optionalOp;
+		Optional<Either<Throwable, OperandToken>> optionalOp;
 		String line = "";
 
 		printHeader();
-		while (!line.trim().equalsIgnoreCase("exit")) {
+		while (true) {
 			printPrompt();
-			line = readLine();
+			if ((line = readLine()).trim().equalsIgnoreCase("exit")) {
+				break;
+			}
 
 			optionalOp = calculator.calculate(line);
-			// Color.printlnWith("[ERR] : " + e.getMessage(), Color.LIGHT_RED);
 			if (optionalOp.isPresent()) {
-				printRes(optionalOp.get().toString(), nbLine++);
+				if (optionalOp.get().isRight()) {
+					printRes(optionalOp.get().right().value().toString(), nbLine++);
+				} else {
+					printErr(optionalOp.get().left().value().getMessage());
+				}
 			}
 		}
 	}
@@ -60,5 +66,9 @@ public final class App {
 	private static void printRes(final String res, final int historicCpt) {
 		Color.printWith("(" + historicCpt + ") : ", Color.LIGHT_CYAN);
 		Color.printlnWith(res, Color.LIGHT_GREEN);
+	}
+
+	private static void printErr(final String err) {
+		Color.printlnWith(err, Color.LIGHT_RED);
 	}
 }
