@@ -3,7 +3,7 @@ image: emilerolley/maven
 testdate:
   stage: build
   script:
-    - date
+    - sudo ntpdate ntp.ubuntu.com && date
 
 lib-compile:
   stage: build
