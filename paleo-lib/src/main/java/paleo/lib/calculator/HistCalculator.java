@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.Queue;
 import paleo.lib.historic.HistoricManager;
 import paleo.lib.interpreter.Interpreter;
-import paleo.lib.interpreter.OperationDictionary;
 import paleo.lib.parser.Parser;
 import paleo.lib.token.Yytoken;
 import paleo.lib.token.operand.OperandToken;
