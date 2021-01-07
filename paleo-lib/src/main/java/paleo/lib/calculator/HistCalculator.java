@@ -114,7 +114,7 @@ public class HistCalculator implements Calculator {
 			"  ls       \tPrints the current historic state\n" +
 			"  hist(n)  \tWill be substitute by the nth historic value\n" +
 			"  hist(0)  \tWill be substitute by the last historic value\n" +
-			"  help     \tPrints this message\n\n"
+			"  help     \tPrints this message"
 		);
 	}
 
