@@ -1,10 +1,12 @@
 package paleo.lib.calculator;
 
 import fj.data.Either;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.Queue;
 import paleo.lib.historic.HistoricManager;
 import paleo.lib.interpreter.Interpreter;
+import paleo.lib.interpreter.OperationDictionary;
 import paleo.lib.parser.Parser;
 import paleo.lib.token.Yytoken;
 import paleo.lib.token.operand.OperandToken;
@@ -19,6 +21,32 @@ public class HistCalculator implements Calculator {
 	private Parser parser; ///< {@link Parser} instance used to parse the line.
 	private HistoricManager historicManager; ///< Is the historic manager.
 
+	/** {@link HashMap} used to store internal command implementations. */
+	private static final HashMap<InternalCmdKey, Runnable> internalCommands = new HashMap<>();
+
+	/** Models an internal command key. */
+	private enum InternalCmdKey {
+		LS,
+		HELP;
+
+		public static Optional<InternalCmdKey> fromString(final String str) {
+			InternalCmdKey key;
+
+			try {
+				key = valueOf(str);
+			} catch (IllegalArgumentException e) {
+				return Optional.empty();
+			}
+
+			return Optional.of(key);
+		}
+	}
+
+	/** Adds entries to the internalCommands. */
+	{
+		internalCommands.put(InternalCmdKey.HELP, HistCalculator::printHelp);
+	}
+
 	/**
 	 *  {@link HistCalculator} constructor.
 	 */
@@ -30,6 +58,7 @@ public class HistCalculator implements Calculator {
 		this.interpreterFactory = interpreterFactory;
 		this.parser = parser;
 		this.historicManager = historicManager;
+		internalCommands.put(InternalCmdKey.LS, historicManager::printHistoric);
 	}
 
 	/**
@@ -43,9 +72,12 @@ public class HistCalculator implements Calculator {
 	 */
 	public Optional<Either<Throwable, OperandToken>> calculate(final String line) {
 		Either<Throwable, OperandToken> optionalOp;
+		final Optional<InternalCmdKey> cmdKey = InternalCmdKey.fromString(
+			line.trim().toUpperCase()
+		);
 
-		if (line.trim().equalsIgnoreCase("ls")) {
-			historicManager.printHistoric();
+		if (cmdKey.isPresent()) {
+			internalCommands.get(cmdKey.get()).run();
 		} else {
 			optionalOp = evaluate(line);
 			if (optionalOp.isRight()) {
@@ -75,6 +107,16 @@ public class HistCalculator implements Calculator {
 			}
 		}
 		return Either.left(tokenExpression.left().value());
+	}
+
+	private static void printHelp() {
+		System.out.println(
+			"Supported commands:\n" +
+			"  ls       \tPrints the current historic state\n" +
+			"  hist(n)  \tWill be substitute by the nth historic value\n" +
+			"  hist(0)  \tWill be substitute by the last historic value\n" +
+			"  help     \tPrints this message\n\n"
+		);
 	}
 
 	public Interpreter.Factory getInterpreterFactory() {
