@@ -8,18 +8,20 @@ import java.util.Queue;
 import paleo.lib.token.Yytoken;
 
 /**
- * Implements {@link Parser} by using a {@link JFLexer} instance to tokenize the string.
+ * {@link JFLexParser} is a {@link Parser} implemetation using a {@link JFLexer}
+ * instance to tokenize the string.
  */
 public final class JFLexParser implements Parser {
 
 	/**
 	 * Parses `expr` with an {@link JFLexer} instance.
 	 *
-	 * @return A queue of tokens or null if an {@link IOException} is catched.
+	 * @param expr is the string to parse.
+	 * @return A queue of tokens or the catched {@link Error}/{@link IOException}.
 	 */
 	public Either<Throwable, Queue<Yytoken>> parse(final String expr) {
-		JFLexer lexer = new JFLexer(new StringReader(expr));
-		Queue<Yytoken> tokens = new LinkedList<>();
+		final JFLexer lexer = new JFLexer(new StringReader(expr));
+		final Queue<Yytoken> tokens = new LinkedList<>();
 		Yytoken token;
 
 		try {
