@@ -9,7 +9,7 @@ import paleo.lib.token.operand.OperandToken;
 import paleo.lib.token.operation.OperationToken;
 
 /**
- * Interface providing historic features.
+ * Interface providing historic feature.
  *
  * There is a multiple way to design and to implement historic management :
  *
@@ -57,7 +57,8 @@ public interface HistoricManager {
 	/**
 	 * Gets the last stored {@link OperandToken}.
 	 *
-	 * @return the last stored operand packed in an {@link Optional} instance.
+	 * @return the last stored operand packed in an {@link Optional} instance
+	 * or empty if the historic is empty.
 	 */
 	public Optional<OperandToken> getLast();
 

@@ -4,7 +4,8 @@ import paleo.lib.error.ErrorWithHeader;
 import paleo.lib.token.Yytoken;
 
 /**
- * Models a historic {@link Yytoken} used by {@link HistoricManager}.
+ * Models a historic {@link Yytoken} used by an {@link HistoricManager} implementation
+ * such as {@link TabHistoricManager}.
  */
 public final class HistoricToken implements Yytoken {
 
@@ -43,7 +44,7 @@ public final class HistoricToken implements Yytoken {
 	public static class InvalidHistoricTokenError extends ErrorWithHeader {
 
 		private static final long serialVersionUID = 6532253696971122665L; ///< Generated serial version ID.
-		private static final String header = "[ERROR_PARSER] - invalid historic command"; ///< Default header.
+		private static final String header = "Invalid historic command"; ///< Default header.
 
 		public InvalidHistoricTokenError() {
 			super(header, "");

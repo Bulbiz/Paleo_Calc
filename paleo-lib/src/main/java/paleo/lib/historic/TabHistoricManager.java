@@ -8,8 +8,8 @@ import paleo.lib.token.Yytoken;
 import paleo.lib.token.operand.OperandToken;
 
 /**
- * {@link TabHistoricManager} implements {@link HistoricManager}.
- * Prints the current historic state inside a table @see {@link printHistoric}.
+ * {@link TabHistoricManager} is an {@link HistoricManager} implemetation which
+ * prints the current historic state inside a table (@see {@link printHistoric}).
  */
 public final class TabHistoricManager implements HistoricManager {
 
@@ -40,35 +40,42 @@ public final class TabHistoricManager implements HistoricManager {
 	 * {@link HistoricToken} is found.
 	 */
 	public Optional<Queue<Yytoken>> substitute(final Queue<Yytoken> tokens) {
-		final Queue<Yytoken> substitutedTokens = new LinkedList<>();
+		final Queue<Yytoken> substitutedTokens = tokens
+			.parallelStream()
+			.map(
+				yytoken -> {
+					if (yytoken instanceof HistoricToken) {
+						final HistoricToken hToken = (HistoricToken) yytoken;
+						Optional<OperandToken> opOperand;
 
-		for (final Yytoken yytoken : tokens) {
-			if (yytoken instanceof HistoricToken) {
-				final HistoricToken hToken = (HistoricToken) yytoken;
-				Optional<OperandToken> opOperand;
-
-				if (0 == hToken.getArg()) {
-					opOperand = this.getLast();
-				} else {
-					opOperand = this.get(hToken.getArg());
+						if (0 == hToken.getArg()) {
+							opOperand = this.getLast();
+						} else {
+							opOperand = this.get(hToken.getArg());
+						}
+						return opOperand;
+					}
+					return Optional.of(yytoken);
 				}
+			)
+			.filter(yytokenOp -> yytokenOp.isPresent())
+			.collect(
+				LinkedList<Yytoken>::new,
+				(ll, tokOp) -> ll.add((Yytoken) tokOp.get()),
+				(ll1, ll2) -> ll1.addAll(ll2)
+			);
 
-				if (opOperand.isEmpty()) {
-					return Optional.empty();
-				}
-				substitutedTokens.add(opOperand.get());
-			} else {
-				substitutedTokens.add(yytoken);
-			}
-		}
-		return Optional.of(substitutedTokens);
+		return substitutedTokens.isEmpty()
+			? Optional.empty()
+			: Optional.of(substitutedTokens);
 	}
 
 	/**
 	 * Gets the corresponding {@link OperandToken} at the index pos.
 	 *
 	 * @param index the corresponding index of the operand in the historicArray.
-	 * @return the stored operand packed in an {@link Optional} instance.
+	 * @return the stored operand packed in an {@link Optional} instance or empty
+	 * if the index is out of bounds.
 	 */
 	public Optional<OperandToken> get(final int index) {
 		if (0 >= index || this.historicArray.size() < index) {
@@ -116,7 +123,7 @@ public final class TabHistoricManager implements HistoricManager {
 				printEntry(max_klen, max_vlen, i);
 			}
 			System.out.println(delimLine);
-			printEntry(max_klen, max_vlen, historicArray.size());
+			printEntry(max_klen, max_vlen, 0);
 			System.out.println(delimLine);
 		}
 	}
