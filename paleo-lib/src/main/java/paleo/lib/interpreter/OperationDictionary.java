@@ -1,5 +1,6 @@
 package paleo.lib.interpreter;
 
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -22,16 +23,6 @@ public final class OperationDictionary {
 	 */
 	private static HashMap<String, OperationEvaluator> operationMap = new HashMap<>();
 
-	private static String generateKeyFrom(
-		OperationToken operation,
-		List<Class<? extends OperandToken>> signature
-	) {
-		return (
-			operation.toString() +
-			signature.stream().map(e -> e.toString()).collect(Collectors.joining(" "))
-		);
-	}
-
 	/**
 	 * Adds an {@link OperationEvaluator} to the corresponding {@link HashMap}
 	 * in operationMap.
@@ -41,11 +32,11 @@ public final class OperationDictionary {
 	 * @param signature is the list of {@link Operand} classes supported by the opereation.
 	 */
 	public static void addEntry(
-		OperationToken operation,
-		OperationEvaluator opEvaluator,
-		List<Class<? extends OperandToken>> signature
+		final OperationToken operation,
+		final OperationEvaluator opEvaluator,
+		final List<Class<? extends OperandToken>> signature
 	) {
-		String key = generateKeyFrom(operation, signature);
+		final String key = generateKeyFrom(operation, signature);
 
 		if (!operationMap.containsKey(key)) {
 			operationMap.put(key, opEvaluator);
@@ -62,21 +53,38 @@ public final class OperationDictionary {
 	 * provided, otherwise, throw an {@link IllegalArgumentException}.
 	 */
 	public static OperationEvaluator getOperationEvaluator(
-		OperationToken operation,
-		Deque<OperandToken> signature
+		final OperationToken operation,
+		final Deque<OperandToken> signature
 	) {
-		List<Class<? extends OperandToken>> signatureKey = signature
-			.stream()
-			.map(o -> o.getClass())
+		final List<Class<? extends OperandToken>> signatureKey = signature
+			.parallelStream()
+			.map(op -> op.getClass())
 			.collect(Collectors.toList());
-		String key = generateKeyFrom(operation, signatureKey);
+		final String key = generateKeyFrom(operation, signatureKey);
 
 		if (!operationMap.containsKey(key)) {
 			throw new IllegalArgumentException(
-				operation.toString() + " unsupported operation"
+				"Unsupported operation '" +
+				operation.toString() +
+				"' for the corresponding signature '" +
+				parallelCollectToString(signature) +
+				"'"
 			);
-		} else {
-			return operationMap.get(key);
 		}
+		return operationMap.get(key);
+	}
+
+	private static String generateKeyFrom(
+		final OperationToken operation,
+		final List<Class<? extends OperandToken>> signature
+	) {
+		return operation.getClass().toString() + parallelCollectToString(signature);
+	}
+
+	private static String parallelCollectToString(final Collection<?> collection) {
+		return collection
+			.parallelStream()
+			.map(e -> e.toString())
+			.collect(Collectors.joining(" "));
 	}
 }

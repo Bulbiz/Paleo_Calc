@@ -16,17 +16,6 @@ import paleo.lib.token.operation.ParenOperationToken;
  */
 public final class InfixInterpreter implements Interpreter {
 
-	/**
-	 * {@link InfixInterpreter.Factory} implements the {@link Interpreter.Factory} interface
-	 * in order to be used in composition in a {@link Calculator} instance.
-	 */
-	public static class Factory implements Interpreter.Factory {
-
-		public InfixInterpreter create(final Queue<Yytoken> tokens) {
-			return new InfixInterpreter(tokens);
-		}
-	}
-
 	private final Queue<Yytoken> tokens; ///< Is the tokens to evaluate.
 	private final Stack<OperandToken> operandStack; ///< Stores {@link OperandToken} during the evaluation.
 	private final Stack<OperationToken> operationStack; ///< Stores {@link OperationToken} during the evaluation.
@@ -88,7 +77,7 @@ public final class InfixInterpreter implements Interpreter {
 		}
 
 		if (operandStack.isEmpty()) {
-			throw new IllegalArgumentException("Empty stack");
+			throw new IllegalArgumentException("Missing operands");
 		}
 
 		return operandStack.peek();
@@ -117,5 +106,16 @@ public final class InfixInterpreter implements Interpreter {
 				.getOperationEvaluator(operation, operandsDeque)
 				.evaluateOperation(operandsDeque)
 		);
+	}
+
+	/**
+	 * {@link InfixInterpreter.Factory} implements the {@link Interpreter.Factory} interface
+	 * in order to be used in composition in a {@link Calculator} instance.
+	 */
+	public static class Factory implements Interpreter.Factory {
+
+		public InfixInterpreter create(final Queue<Yytoken> tokens) {
+			return new InfixInterpreter(tokens);
+		}
 	}
 }

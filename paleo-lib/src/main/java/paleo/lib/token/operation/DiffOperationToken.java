@@ -5,12 +5,13 @@ package paleo.lib.token.operation;
  */
 public final class DiffOperationToken implements OperationToken {
 
+	public static final String symbol = "diff"; ///< Is the symbol corresponding to the operation
 	public static final Priority priority = Priority.LOW; ///< Is the operation priority for evaluation.
 	public static final int arity = 2; ///< Is the operation arity.
 
 	@Override
 	public String toString() {
-		return getClass().toString();
+		return symbol;
 	}
 
 	/**

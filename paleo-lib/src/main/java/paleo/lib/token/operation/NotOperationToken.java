@@ -5,12 +5,13 @@ package paleo.lib.token.operation;
  */
 public final class NotOperationToken implements OperationToken {
 
+	public static final String symbol = "not"; ///< Is the symbol corresponding to the operation
 	public static final Priority priority = Priority.HIGH; ///< Is the operation priority for evaluation.
 	public static final int arity = 1; ///< Is the operation arity.
 
 	@Override
 	public String toString() {
-		return getClass().toString();
+		return symbol;
 	}
 
 	/**
