@@ -1,10 +1,5 @@
 image: emilerolley/maven
 
-testdate:
-  stage: build
-  script:
-    - sudo ntpdate ntp.ubuntu.com && date
-
 lib-compile:
   stage: build
   script:
