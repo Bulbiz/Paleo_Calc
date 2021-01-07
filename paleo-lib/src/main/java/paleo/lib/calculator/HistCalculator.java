@@ -15,9 +15,9 @@ import paleo.lib.token.operand.OperandToken;
  */
 public class HistCalculator implements Calculator {
 
-	private final Interpreter.Factory interpreterFactory; ///< Allows to creates an {@link Interpreter} instance from an expression.
-	private final Parser parser; ///< {@link Parser} instance used to parse the line.
-	private final HistoricManager historicManager; ///< Is the historic manager.
+	private Interpreter.Factory interpreterFactory; ///< Allows to creates an {@link Interpreter} instance from an expression.
+	private Parser parser; ///< {@link Parser} instance used to parse the line.
+	private HistoricManager historicManager; ///< Is the historic manager.
 
 	/**
 	 *  {@link HistCalculator} constructor.
@@ -35,7 +35,8 @@ public class HistCalculator implements Calculator {
 	/**
 	 * Calculates the given line (@see Calculator).
 	 *
-	 * @line is the line to be calculate.
+	 * @param line could be a mathematical expression or an internal command
+	 * such as 'ls', in this case empty is returned.
 	 * @return an {@link Optional}, if the line could be evaluate like a valid
 	 * mathematical expression return the corresponding value, otherwise, an
 	 * empty optional.
@@ -62,7 +63,7 @@ public class HistCalculator implements Calculator {
 
 		if (tokenExpression.isRight()) {
 			try {
-				Interpreter interpreter =
+				final Interpreter interpreter =
 					this.interpreterFactory.create(
 							historicManager
 								.substitute(tokenExpression.right().value())
@@ -74,5 +75,29 @@ public class HistCalculator implements Calculator {
 			}
 		}
 		return Either.left(tokenExpression.left().value());
+	}
+
+	public Interpreter.Factory getInterpreterFactory() {
+		return interpreterFactory;
+	}
+
+	public void setInterpreterFactory(final Interpreter.Factory interpreterFactory) {
+		this.interpreterFactory = interpreterFactory;
+	}
+
+	public Parser getParser() {
+		return parser;
+	}
+
+	public void setParser(final Parser parser) {
+		this.parser = parser;
+	}
+
+	public HistoricManager getHistoricManager() {
+		return historicManager;
+	}
+
+	public void setHistoricManager(final HistoricManager historicManager) {
+		this.historicManager = historicManager;
 	}
 }

@@ -14,5 +14,13 @@ import paleo.lib.token.operand.OperandToken;
  */
 @FunctionalInterface
 public interface Calculator {
+	/**
+	 * Parses and evaluates the line.
+	 *
+	 * @param line could be a mathematical expression or an internal command
+	 * such as 'ls', in this case empty is returned.
+	 * @return The result of the evaluation of the line or empty if the line
+	 * corresponds to an internal command.
+	 */
 	public Optional<Either<Throwable, OperandToken>> calculate(final String line);
 }
