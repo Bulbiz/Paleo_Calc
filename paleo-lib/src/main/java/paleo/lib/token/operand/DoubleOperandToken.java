@@ -164,13 +164,13 @@ public final class DoubleOperandToken implements OperandToken {
 			operands -> {
 				OperandToken op1 = operands.pop();
 				OperandToken op2 = operands.pop();
-				if (0 == ((IntegerOperandToken) op1).getValue()) {
+				if (0 == ((IntegerOperandToken) op2).getValue()) {
 					throw new IllegalArgumentException("Try to divide by zero");
 				}
 				return (
 					new DoubleOperandToken(
-						((DoubleOperandToken) op2).getValue() /
-						((IntegerOperandToken) op1).getValue()
+						((DoubleOperandToken) op1).getValue() /
+						((IntegerOperandToken) op2).getValue()
 					)
 				);
 			},

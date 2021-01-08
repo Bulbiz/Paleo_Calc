@@ -13,9 +13,9 @@ import paleo.lib.token.operand.*;
 import paleo.lib.token.operation.*;
 
 /**
- * Unit test for {@link Parser}.
+ * Unit test for {@link JFLexParser}.
  */
-public class ParserTest {
+public class JFLexParserTest {
 
 	/**
 	 * Compares two {@link Queue} of {@link Yytoken}.
@@ -61,12 +61,12 @@ public class ParserTest {
 
 	@Test
 	public void shouldReturnEmptyListWithEmptyString() {
-		assertEquals(0, new Parser("").parse().get().size());
+		assertEquals(0, new JFLexParser().parse("").right().value().size());
 	}
 
 	@Test
 	public void simpleIntegerToken() {
-		final Queue<Yytoken> actualTokens = new Parser("3").parse().get();
+		final Queue<Yytoken> actualTokens = new JFLexParser().parse("3").right().value();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new IntegerOperandToken(3)
 		);
@@ -76,7 +76,10 @@ public class ParserTest {
 
 	@Test
 	public void simpleSumExpression() {
-		final Queue<Yytoken> actualTokens = new Parser("3 + 5").parse().get();
+		final Queue<Yytoken> actualTokens = new JFLexParser()
+			.parse("3 + 5")
+			.right()
+			.value();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new IntegerOperandToken(3),
 			new SumOperationToken(),
@@ -88,7 +91,10 @@ public class ParserTest {
 
 	@Test
 	public void simpleMultExpression() {
-		final Queue<Yytoken> actualTokens = new Parser("3 * 5").parse().get();
+		final Queue<Yytoken> actualTokens = new JFLexParser()
+			.parse("3 * 5")
+			.right()
+			.value();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new IntegerOperandToken(3),
 			new MultOperationToken(),
@@ -100,7 +106,10 @@ public class ParserTest {
 
 	@Test
 	public void simpleParenExpression() {
-		final Queue<Yytoken> actualTokens = new Parser("(3 * 5)").parse().get();
+		final Queue<Yytoken> actualTokens = new JFLexParser()
+			.parse("(3 * 5)")
+			.right()
+			.value();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			ParenOperationToken.LEFT,
 			new IntegerOperandToken(3),
@@ -114,7 +123,10 @@ public class ParserTest {
 
 	@Test
 	public void simpleDoubleExpression() {
-		final Queue<Yytoken> actualTokens = new Parser("(3.4 * 5.6)").parse().get();
+		final Queue<Yytoken> actualTokens = new JFLexParser()
+			.parse("(3.4 * 5.6)")
+			.right()
+			.value();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			ParenOperationToken.LEFT,
 			new DoubleOperandToken(3.4),
@@ -128,7 +140,10 @@ public class ParserTest {
 
 	@Test
 	public void intAndDoubleExpression() {
-		final Queue<Yytoken> actualTokens = new Parser("(3.4 * 5.6) / 3").parse().get();
+		final Queue<Yytoken> actualTokens = new JFLexParser()
+			.parse("(3.4 * 5.6) / 3")
+			.right()
+			.value();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			ParenOperationToken.LEFT,
 			new DoubleOperandToken(3.4),
@@ -144,7 +159,10 @@ public class ParserTest {
 
 	@Test
 	public void expressionWithANegativeDouble() {
-		final Queue<Yytoken> actualTokens = new Parser("3.4 * -5.6").parse().get();
+		final Queue<Yytoken> actualTokens = new JFLexParser()
+			.parse("3.4 * -5.6")
+			.right()
+			.value();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new DoubleOperandToken(3.4),
 			new MultOperationToken(),
@@ -156,7 +174,10 @@ public class ParserTest {
 
 	@Test
 	public void expressionWithANegativeInteger() {
-		final Queue<Yytoken> actualTokens = new Parser("3.4 * -5").parse().get();
+		final Queue<Yytoken> actualTokens = new JFLexParser()
+			.parse("3.4 * -5")
+			.right()
+			.value();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new DoubleOperandToken(3.4),
 			new MultOperationToken(),
@@ -168,7 +189,10 @@ public class ParserTest {
 
 	@Test
 	public void notFormattedExpression() {
-		final Queue<Yytoken> actualTokens = new Parser("1/3.4* -5 ))").parse().get();
+		final Queue<Yytoken> actualTokens = new JFLexParser()
+			.parse("1/3.4* -5 ))")
+			.right()
+			.value();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new IntegerOperandToken(1),
 			new DivOperationToken(),
@@ -184,11 +208,10 @@ public class ParserTest {
 
 	@Test
 	public void expressionWithMultipleParenDepth() {
-		final Queue<Yytoken> actualTokens = new Parser(
-			"(2 - 3 * 4 + (2 + 4 - 6 * 5)) + 1"
-		)
-			.parse()
-			.get();
+		final Queue<Yytoken> actualTokens = new JFLexParser()
+			.parse("(2 - 3 * 4 + (2 + 4 - 6 * 5)) + 1")
+			.right()
+			.value();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			ParenOperationToken.LEFT,
 			new IntegerOperandToken(2),
@@ -216,7 +239,10 @@ public class ParserTest {
 
 	@Test
 	public void simpleBooleanToken() {
-		final Queue<Yytoken> actualTokens = new Parser("true").parse().get();
+		final Queue<Yytoken> actualTokens = new JFLexParser()
+			.parse("true")
+			.right()
+			.value();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new BooleanOperandToken(true)
 		);
@@ -225,9 +251,10 @@ public class ParserTest {
 
 	@Test
 	public void simpleBooleanExpression() {
-		final Queue<Yytoken> actualTokens = new Parser("true  and not false")
-			.parse()
-			.get();
+		final Queue<Yytoken> actualTokens = new JFLexParser()
+			.parse("true  and not false")
+			.right()
+			.value();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new BooleanOperandToken(true),
 			new AndOperationToken(),
@@ -239,9 +266,10 @@ public class ParserTest {
 
 	@Test
 	public void simpleParenBooleanExpression() {
-		final Queue<Yytoken> actualTokens = new Parser("true  and (not false and true)")
-			.parse()
-			.get();
+		final Queue<Yytoken> actualTokens = new JFLexParser()
+			.parse("true  and (not false and true)")
+			.right()
+			.value();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new BooleanOperandToken(true),
 			new AndOperationToken(),
@@ -257,7 +285,10 @@ public class ParserTest {
 
 	@Test
 	public void expressionWithSimpleHistCall() {
-		final Queue<Yytoken> actualTokens = new Parser("hist(1) + 3").parse().get();
+		final Queue<Yytoken> actualTokens = new JFLexParser()
+			.parse("hist(1) + 3")
+			.right()
+			.value();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new HistoricToken(1),
 			new SumOperationToken(),
@@ -269,9 +300,10 @@ public class ParserTest {
 
 	@Test
 	public void expressionWithMultipleHistCall() {
-		final Queue<Yytoken> actualTokens = new Parser("hist(1) + hist(1) - (hist(3)))")
-			.parse()
-			.get();
+		final Queue<Yytoken> actualTokens = new JFLexParser()
+			.parse("hist(1) + hist(1) - (hist(3)))")
+			.right()
+			.value();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			new HistoricToken(1),
 			new SumOperationToken(),
@@ -288,17 +320,17 @@ public class ParserTest {
 
 	@Test
 	public void histCmdWihoutArgShouldReturnEmpty() {
-		assertTrue(new Parser("hist() + hist(1)(hist(3)))").parse().isEmpty());
+		assertTrue(new JFLexParser().parse("hist() + hist(1)(hist(3)))").isLeft());
 	}
 
 	@Test
 	public void histCmdWhithMissingParenShouldReturnEmpty() {
-		assertTrue(new Parser("hist1) + hist(1)(hist(3)))").parse().isEmpty());
+		assertTrue(new JFLexParser().parse("hist1) + hist(1)(hist(3)))").isLeft());
 	}
 
 	@Test
 	public void histCmdWhithNotValidArgShouldReturnEmpty() {
-		assertTrue(new Parser("hist1) + hist(1(hist(3)))").parse().isEmpty());
+		assertTrue(new JFLexParser().parse("hist1) + hist(1(hist(3)))").isLeft());
 	}
 
 	@Test
@@ -306,7 +338,10 @@ public class ParserTest {
 		final SetOperandToken set = new SetOperandToken();
 		set.addAll(List.of(new IntegerOperandToken(1)));
 
-		final Queue<Yytoken> actualTokens = new Parser("{1} union 3").parse().get();
+		final Queue<Yytoken> actualTokens = new JFLexParser()
+			.parse("{1} union 3")
+			.right()
+			.value();
 		final Queue<Yytoken> expectedTokens = createTokenQueue(
 			set,
 			new UnionOperationToken(),

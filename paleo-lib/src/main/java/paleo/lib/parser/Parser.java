@@ -1,55 +1,39 @@
 package paleo.lib.parser;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.LinkedList;
-import java.util.Optional;
+import fj.data.Either;
 import java.util.Queue;
+import paleo.lib.error.ErrorWithHeader;
 import paleo.lib.token.Yytoken;
 
 /**
- * Module allowing to tranform a string expression into a queue of tokens.
- * A {@link Lexer} instance is used for tokenizing the string.
+ * {@link Parser} provides an interface that allows to tranform a string
+ * expression into a {@link Queue} of {@link Yytoken}.
  *
- * @note A {@link Queue} is used to store tokens, because, in order to evaluate the
- * expression only one run of the tokens set is necessary.
- *
- * @see Lexer
+ * @note A {@link Queue} is used to store tokens, because, in order to evaluate
+ * the expression only one run of the tokens set is necessary and its more
+ * handy that a {@link List}.
  */
-public final class Parser {
-
-	private String expr;
+@FunctionalInterface
+public interface Parser {
+	/**
+	 * Parses a {@link String} expression.
+	 *
+	 * @param expr is the expression to parse.
+	 * @return A queue of tokens or the catched {@link Error}/{@link Exception}.
+	 */
+	public Either<Throwable, Queue<Yytoken>> parse(final String expr);
 
 	/**
-	 * Parser constructor.
-	 *
-	 * @param expr Is a string representation of the wanted parsed expression.
+	 * {@link Error} raised when trying to parse an unsupported symbol.
+	 * @see ErrorWithHeader
 	 */
-	public Parser(String expr) {
-		this.expr = expr;
-	}
+	public static class UnknownSymbError extends ErrorWithHeader {
 
-	/**
-	 * Parses `expr` with an {@link Lexer} instance.
-	 *
-	 * @return A queue of tokens or null if an {@link IOException} is catched.
-	 */
-	public Optional<Queue<Yytoken>> parse() {
-		JFLexer lexer = new JFLexer(new StringReader(this.expr));
-		Queue<Yytoken> tokens = new LinkedList<>();
-		Yytoken token;
+		private static final long serialVersionUID = -3695906031317795941L; ///< Generated serial version ID.
+		private static final String header = "Unknown symbol '"; ///< Default header.
 
-		try {
-			while (null != (token = lexer.yylex())) {
-				tokens.add(token);
-			}
-			//TODO: Must find a way to get error messages.
-		} catch (Exception e) {
-			return Optional.empty();
-		} catch (Error e) {
-			return Optional.empty();
+		public UnknownSymbError(final String msg) {
+			super(header, msg + "'");
 		}
-
-		return Optional.of(tokens);
 	}
 }

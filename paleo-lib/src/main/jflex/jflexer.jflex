@@ -5,14 +5,10 @@
 
 package paleo.lib.parser;
 
-import java.util.ArrayList;
-
 import paleo.lib.token.operation.*;
 import paleo.lib.token.operand.*;
 import paleo.lib.token.Yytoken;
 import paleo.lib.historic.HistoricToken;
-import paleo.lib.historic.exception.InvalidHistoricTokenException;
-import java.util.List;
 
 %%
 
@@ -56,7 +52,6 @@ real 	= [-]?{integer}("."{integer})
 	")" 		{ return(ParenOperationToken.RIGHT); }
 
 	"{" 		{ set = new SetOperandToken(); yybegin(SET); }
-
 }
 
 <OPERATION> {
@@ -87,6 +82,7 @@ real 	= [-]?{integer}("."{integer})
 
 	{white}		{ }
 	";"			{ }
+	","			{ }
 
 	"}"
 	{
@@ -99,22 +95,24 @@ real 	= [-]?{integer}("."{integer})
 	"("
 	{
 		if (false != this.histFlag)
-			throw new InvalidHistoricTokenException();
+			throw new HistoricToken.InvalidHistoricTokenError();
 		this.histFlag = true;
 	}
 
 	{integer}
 	{
 		if (true != this.histFlag)
-			throw new InvalidHistoricTokenException();
+			throw new HistoricToken.InvalidHistoricTokenError();
 		this.currentToken = new HistoricToken(Integer.parseInt(yytext()));
 	}
 
 	")"
 	{
 		if (null == this.currentToken)
-			throw new InvalidHistoricTokenException();
+			throw new HistoricToken.InvalidHistoricTokenError();
 		yybegin(OPERATION);
 		return this.currentToken;
 	}
 }
+
+[^] 			{ throw new Parser.UnknownSymbError(yytext()); }
