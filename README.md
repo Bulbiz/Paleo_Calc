@@ -56,10 +56,10 @@ Some other example that work :
 ` -5 + 10 `
 
 The basic procedure of the calculator is :
-	- The application wait a input
-	- A parser parse the input into a list of Token 
-	- A Interpreter calculate the output from the list of Token given by the parser
-	- The application print the output
+	1/ The application wait a input
+	2/ A parser parse the input into a list of Token 
+	3/ A Interpreter calculate the output from the list of Token given by the parser
+	4/ The application print the output
 
 ### Fonctionality/Extension 
 ## Extension 1 : Calculator Multi-Type
