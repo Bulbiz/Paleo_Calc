@@ -134,7 +134,7 @@ To print the documentation of the historic, use the command `help`
 
 # How does it work ?
 
-The historic manager use an Arraylist. Each time there is an ouput that have been done in the application, it will also be added
+The historic manager use an Arraylist. Each time an ouput have been calculated in the application, it will also be added
 in the ArrayList of the historic manager. When recalled, it will create a special historic token that will substitute itself with
 the value stored in the historic manager.
 
