@@ -89,25 +89,24 @@ The application recognize a boolean if it's either "true" or "false"
 The operation that can be used are : `and` | `or` | `not`
 Example : ` true and not (true or false) ` ; ` true ` ; ` false ` ; ...
 
-# Set 
+# Set
 
-The application recognize a set if it start with '{' then somes 
-values(can be real, decimal or boolean) separated with ' ' or ';' and end with '}'.
-Exemple : ` {1 ; 2.0 ; 3 ; true } ` ; `{}` ; `{ false }` ; ...
+The application recognize a set if it start with '{' then somes values 
+(can be real, decimal or boolean) separated with ' ' or ';' or ',' and end with '}'.
+Exemple : ` { 1 ; 2.0 ; 3 ; true } ` ; `{}` ; `{ false }` ; ...
 The operation that can be used are : `union` | `inter` | `diff`
 Example : `{1} union {5;6}` ; `{false ; 1.0} inter {true ; false}` ; `{1;2;3;4;5;6} diff ({1} union {3;5})`
 
 # How does it work ?
 
 The calculator use a map of <signature;evaluator>. The interpretor first calculate the key from the operation and 
-the operands (which can be viewed as the signature) and search if there is a evaluator with the signature, 
-the evaluator will evaluate the operation.
+the operands (which can be viewed as the signature) and search if there is a evaluator with the signature to evaluate it.
 Each new type that are implemented need to add their evaluator with the corresponding signature. 
 This way, the operator can be differents types and the clients can add as much types they want easily.
 
 ## Extension 2 : Infix Syntax 
 
-As it has been stated in the Basic use of the calculator section, the calculator use a infix syntax instead of
+As it has been stated in the "Basic use of the calculator" section, the calculator use a infix syntax instead of
 the RPN syntax.
 
 # How does it work ?
@@ -135,8 +134,9 @@ To print the documentation of the historic, use the command `help`
 
 # How does it work ?
 
-The historic use an Arraylist. Each time there is an ouput that have been done in the application, it will also be added
-in the ArrayList. It then just need to substitute his value with the stored one when recalled.
+The historic manager use an Arraylist. Each time there is an ouput that have been done in the application, it will also be added
+in the ArrayList of the historic manager. When recalled, it will create a special historic token that will substitute itself with
+the value stored in the historic manager.
 
 ### Package 
 paleo-lib : This package contains all the implementation of the calculator. It have the implementation of the multi-type,
