@@ -1,56 +1,120 @@
 # Paleo
 
-# Description
+Une calculatrice évolutive écrite en Java.
 
-Une calculatrice améliorer écrit en Java. 
+## Compilation et exécution
 
-## Dependencies
-
-Vous avez besoin de :
+### Dépendances
 
 * `maven` >= 4.0
 * `make`
- 
-## Build
 
-Pour compiler le projet, faite :
+### Docker
 
-```zsh
-$ make
-```
-
-Pour générer la documentation, faite :
+Une [image Docker](https://hub.docker.com/repository/docker/emilerolley/maven)
+utilisée pour le `runner` de `GitLab-CI` peut-être utilisée :
 
 ```zsh
-$ make doc
+docker pull emilerolley/maven
+docker run -ti emilerolley/maven
+cd paleo
+git pull
 ```
 
-Pour nettoyer le projet, exécutez : 
+### Compilation
+
+Pour compiler le projet :
+
+```shell
+make
+```
+
+Pour générer la documentation :
 
 ```zsh
-$ make clean
+make doc
 ```
 
-## Execution
+> La documentation se trouvera alors dans *./paleo-<lib/demo>/target/site*.
+>
+> La documentation de `paleolib` sera certainement celle que vous voudrez consulter.
 
-Pour executer la calculatrice, lancer :
+Pour nettoyer le projet :
 
 ```zsh
-$ make run
+make clean
 ```
 
-or
+### Exécution
+
+Pour exécuter le programme :
 
 ```zsh
-$ java -jar paleo-calculator.jar
+make run
 ```
 
-## Utilisation basique de la calculatrice
+ou
+
+```zsh
+java -jar paleo-demo.jar
+```
+
+## Utilisation
+
+Après avoir lancé le programme, vous pouvez évaluer n'importe quelle expression écrite
+avec une syntaxe algébrique (notation infixe).
+
+```
+> 10 * (5.2 + 3)  <-- Expression en notation infixe.
+(1) : 82.0        <-- Résultat de l'expression après évaluation.
+ ^------------------- Indice dans l'historique.
+> false or not true
+(2) : false
+
+> ls              <-- Affiche l'historique sous forme de tableau.
++-----------+
+| 2 : false | <------ Valeurs correspondantes aux précédents résultats.
+| 1 : 82.0  | <-----/
++-----------+
+| 0 : false | <------ Valeur du dernier calcul.
+-------------
+
+> hist(1)         <-- Permet de récupérer la valeur à l'indice 1 de l'historique
+                      et de l'utiliser comme opérande.
+(3) : 82.0
+
+```
+
+> Ces informations peuvent être retrouvée grâce à la commande `help`.
+
+## Fonctionnalités
+
+### Extensions implémentées
+
+#### Extension 1 : calculatrice multi-type
+
+Son implémentation rajoute les types suivants :
+
+* Les **entiers** et **réels** avec les opérations usuelles `* / - +`.
+* Les **booléens** `false` et `true` avec les opérations `or and not`.
+* Les **ensembles** contenant des éléments des types précédents avec les opérations
+`inter union diff`.
+
+##### Design
+
+```mermaid
+classDiagram
+class OperationEvaluator {
+	<<Interface>>
+	evaluateOperation(operands) OperandToken
+}
+
+```
 
 La calculatrice utilise ici une syntaxe infix et non la syntaxe RPN (polonaise inversée)
-Par exemple : 
+Par exemple :
 ` 5 + 5 ` est bon et s'évaluera mais
-` 5 5 + ` n'est pas bon (il va montrer un message d'erreur qui dira qu'il ne comprend pas) 
+` 5 5 + ` n'est pas bon (il va montrer un message d'erreur qui dira qu'il ne comprend pas)
 
 Autres exemples qui fonctionne :
 ` (5 + 10) - 10 * 54 `
@@ -58,23 +122,24 @@ Autres exemples qui fonctionne :
 ` -5 + 10 `
 
 La calculatrice fonctionne en générale de cette manière :
-	1/ L'application attend une entrée de l'utilisateur
-	2/ Un Parseur va ensuite transformer cette entrée en une liste de Token 
-	3/ Une Interpreteur va ensuite calculer la sortie à partir de la liste créer par le parseur.
-	4/ L'application affiche enfin le résultat de l'interpreteur.
+ 1/ L'application attend une entrée de l'utilisateur
+ 2/ Un Parseur va ensuite transformer cette entrée en une liste de Token
+ 3/ Une Interpreteur va ensuite calculer la sortie à partir de la liste créer par le parseur.
+ 4/ L'application affiche enfin le résultat de l'interpreteur.
 
-### Fonctionaliter/Extension 
+### Fonctionaliter/Extension
+
 ## Extension 1 : La Calculatrice Multi-Type
 
 La Calculatrice peut être utiliser avec plusieurs type.
 Pour l'instant, les implémentés sont :
 
-# Nombre Réel 
+# Nombre Réel
 
 L'application reconnais un nombre réel si le mot n'est composer que de chiffre.
 Exemple : `5` ; `78` ; `0` ; ...
 Les opérations qui peuvent être utilisé sont : `+` | `-` | `/` | `*`
-Exemple : ` 5 + 5` ; `(-5 + 8) * 6 ` ; ...
+Exemple : `5 + 5` ; `(-5 + 8) * 6` ; ...
 
 # Nombre décimaux
 
@@ -84,10 +149,9 @@ Les opérations qui peuvent être utilisé sont les mêmes que ceux dans les nom
 On peut mélanger les nombres réels et décimaux dans une expression.
 Exemple : ` 5 + 5.4 ` ; ` (4.0 + 8.0) * 6 ` ; ...
 
+# Boolean
 
-# Boolean 
-
-L'application reconnait un boolean si le mot est soit "true" ou "false" 
+L'application reconnait un boolean si le mot est soit "true" ou "false"
 Les opérations qui peuvent être utilisé sont : `and` | `or` | `not`
 Exemple : ` true and not (true or false) ` ; ` true ` ; ` false ` ; ...
 
@@ -102,7 +166,7 @@ Exemple : `{1} union {5;6}` ; `{false ; 1.0} inter {true ; false}` ; `{1;2;3;4;5
 # Comment ça marche ?
 
 La calculatrice utilise une map <clef;evaluateur>. L'interpreteur calcule en premier la clef à partir de l'opération
-et des opérandes (que l'on peut voir comme la signature de l'opération) et chercher si il y a un evaluateur avec la même 
+et des opérandes (que l'on peut voir comme la signature de l'opération) et chercher si il y a un evaluateur avec la même
 signature pour pouvoir l'évaluer.
 Chaque nouveau type ajouté doit implémenter leurs evaluateurs et les ajouter dans le dictionnaire d'opération.
 De cette manière, les opérandes peuvent être de différents types et les clients pourront ajoutés facilement
@@ -110,16 +174,15 @@ un nouveau type si ils le souhaitent.
 
 ## Extension 2 : Syntaxe Infix
 
-Comme il a été dit plus haut dans la section "Utilisation basique de la calculatrice", la calculatrice utilise la 
+Comme il a été dit plus haut dans la section "Utilisation basique de la calculatrice", la calculatrice utilise la
 syntaxe infix au lieu de la syntaxe RPN.
 
 # Comment ça marche ?
 
 L'interpreteur utilisé implémente tout simplement l'algorithme de l'évaluation des expressions infixes.
-Vous pouvez trouver la documentation ici : https://algorithms.tutorialhorizon.com/evaluation-of-infix-expressions/ 
-Grâce à l'architecture actuelle de la calculatrice, il devrait être possible de faire un interpréteur RPN qui peut 
+Vous pouvez trouver la documentation ici : <https://algorithms.tutorialhorizon.com/evaluation-of-infix-expressions/>
+Grâce à l'architecture actuelle de la calculatrice, il devrait être possible de faire un interpréteur RPN qui peut
 remplacer l'interpreteur infixe pour pouvoir transformer notre calculatrice infixe en une calculatrice RPN.
-
 
 ## Extension 3 : Historique
 
@@ -134,7 +197,7 @@ Pour rappeler une valeur dans l'historique, utiliser `hist(` indexe_demander `)`
 Exemple : `hist(2)` va rappeler la valeur de l'historique de l'index 2
 
 Il est aussi possible d'utiliser une valeur rappeler dans une nouvelle expression :
-Exemple : `hist(2) + 5.0` marche (si la valeur contenu dans hist(2) est un nombre bien sur ) 
+Exemple : `hist(2) + 5.0` marche (si la valeur contenu dans hist(2) est un nombre bien sur )
 
 Pour lister toutes les valeurs stocker dans l'historique, utiliser la commande `ls`
 Pour afficher la documentation de l'historique, utiliser la commande `help`
@@ -145,9 +208,10 @@ L'historique utilise une Arraylist. A chaque fois qu'une expression a été eval
 l'ArrayList de l'historique à l'index voulu. Quand on rapelle une valeur, cela créer un token historique qui va ensuite se substituer avec
 la valeur retenu dans l'ArrayList à l'index qui lui correspond.
 
-### Package 
+### Package
+
 paleo-lib : Ce package contiens toutes l'implémentation de la calculatrice ainsi que ces extensions (multi-type, l'historique, ...)
-Son rôle en général est de pouvoir calculer une sortie (sous la forme d'une OperandToken ou d'un message d'erreur) à partir 
+Son rôle en général est de pouvoir calculer une sortie (sous la forme d'une OperandToken ou d'un message d'erreur) à partir
 d'une entrée (String)
 
 paleo-demo : Ce package est le point d'entrée du programme. C'est ici que l'on entre l'entrée utilisateur et que le résultat
@@ -156,11 +220,4 @@ du calcul de la calculatrice est afficher.
 On a séparer ces deux modules pour par exemple si un client voudrait créer une calculatrice graphique avec comme base notre calculatrice,
 il peut facilement enlever le package paleo-demo qui donne pour l'instant une interface textuelle avec un autre module graphique.
 paleo-demo est entre autre un exemple d'utilisation de notre module de calculatrice
-
-
-
-
-
-
-
 
