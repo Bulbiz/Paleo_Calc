@@ -2,7 +2,7 @@
 
 JFLEX_OUTPUT = paleo-lib/src/main/java/paleo/lib/parser/JFLexer.java
 JAR_NAME = paleo-demo
-DEMO_VERSION = 1.2
+DEMO_VERSION = 2.0
 
 all: lib demo
 

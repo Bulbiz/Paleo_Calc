@@ -56,7 +56,7 @@ public final class App {
 		Color.printlnWith("___  __ \\  __ `/_  /_  _ \\  __ \\", Color.CYAN);
 		Color.printlnWith("__  /_/ / /_/ /_  / /  __/ /_/ /", Color.LIGHT_CYAN);
 		Color.printlnWith("_  .___/\\__,_/ /_/  \\___/\\____/", Color.GREEN);
-		Color.printlnWith("/_/                       v1.2\n", Color.LIGHT_GREEN);
+		Color.printlnWith("/_/                       v2.0\n", Color.LIGHT_GREEN);
 	}
 
 	private static void printPrompt() {
