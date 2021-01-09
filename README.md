@@ -1,8 +1,33 @@
-# Paleo
+# Paleo 🐘
 
 Une calculatrice évolutive écrite en Java.
 
-## Compilation et exécution
+<!-- vim-markdown-toc GFM -->
+
+* [Compilation et exécution 🛠](#compilation-et-exécution-)
+   * [Dépendances](#dépendances)
+   * [Docker](#docker)
+   * [Compilation](#compilation)
+   * [Exécution](#exécution)
+* [Utilisation 💻](#utilisation-)
+* [Fonctionnalités 🗂](#fonctionnalités-)
+   * [Extensions implémentées](#extensions-implémentées)
+      * [Extension 1 : calculatrice multi-type](#extension-1--calculatrice-multi-type)
+         * [Design](#design)
+      * [Extension 2 : syntaxe algébrique traditionnelle](#extension-2--syntaxe-algébrique-traditionnelle)
+         * [Design](#design-1)
+            * [Le *parser*](#le-parser)
+            * [L'interpréteur](#linterpréteur)
+      * [Extension 3 : rappel de valeurs](#extension-3--rappel-de-valeurs)
+         * [Design](#design-2)
+   * [Architecture](#architecture)
+* [Organisation 📊](#organisation-)
+   * [Répartition des tâches](#répartition-des-tâches)
+* [Coordonnées  🧑‍💻](#coordonnées--)
+
+<!-- vim-markdown-toc -->
+
+## Compilation et exécution 🛠
 
 ### Dépendances
 
@@ -59,7 +84,7 @@ ou
 java -jar paleo-demo.jar
 ```
 
-## Utilisation
+## Utilisation 💻
 
 Après avoir lancé le programme, vous pouvez évaluer n'importe quelle expression écrite
 avec une syntaxe algébrique (notation infixe).
@@ -87,13 +112,13 @@ avec une syntaxe algébrique (notation infixe).
 
 > Ces informations peuvent être retrouvée grâce à la commande `help`.
 
-## Fonctionnalités
+## Fonctionnalités 🗂
 
 ### Extensions implémentées
 
 #### Extension 1 : calculatrice multi-type
 
-Son implémentation rajoute les types suivants :
+Son implémentation ajoute les types suivants :
 
 * Les **entiers** et **réels** avec les opérations usuelles `* / - +`.
 * Les **booléens** `false` et `true` avec les opérations `or and not`.
@@ -104,120 +129,253 @@ Son implémentation rajoute les types suivants :
 
 ```mermaid
 classDiagram
-class OperationEvaluator {
-	<<Interface>>
-	evaluateOperation(operands) OperandToken
+class OperationEvaluator~FunctionalInterface~ {
+ evaluateOperation(operands) OperandToken
 }
+
+class OperationDictionary {
+ -HashMap~String, OperationEvaluator~ operationMap
+ +addEntry(operation, opEvaluator, signature)$
+    +getOperationEvaluator(operation, signature)$ OperationEvaluator
+}
+
+class Yytoken~FunctionalInterface~ {
+ +isAnOperandToken() boolean
+}
+
+class OperandToken~Interface~
+class OperationToken~Interface~
+
+class IntegerOperandToken {
+ -int value
+}
+
+class SumOperationToken {
+ -String symbol
+ -Priority priority
+ -int arity
+}
+
+OperationDictionary --> OperandToken~Interface~
+OperationDictionary --> OperationEvaluator
+OperandToken ..|> Yytoken
+OperationToken ..|> Yytoken
+IntegerOperandToken ..|> OperandToken
+SumOperationToken ..|> OperationToken
+```
+
+Chacune des implémentations de l'interface `OperandToken` correspondes à un
+*type* d'opérande et s'occupent d'ajouter les implémentation de
+`OperationEvaluator` correspondants aux opérations supportées par ce type dans
+la `HashMap` statique de `OperationDictionary` grâce à la méthode
+`OperationDictionary::addEntry` qui en assure l'unicité.
+
+Par exemple l'ajout de l'addition entre deux entiers ce fait de la façons
+suivante :
+
+```java
+OperationDictionary.addEntry(
+  new SumOperationToken(),
+  operands -> {
+    return
+      new IntegerOperandToken(
+         ((IntegerOperandToken) operands.pop()).getValue() +
+         ((IntegerOperandToken) operands.pop()).getValue()
+      );
+   },
+   List.of(IntegerOperandToken.class, IntegerOperandToken.class)
+);
 
 ```
 
-La calculatrice utilise ici une syntaxe infix et non la syntaxe RPN (polonaise inversée)
-Par exemple :
-` 5 + 5 ` est bon et s'évaluera mais
-` 5 5 + ` n'est pas bon (il va montrer un message d'erreur qui dira qu'il ne comprend pas)
+Ainsi, l'ajout de nouveau type d'opérande se fait **facilement** et **indépendamment**
+du reste de l'implémentation du programme.
 
-Autres exemples qui fonctionne :
-` (5 + 10) - 10 * 54 `
-` 5 `
-` -5 + 10 `
+#### Extension 2 : syntaxe algébrique traditionnelle
 
-La calculatrice fonctionne en générale de cette manière :
- 1/ L'application attend une entrée de l'utilisateur
- 2/ Un Parseur va ensuite transformer cette entrée en une liste de Token
- 3/ Une Interpreteur va ensuite calculer la sortie à partir de la liste créer par le parseur.
- 4/ L'application affiche enfin le résultat de l'interpreteur.
+Dès la première version nous avons voulu implémenter la gestion de la syntaxe algébrique,
+en effet, elle nous parait plus ergonomique que la syntaxe RPN.
 
-### Fonctionaliter/Extension
+##### Design
 
-## Extension 1 : La Calculatrice Multi-Type
+```mermaid
+classDiagram
+class Parser~FunctionalInterface~ {
+  +parse(String expr) Either~Throwable, Queue< Yytoken >~
+}
 
-La Calculatrice peut être utiliser avec plusieurs type.
-Pour l'instant, les implémentés sont :
+class Interpreter~FunctionalInterface~ {
+  +evaluate() OperandToken
+}
 
-# Nombre Réel
+class Factory~FunctionalInterface~ {
+   +create(Queue~Yytoken~ tokens) Interpreter
+}
 
-L'application reconnais un nombre réel si le mot n'est composer que de chiffre.
-Exemple : `5` ; `78` ; `0` ; ...
-Les opérations qui peuvent être utilisé sont : `+` | `-` | `/` | `*`
-Exemple : `5 + 5` ; `(-5 + 8) * 6` ; ...
+class InfixInterpreterFactory {
+   +create(Queue~Yytoken~ tokens) InfixInterpreter
+}
 
-# Nombre décimaux
+JFlexParser ..|> Parser
+JFlexParser --> JFLexer
+InfixInterpreter ..|> Interpreter
+InfixInterpreter --> OperationDictionary
+Factory~FunctionalInterface~ --* Interpreter
+InfixInterpreterFactory ..|> Factory~FunctionalInterface~
+InfixInterpreterFactory --* InfixInterpreter
+```
 
-L'application reconnais un nombre decimale si le mot commence n'est composer que de chiffre et d'un seul et unique '.'
-Exemple : `5.` ; `78.64` ; `0.0` ; ...
-Les opérations qui peuvent être utilisé sont les mêmes que ceux dans les nombres réels (`+`| `-` | `/` | `*`)
-On peut mélanger les nombres réels et décimaux dans une expression.
-Exemple : ` 5 + 5.4 ` ; ` (4.0 + 8.0) * 6 ` ; ...
+###### Le *parser*
 
-# Boolean
+Pour *parser* une expression nous avons choisis d'utiliser [JFLex](https://jflex.de/),
+ce qui nous a permis d'avoir un *lexer* facilement incrémentable et robuste.
+Par exemple toutes ces expressions produisent la même liste de *tokens* :
 
-L'application reconnait un boolean si le mot est soit "true" ou "false"
-Les opérations qui peuvent être utilisé sont : `and` | `or` | `not`
-Exemple : ` true and not (true or false) ` ; ` true ` ; ` false ` ; ...
+```
+> 5 - (-5)
+> 5--5
 
-# Set
+> {1; false; true}
+> {1,false,true}
+> { 1 false true }
+> { 1 false true true 1 }
 
-L'application reconnait un ensemble si le mot commence avec '{', puis quelques valeurs (cela peut être un réel, un décimal ou un boolean)
-séparé avec ' ' ou ';' ou ',' et enfin fini avec '}'.
-Exemple : ` { 1 ; 2.0 ; 3 ; true } ` ; `{}` ; `{ false }` ; ...
-Les opérations qui peuvent être utilisé sont : `union` | `inter` | `diff`
-Exemple : `{1} union {5;6}` ; `{false ; 1.0} inter {true ; false}` ; `{1;2;3;4;5;6} diff ({1} union {3;5})`
+> true or (not false)
+> trueornotfalse
+```
 
-# Comment ça marche ?
+Depuis le fichier *./paleo-lib/src/main/jflex/jflexer.jflex* et générer la
+classe `paleo.lib.parser.JFLexer` utilisée par `paleo.lib.parser.JFlexParser`
+pour générer une liste de `Yytoken` correspondants à l'expression en syntaxe algébrique.
 
-La calculatrice utilise une map <clef;evaluateur>. L'interpreteur calcule en premier la clef à partir de l'opération
-et des opérandes (que l'on peut voir comme la signature de l'opération) et chercher si il y a un evaluateur avec la même
-signature pour pouvoir l'évaluer.
-Chaque nouveau type ajouté doit implémenter leurs evaluateurs et les ajouter dans le dictionnaire d'opération.
-De cette manière, les opérandes peuvent être de différents types et les clients pourront ajoutés facilement
-un nouveau type si ils le souhaitent.
+###### L'interpréteur
 
-## Extension 2 : Syntaxe Infix
+Cette liste est ensuite évaluée grâce à une instance de `InfixInterpreter`.
+Pour cela un [algorithme](https://algorithms.tutorialhorizon.com/evaluation-of-infix-expressions/)
+utilisant deux piles (une d'opérandes et l'autre d'opérations) est utilisé.
 
-Comme il a été dit plus haut dans la section "Utilisation basique de la calculatrice", la calculatrice utilise la
-syntaxe infix au lieu de la syntaxe RPN.
+Grâce aux interfaces `Parser` et `Interpreter` il est tout à fait possible d'**ajouter**
+des interpréteurs/*parser* utilisant d'autres algorithmes ou bibliothèques externes
+**sans** avoir à **modifier** le reste du code.
 
-# Comment ça marche ?
+#### Extension 3 : rappel de valeurs
 
-L'interpreteur utilisé implémente tout simplement l'algorithme de l'évaluation des expressions infixes.
-Vous pouvez trouver la documentation ici : <https://algorithms.tutorialhorizon.com/evaluation-of-infix-expressions/>
-Grâce à l'architecture actuelle de la calculatrice, il devrait être possible de faire un interpréteur RPN qui peut
-remplacer l'interpreteur infixe pour pouvoir transformer notre calculatrice infixe en une calculatrice RPN.
+La calculatrice contient un historique qui peut être utilisé pour pouvoir
+rappeler des anciennes valeurs et les réutiliser dans de nouvelles expressions.
 
-## Extension 3 : Historique
+##### Design
 
-La calculatrice contient un historique qui peut être utilisé pour pouvoir rappeler des anciennes valeurs et les réutilliser
-pour de nouvelles expression.
+```mermaid
+classDiagram
 
-A chaque fois qu'une evaluation a été calculer, la valeur est par la même occasion sauvegarder dans l'historique dans l'index
-indiquer avant la sortie.
-Exemple : `(2) : {5; 6; 7; 2; 1}` veut dire que `{5; 6; 7; 2; 1}` est stocker dans l'historique à l'index 2
+class Calculator~FunctionalInterface~ {
+  +calculate(String expr) Optional~Either< Throwable, OperandToken >~
+}
 
-Pour rappeler une valeur dans l'historique, utiliser `hist(` indexe_demander `)`
-Exemple : `hist(2)` va rappeler la valeur de l'historique de l'index 2
+class HistCalculator {
+  -Inerpreter.Factory interpreterFactory
+  -Parser parser
+  -HistoricManager historicManager
+  +HistCalculator(interpreterFactory, parser, historicManager)
+}
 
-Il est aussi possible d'utiliser une valeur rappeler dans une nouvelle expression :
-Exemple : `hist(2) + 5.0` marche (si la valeur contenu dans hist(2) est un nombre bien sur )
+class HistoricManager~Interface~ {
+   +subsitute(Queue~Yytoken~ tokens) Optional~Queue< Yytoken >~
+   +add(OperandToken token)
+   +get(int index) Optional~OperandToken~
+   +getLast()
+   +printHistoric()
+}
 
-Pour lister toutes les valeurs stocker dans l'historique, utiliser la commande `ls`
-Pour afficher la documentation de l'historique, utiliser la commande `help`
+class TabHistoricManager {
+   -ArrayList~OperandToken> historicArray
+}
 
-# Comment ça marche ?
 
-L'historique utilise une Arraylist. A chaque fois qu'une expression a été evalué dans l'application, il va aussi être ajouter dans
-l'ArrayList de l'historique à l'index voulu. Quand on rapelle une valeur, cela créer un token historique qui va ensuite se substituer avec
-la valeur retenu dans l'ArrayList à l'index qui lui correspond.
+HistCalculator ..|> Calculator
+TabHistoricManager ..|> HistoricManager
+HistCalculator --o HistoricManager
+```
 
-### Package
+C'est une instance de `paleo.lib.calculator.HistCalculator` qui se charge de faire
+le lien entre le *parser* et l'interpréteur tout en sauvegardant les résultats
+grâce à `paleo.lib.historic.TabHistoricManager` qui implémente
+`paleo.lib.historic.HistoricManager` avec la particularité d'afficher sont contenu
+dans un tableau (commande `ls`).
 
-paleo-lib : Ce package contiens toutes l'implémentation de la calculatrice ainsi que ces extensions (multi-type, l'historique, ...)
-Son rôle en général est de pouvoir calculer une sortie (sous la forme d'une OperandToken ou d'un message d'erreur) à partir
-d'une entrée (String)
+C'est `HistCalculator` qui va donc se charger d'exécuter les commandes internes
+comme `ls` ou `help` c'est pour cela que `calculate` retourne un `Optional`.
 
-paleo-demo : Ce package est le point d'entrée du programme. C'est ici que l'on entre l'entrée utilisateur et que le résultat
-du calcul de la calculatrice est afficher.
+Cette architecture tends vers un maximum de **modularité**.
 
-On a séparer ces deux modules pour par exemple si un client voudrait créer une calculatrice graphique avec comme base notre calculatrice,
-il peut facilement enlever le package paleo-demo qui donne pour l'instant une interface textuelle avec un autre module graphique.
-paleo-demo est entre autre un exemple d'utilisation de notre module de calculatrice
+### Architecture
+
+Notre projet est séparé en deux parties.
+
+La première `paleo-lib` contient le nécessaire pour l'implémentation d'une calculatrice
+avec les extensions listées précédemment et le matériel pour ajouter de nouvelles.
+
+La seconde `paleo-demo` permet de compiler un exécutable faisant une
+démonstration de ce qui est possible de faire avec `paleo-lib`.
+`paleo.demo.App` est le point d'entrée du programme et se charge de l'interface
+utilisateur.
+
+> C'est pour cela que ce qui est retourné par la fonction `Calculator::calculate` est
+> un `Optional` de `jf.Either<Throwable, OperandToken>`, en effet, cela permet de déléguer
+> la gestion des erreurs au client (*palo-demo*) tout en stoppant la propagation
+> d'exceptions le plus tôt possible.
+
+On a choisit de faire cette séparation pour illustrer la modularité de notre
+programme permettant ainsi de pouvoir facilement modifier `paleo-demo` pour
+fournir une interface graphique sans pour autant devoir modifier `paleo-lib`.
+
+## Organisation 📊
+
+Pour le développement de ce projet nous avons choisis de suivre une version simplifiée
+la méthode *Scrum* vu en L2 ainsi que le TDD (*Test Driven Development*).
+
+Concrètement cela consiste en :
+
+* Des *sprints* d’une durée d’une semaine.
+* Une réunion à la fin de chaque *sprint* sur `Discord` durant laquelle nous faisons
+le point sur les issues implémentées par chacun durant le dernier *sprint* puis
+sur celles qui restent à faire avant de s’assigner nos *issues* pour le prochain
+*sprint* en fonction de leurs priorités.
+* Chaque *issue* corresponds à une
+fonctionnalité ou à un patch et est implémentée dans sa propre branche avant
+d’être *merge* dans la branche *develop*, si et seulement si, la *pipeline* est
+passée et que toutes les conversations de la MR correspondantes sont closes.
+Lorsque l’état du programme dans la branche *develop* nous parait satisfaisant,
+la branche *master* est mise à jour avec *develop* et une nouvelle *release* est
+crée.
+
+> Dernièrement, les *pipelines* ne passent plus à **cause** de l'**ajout** de
+> la bibliothèques [Functional Java](http://www.functionaljava.org/)
+> (utilisation de `Either`) dans les dépendances et **non** à cause de tests
+> échouant.
+
+### Répartition des tâches
+
+Comme précisé juste avant nous avons voulu nous rapprocher au plus du fonctionnement
+de la méthode *Scrum* ce qui implique que chacun de nous a implémentés chacune
+des parties du projet.
+
+Cependant, dans l'ensemble :
+
+Rémy s'est d'avantage occupé
+
+* de l'ajout des nouveaux types : `booléens` et `ensembles`
+* du *refactoring* des `OperationToken`.
+
+Qu'en à lui, Emile s'est occupé
+
+* de mettre en place `GitLab-CI` ainsi que lexer avec `JFLex`
+* de l'implémentation de l'historique et de la syntaxe algébrique.
+
+## Coordonnées  🧑‍💻
+
+| Nom      | Prénom | GitLab ID                                                                     | Numéro étudiant |
+|----------|--------|-------------------------------------------------------------------------------|-----------------|
+| Rolley   | Emile  | [@EmileRolley](https://gaufre.informatique.univ-paris-diderot.fr/EmileRolley) | 71802612        |
+| Phol Asa | Rémy   | [@pholasa](https://gaufre.informatique.univ-paris-diderot.fr/pholasa)         | 71803190        |
 
