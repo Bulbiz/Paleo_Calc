@@ -110,10 +110,23 @@ public class HistCalculator implements Calculator {
 
 	private static void printHelp() {
 		System.out.println(
+			"Mechanics of the paleo shell:\n\n" +
+			"  > 10 * (5.2 + 3)  <-- Infix expression.\n" +
+			"  (1) : 82.0        <-- Result of the expression evaluation.\n" +
+			"   ^------------------- Index of the historic.\n" +
+			"  > false or not true\n" +
+			"  (2) : false\n\n" +
+			"  > ls              <-- Prints the historic in a tab.\n" +
+			"  +-----------+\n" +
+			"  | 2 : false | <------ Past results.\n" +
+			"  | 1 : 82.0  | <-----/\n" +
+			"  +-----------+\n" +
+			"  | 0 : false | <------ Result of the last evaluation.\n" +
+			"  -------------\n\n" +
+			"  > hist(1)         <-- Gets the result at the index 1 in the historic\n" +
+			"  (3) : 82.0            and used it as an operand.\n\n" +
 			"Supported commands:\n" +
 			"  ls       \tPrints the current historic state\n" +
-			"  hist(n)  \tWill be substitute by the nth historic value\n" +
-			"  hist(0)  \tWill be substitute by the last historic value\n" +
 			"  help     \tPrints this message"
 		);
 	}
